@@ -36,7 +36,7 @@ export function NavDocuments({
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-      <SidebarGroupLabel className="tracking-wider">UIS</SidebarGroupLabel>
+      <SidebarGroupLabel className="tracking-wider">History</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
           <SidebarMenuItem key={item.name}>

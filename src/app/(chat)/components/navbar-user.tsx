@@ -1,9 +1,5 @@
-import {
-    IconCreditCard,
-    IconLogout,
-    IconNotification,
-    IconUserCircle,
-  } from "@tabler/icons-react"
+
+  import { CirclePlus, LogOut } from "lucide-react"
   
   import {
     Avatar,
@@ -22,6 +18,8 @@ import {
     MenubarMenu,
     MenubarTrigger,
   } from "@/components/ui/menubar"
+  import { StartProjectDialogBtn } from "./start-project"
+import { Button } from "@/components/ui/button"
   
   export function NavbarUser({
     user,
@@ -34,14 +32,22 @@ import {
   }) {
     return (
       <Menubar className="border-0 shadow-none p-0">
+        <StartProjectDialogBtn>
+          {/* <button className="bg-accent border text-xs py-1 px-2 rounded-[11px] cursor-pointer flex flex-row items-center gap-2 md:mx-1">
+            Start project <CirclePlus className="opacity-85 w-4"/>
+          </button> */}
+          <Button  size="sm" variant={"link"} className="cursor-pointer">
+            Start Project
+          </Button>
+        </StartProjectDialogBtn>
         <MenubarMenu>
-          <MenubarTrigger asChild className="rounded-full bg-transparent">
+          <MenubarTrigger asChild className="rounded-full">
             <button
-              className="data-[state=open]:bg-transparent data-[state=open]:text-gray-100 flex h-8 w-fit items-center gap-2 text-left"
+              className="data-[state=open]:bg-transparent data-[state=open]:text-gray-100 flex  w-fit items-center gap-2 text-left"
             >
-              <Avatar className="h-7 w-7 rounded-[13px] ">
+              <Avatar className="h-6 w-6 rounded-full cursor-pointer">
                 <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">HM</AvatarFallback>
+                <AvatarFallback className="rounded-full">01</AvatarFallback>
               </Avatar>
             </button>
           </MenubarTrigger>
@@ -65,21 +71,10 @@ import {
               </div>
             </div>
             <DropdownMenuSeparator />
-            <MenubarItem className="flex items-center gap-2">
-              <IconUserCircle className="size-4" />
-              Account
-            </MenubarItem>
-            <MenubarItem className="flex items-center gap-2">
-              <IconCreditCard className="size-4" />
-              Billing
-            </MenubarItem>
-            <MenubarItem className="flex items-center gap-2">
-              <IconNotification className="size-4" />
-              Notifications
-            </MenubarItem>
-            <DropdownMenuSeparator />
+
+            {/* <DropdownMenuSeparator /> */}
             <MenubarItem className="flex items-center gap-2" variant="destructive">
-              <IconLogout className="size-4" />
+              <LogOut className="size-4" />
               Log out
             </MenubarItem>
           </MenubarContent>

@@ -11,6 +11,7 @@ import { UserInput } from "../../components/user-input";
 // import { ChatMessage } from "../../components/message";
 import { useParams } from "next/navigation";
 import { useEffect } from "react";
+import { Button } from "@/components/ui/button";
 
 
 
@@ -37,6 +38,7 @@ export default function Chat(){
       },
       onFinish: (red)=>{
       console.log("~~~RES~~~~~~", red)
+      localStorage.removeItem('llm-query-state')
       }
     });
 
@@ -177,7 +179,6 @@ export default function Chat(){
           <h1>
             {completion}
           </h1>
-
           <div className="py-2 px-3">
             <div className="w-full max-w-xl place-self-center">
               <UserInput
