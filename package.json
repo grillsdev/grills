@@ -31,6 +31,7 @@
 		"@tabler/icons-react": "^3.34.0",
 		"ai": "^4.3.16",
 		"axios": "^1.10.0",
+		"better-auth": "^1.2.10",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
 		"dotenv": "^16.5.0",

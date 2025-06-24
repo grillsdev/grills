@@ -30,8 +30,8 @@ const ApiInput = ({ llmTitle, llmName}: { llmTitle:string, llmName: string }) =>
   const { input, handleInputChange, handleSubmit, isLoading, error, setInput } =
     useCompletion({
       streamProtocol: "text",
-      api: `api/ai/verify-key`,
-      credentials: "include",
+      api: `/api/completion/models`,
+      // credentials: "include",
       body: {
         llm: llmName,
       },
@@ -63,7 +63,6 @@ const ApiInput = ({ llmTitle, llmName}: { llmTitle:string, llmName: string }) =>
           onChange={handleInputChange}
           value={input}
           disabled={isLoading}
-          autoFocus={false}
           autoComplete="off"
           minLength={10}
           required

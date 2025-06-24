@@ -19,6 +19,7 @@ export interface AvailableModels{
   models:Model[]
 }
 
+// {llm: "gemini", model:"flash-2.0", modelTitle: "Flash 2.0"}
 export interface CurrentModel{
   llm:string
   model:string
