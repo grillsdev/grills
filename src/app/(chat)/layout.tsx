@@ -1,15 +1,16 @@
-'use client'
+"use client";
 import { AppSidebar } from "./components/app-sidebar";
 import { SideHeader } from "./components/side-header";
-import { SidebarInset, SidebarProvider} from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
+import { Toaster } from "sonner";
 
 export default function Layout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-   return (
+  return (
     <SidebarProvider>
       <AppSidebar variant="inset" />
       <SidebarInset>
@@ -18,10 +19,17 @@ export default function Layout({
           <div className="@container/main flex flex-1 flex-col gap-2">
             <div className="flex flex-col ">
               {children}
+              <Toaster
+                position="top-center"
+                richColors
+                closeButton 
+                expand
+                theme="dark"
+              />
             </div>
           </div>
         </div>
       </SidebarInset>
     </SidebarProvider>
-  )
+  );
 }

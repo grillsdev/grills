@@ -33,11 +33,8 @@ import { Button } from "@/components/ui/button"
     return (
       <Menubar className="border-0 shadow-none p-0">
         <StartProjectDialogBtn>
-          {/* <button className="bg-accent border text-xs py-1 px-2 rounded-[11px] cursor-pointer flex flex-row items-center gap-2 md:mx-1">
-            Start project <CirclePlus className="opacity-85 w-4"/>
-          </button> */}
-          <Button  size="sm" variant={"link"} className="cursor-pointer">
-            Start Project
+          <Button  size="sm" variant="outline" className="cursor-pointer gap-2">
+            Start Project <CirclePlus/>
           </Button>
         </StartProjectDialogBtn>
         <MenubarMenu>

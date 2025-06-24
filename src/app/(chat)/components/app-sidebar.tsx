@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/sidebar"
 
 import { Button } from "@/components/ui/button"
+import { ApiKeysDialogBtn } from "./api-keys-dialog"
 
 
 
@@ -177,7 +178,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
       <SidebarFooter>
 
-        <Button variant="outline">API Keys</Button>
+        <ApiKeysDialogBtn>
+        <Button variant="outline" className="w-full">API Keys</Button>
+        </ApiKeysDialogBtn>
       </SidebarFooter>
     </Sidebar>
   )

@@ -11,6 +11,14 @@ import { IconSend as Send } from "@tabler/icons-react";
 import { Textarea } from "@/components/ui/textarea";
 import { v4 as uuid } from "uuid";
 
+import { toast } from "sonner";
+
+import { ModelSelectBtn } from "./model-select-dialog";
+import { getSelectedModel, getApiKey } from "@/lib/utils";
+
+import { ModelSelect } from "./model-select-dialog";
+import { APIKeysDialog } from "./api-keys-dialog";
+
 
 const UserInput = ({
   handleChatSubmit,
@@ -26,6 +34,9 @@ const UserInput = ({
   disable?: boolean;
 }) => {
   const [homePageInput, setHomePageInput] = useState<string>("");
+  const [modelDShouldOpen, setModelDShouldOpen] = useState<boolean>(false)
+  const [apiDShouldOpen, setApiDShouldOpen] = useState<boolean>(false)
+
   const pathname = usePathname();
   const router = useRouter();
 
@@ -34,7 +45,25 @@ const UserInput = ({
   const handleSubmit = async (e?: FormEvent<HTMLFormElement>) => {
     e?.preventDefault();
 
-    if (disable) return;
+    if(disable) return
+
+    const isModelSelected = getSelectedModel()
+    if(!isModelSelected){
+      toast.warning("Please Select your model.",{
+        position:"top-center"
+      })
+      setModelDShouldOpen(true)
+      return;
+    }
+
+    const isApiKey = getApiKey(isModelSelected.llm)
+    if(!isApiKey){
+      toast.warning(`Please add your ${isModelSelected.llm.toUpperCase()} API key`,{
+        position:"top-center"
+      })
+      setApiDShouldOpen(true)
+      return;
+    }
 
 
     if (isHomePage) {
@@ -80,14 +109,8 @@ const UserInput = ({
           name="userInput"
         />
         <div className="relative flex flex-row items-center justify-center w-full">
-          <button
-            type="button"
-            className="text-xs font-medium px-1 hover:bg-accent/60 absolute left-3 bottom-3"
-          >
-            Select model{" "}
-          </button>
           <div className="absolute left-3 bottom-3">
-            {/* <ModelSelectBtn/> */}
+            <ModelSelectBtn/>
           </div>
           <button
             type="submit"
@@ -97,6 +120,8 @@ const UserInput = ({
           </button>
         </div>
       </form>
+      <ModelSelect openWindow={modelDShouldOpen} handleOpenWindow={()=>setModelDShouldOpen(false)}/>
+      <APIKeysDialog openWindow={apiDShouldOpen} windowState={setApiDShouldOpen}/>
     </>
   );
 };

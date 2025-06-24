@@ -73,7 +73,6 @@ export function NavDocuments({
             </DropdownMenu>
           </SidebarMenuItem>
         ))}
-        
       </SidebarMenu>
     </SidebarGroup>
   )
