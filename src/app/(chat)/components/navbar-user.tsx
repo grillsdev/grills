@@ -29,7 +29,7 @@ export function NavbarUser({
   user: {
     name: string
     email: string
-    avatar: string
+    avatar?: string
   }
 }) {
   const router = useRouter();
@@ -69,7 +69,7 @@ export function NavbarUser({
           <div className="p-0 font-normal">
             <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
               <Avatar className="h-8 w-8 rounded-[14px]">
-                <AvatarImage src={user.avatar} alt={user.name} />
+                <AvatarImage src={user.avatar || undefined} alt={user.name} />
                 <AvatarFallback className="rounded-[13px]">CN</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">

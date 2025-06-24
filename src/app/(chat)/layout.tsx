@@ -4,8 +4,6 @@ import { SideHeader } from "./components/side-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 import { Toaster } from "sonner";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 
 export default function Layout({
@@ -13,17 +11,10 @@ export default function Layout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const router = useRouter();
   const { data: session, isPending } = authClient.useSession();
-
-  useEffect(() => {
-    if (!isPending && !session) {
-      router.replace("/home");
-    }
-  }, [session, isPending, router]);
+  
 
   if(isPending || !session) return <p className="text-4xl tracking-tight py-[20rem] text-center">Loading....</p>
-
 
   const user = {
     name: session?.user.name,
