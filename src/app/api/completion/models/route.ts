@@ -1,12 +1,14 @@
-// app/api/llms/route.ts
-import { NextResponse } from 'next/server';
 import { db } from '@/db/index';
 import { llm, model } from '@/db/schema/model';
 
 import { createOpenAI } from '@ai-sdk/openai';
 import { generateText } from 'ai';
+import { authMiddleware } from '@/lib/auth-middleware';
 
-export async function GET() {
+
+export const GET = authMiddleware(async (request: Request, session) => {
+  console.log("Authenticated user in the model route:", session.userId);
+  
   const llms = await db.select().from(llm);
   const models = await db.select().from(model);
   
@@ -15,8 +17,9 @@ export async function GET() {
     models: models.filter(m => m.llmId === l.id)
   }));
   
-  return NextResponse.json(result);
-}
+  return Response.json(result);
+});
+
 
 // verification for each model  
 export async function POST(req:Response) {
