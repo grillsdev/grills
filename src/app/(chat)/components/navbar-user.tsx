@@ -1,6 +1,6 @@
 "use client";
 import { authClient } from "@/lib/auth-client";
-import { CirclePlus, LogOut } from "lucide-react"
+import { CircleUserRound, LogOut, Share2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 
 import {
@@ -46,23 +46,22 @@ export function NavbarUser({
   return (
     <Menubar className="border-0 shadow-none p-0">
       <StartProjectDialogBtn>
-        <Button  size="sm" variant="outline" className="cursor-pointer gap-2">
-          Start Project <CirclePlus/>
+        <Button  size="sm" variant="ghost" className="cursor-pointer gap-1.5">
+          Invite code <Share2/>
         </Button>
       </StartProjectDialogBtn>
       <MenubarMenu>
         <MenubarTrigger asChild className="rounded-full">
           <button
-            className="data-[state=open]:bg-transparent data-[state=open]:text-gray-100 flex  w-fit items-center gap-2 text-left"
+            className="data-[state=open]:bg-transparent data-[state=open]:text-gray-100 flex  items-center gap-2"
           >
-            <Avatar className="h-6 w-6 rounded-full cursor-pointer">
-              <AvatarImage src={user.avatar} alt={user.name} />
-              <AvatarFallback className="rounded-full">01</AvatarFallback>
-            </Avatar>
+            <span className="flex items-center rounded-full cursor-pointer text-base-300">
+              <CircleUserRound className=""/>
+            </span>
           </button>
         </MenubarTrigger>
         <MenubarContent
-          className="min-w-56 rounded-lg"
+          className="min-w-56 rounded-lg mt-1"
           align="end"
           sideOffset={4}
         >
