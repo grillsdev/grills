@@ -1,12 +1,14 @@
-// app/api/ai/completion/route.ts
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+
 // import { streamText, generateText } from 'ai';
 import { streamText } from 'ai';
 
 import { createOpenAI } from '@ai-sdk/openai';
 // import { createGoogleGenerativeAI } from '@ai-sdk/google';
 // import { createOpenRouter } from '@ai-sdk/openrouter';
-impas uuidv4 } from 'uuid';
-import { Redis } from '@upstash/redis';
+import { v4 as uuidv4 } from 'uuid';
+import { Redis as UpstashR } from '@upstash/redis';
 // import { db } from '@/lib/db'; // Adjust path as needed
 // import { message } from '@/lib/schema'; // Adjust path as needed
 // import { eq } from 'drizzle-orm';
@@ -16,9 +18,10 @@ import { NextRequest } from 'next/server';
 
 
 // Initialize Redis
-const redis = new Redis({
+export const redis = new UpstashR({
   url: process.env.UPSTASH_REDIS_REST_URL!,
   token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+  keepAlive:true
 });
 
 // Type definitions
@@ -40,6 +43,9 @@ export async function POST(request: Request) {
     // Parse request body
     const body: CompletionRequest = await request.json();
     const { prompt, chatId, messages, llm, apiKey, model } = body;
+
+
+  console.log("~~~~~~~~CHATID Completion~~~~~~~~~~~~~~~`", chatId)
     
     
     // Get user ID from authentication
@@ -116,6 +122,7 @@ export async function POST(request: Request) {
       id: generatedUserInputId,
       createdAt: new Date(),
       type: "user_input",
+      chatId: chatId
     } as const;
 
     const msgLen = messages ? messages.length : 0;
@@ -137,7 +144,7 @@ export async function POST(request: Request) {
 
     // Create AI stream
     const result = streamText({
-      model: operator.chat(model),
+      model: operator.chat("gpt-4o-mini-2024-07-18"),
       messages: newMssgArray,
       system: `you are a ai assistant name Gass you are 10 days old and you will only answer what is asked by the user nothing more nothing less.`,
       onChunk: ({ chunk }) => {
@@ -223,79 +230,75 @@ export async function POST(request: Request) {
   }
 }
 
-//connect to the stream/perticular ai room in order to get liveupdate
+import Redis from "ioredis"
 
+//connect to the stream/perticular ai room in order to get liveupdate
 export async function GET(request: NextRequest) {
-  const searchP = request.nextUrl.searchParams
-  const chatId = searchP.get('chatId')
+  const searchP = request.nextUrl.searchParams;
+  const chatId = searchP.get('chatId');
   const setKey = `chat:${chatId}`;
-  const upstashUrl = `${process.env.UPSTASH_REDIS_REST_URL}/subscribe/${setKey}`;
-  const initialMessage = 'data: \n\n';
+
+  if (!chatId) {
+    return new Response('Chat ID is required', { status: 400 });
+  }
 
   try {
-    const upstashResponse = await fetch(upstashUrl, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`,
-        Accept: 'text/event-stream',
+    const redisSubscriber = new Redis(process.env.UPSTASH_REDIS_URL!);
+    const encoder = new TextEncoder();
+    let isStreamActive = true;
+
+    const completionStream = new ReadableStream({
+      start(controller) {
+        redisSubscriber.subscribe(setKey, (err) => {
+          if (err) {
+            console.error('Redis subscribe error:', err);
+            controller.error(err);
+            return;
+          }
+          console.log(`Subscribed to ${setKey}`);
+        });
+
+        // Listen for new Completion from upstash Redis
+        redisSubscriber.on('message', (channel, message) => {
+          if (!isStreamActive) return;
+          
+          try {
+            if (channel === setKey) {
+              controller.enqueue(encoder.encode(`data: ${message}\n\n`));
+            }
+          } catch (error) {
+            console.error('Error in message handler:', error);
+          }
+        });
+
+        redisSubscriber.on('error', (error) => {
+          console.error('Redis error:', error);
+          if (isStreamActive) {
+            controller.error(error);
+          }
+        });
       },
+      
+      cancel() {
+        isStreamActive = false;
+        try {
+          redisSubscriber.unsubscribe(setKey);
+          redisSubscriber.quit();
+        } catch (error) {
+          console.error('Error during cleanup:', error);
+        }
+      }
     });
 
-    if (!upstashResponse.ok || !upstashResponse.body) {
-      return new Response('Failed to subscribe to Upstash Redis', {
-        status: 500,
-      });
-    }
-
-    const reader = upstashResponse.body.getReader();
-    const encoder = new TextEncoder();
-
-    const stream = new ReadableStream({
-  async start(controller) {
-    // Send initial message
-    controller.enqueue(encoder.encode(initialMessage));
-    
-    try {
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        
-        // Check if controller is still open before enqueuing
-        if (controller.desiredSize === null) {
-          // Controller is closed, break out of loop
-          break;
-        }
-        
-        controller.enqueue(value);
-      }
-    } catch (err) {
-      console.error('Stream error:', err);
-      // Only try to error if controller is still open
-      if (controller.desiredSize !== null) {
-        controller.error(err);
-      }
-    } finally {
-      reader.releaseLock();
-      // Only close if not already closed
-      if (controller.desiredSize !== null) {
-        controller.close();
-      }
-    }
-  },
-  
-  // Add cancel handler for when client disconnects
-  cancel() {
-    console.log('Stream cancelled by client');
-  }
-});
-
-    return new Response(stream, {
+    return new Response(completionStream, {
       headers: {
-        'Content-Type': 'text/event-stream',
+        'Content-Type': 'text/event-stream; charset=utf-8',
         'Cache-Control': 'no-cache, no-transform',
         'Connection': 'keep-alive',
-      },
-    });
+        'Content-Encoding': 'none',
+    },
+    })
+   
   } catch (error) {
     console.error('SSE error:', error);
     return new Response('Internal server error', { status: 500 });
