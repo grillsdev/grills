@@ -10,6 +10,8 @@ import { UserInput } from "../../components/user-input";
 import { ChatMessage } from "../../components/message";
 import { getSelectedModel, getApiKey } from "@/lib/utils";
 
+import { UserChatBtn } from "../../components/user-chat";
+
 // Type definitions
 interface ChatMessageType {
   id: string;
@@ -136,7 +138,9 @@ export default function Chat() {
   }, [chatId, setupEventSource]);
 
   return (
-    <div className="flex items-stretch h-[calc(100vh-76px)]">
+    <>
+    <UserChatBtn/>
+     <div className="flex items-stretch h-[calc(100vh-76px)]">
       <div className="flex-1 transition-all duration-300 max-w-full">
         <div className="h-full flex flex-col">
           <ScrollArea className="flex-1 h-[26rem] w-full">
@@ -158,5 +162,6 @@ export default function Chat() {
         </div>
       </div>
     </div>
+    </>
   );
 }
