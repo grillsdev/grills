@@ -46,7 +46,7 @@ export default function Chat() {
       apiKey: apiKey
     },
     onError: (err: Error) => {
-      toast.error(err.message, {
+      toast.error(JSON.parse(err.message), {
         position: "bottom-right"
       });
     },
