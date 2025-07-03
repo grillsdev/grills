@@ -18,7 +18,7 @@ const CopyToClipboard = ({ text }: { text: string }) => {
     <button
     type='button'
       onClick={()=>void handleCopy()}
-      className="p-2  rounded transition-colors cursor-pointer "
+      className="rounded transition-colors cursor-pointer "
     >
       {copied ? (
         <Check size={18} className="text-green-500" />
