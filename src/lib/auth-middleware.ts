@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth";
 import type { Session } from "better-auth";
 
+// Auth middle ware for backend
 export function authMiddleware(handler: (request: Request, session: Session) => Promise<Response>) {
   return async function(request: Request) {
     try {

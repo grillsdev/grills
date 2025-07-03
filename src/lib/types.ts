@@ -32,20 +32,17 @@ export interface MessageProps{
   id:string
 }
 
-export interface ThreadOverview{
-  id:string;
-  title:string;
-  isPublic:boolean;
-  updatedAt:Date
-}
+// export interface ThreadOverview{
+//   id:string;
+//   title:string;
+//   isPublic:boolean;
+//   updatedAt:Date
+// }
 
-export type GetThreads = {
-  threads: ThreadOverview[]
-}
+// export type GetThreads = {
+//   threads: ThreadOverview[]
+// }
 
-export interface ForkThread{
-  newThreadId:string
-}
 
 export type ChatHistory = {
   chats: Message[]
@@ -53,4 +50,48 @@ export type ChatHistory = {
 
 export type Streaming = Message & {
   type: "user_input" | "chat_streaming" | "chat_completed"
+}
+
+export type LLMProvider = "openai" | "gemini" | "openrouter" | "groq";
+
+export interface CompletionRequest {
+  prompt: string;
+  chatId: string;
+  messages: Message[];
+  llm: LLMProvider;
+  apiKey: string;
+  model: string;
+}
+
+export interface CreateChatRequest {
+  title?:string
+}
+
+export interface ProjectDetailRequest {
+  id:string;
+  chatId:string;
+  title:string;
+  admin:string;
+  type:string;
+  createdAt:Date;
+  updatedAt:Date;
+}
+
+/**
+ *  const requestObj = {
+      userRequested:userId,
+      requestedPRoject: projectId,
+      admin:adminId,
+      type: "access_request"
+    }
+ */
+
+export interface ProjectAccessRequest {
+  id:string
+  userRequested:string
+  userRequestedName:string
+  requestedProject:string
+  requestedProjectTitle:string
+  admin:string,
+  type: "request_access" | "grant_access"
 }
