@@ -1,6 +1,6 @@
 "use client";
 import { authClient } from "@/lib/auth-client";
-import { CircleUserRound, LogOut, Share2 } from "lucide-react"
+import { CircleUserRound, LogOut } from "lucide-react"
 import { useRouter } from "next/navigation"
 
 import {
@@ -20,8 +20,7 @@ import {
   MenubarMenu,
   MenubarTrigger,
 } from "@/components/ui/menubar"
-import { StartProjectDialogBtn } from "./start-project"
-import { Button } from "@/components/ui/button"
+
 
 export function NavbarUser({
   user,
@@ -45,18 +44,13 @@ export function NavbarUser({
 
   return (
     <Menubar className="border-0 shadow-none p-0">
-      <StartProjectDialogBtn>
-        <Button  size="sm" variant="ghost" className="cursor-pointer gap-1.5">
-          Invite code <Share2/>
-        </Button>
-      </StartProjectDialogBtn>
       <MenubarMenu>
         <MenubarTrigger asChild className="rounded-full">
           <button
-            className="data-[state=open]:bg-transparent data-[state=open]:text-gray-100 flex  items-center gap-2"
+            className="data-[state=open]:bg-transparent data-[state=open]:text-gray-100 flex items-center gap-2"
           >
             <span className="flex items-center rounded-full cursor-pointer text-base-300">
-              <CircleUserRound className=""/>
+              <CircleUserRound />
             </span>
           </button>
         </MenubarTrigger>

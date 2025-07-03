@@ -1,10 +1,5 @@
 import Link from "next/link"
-import {
-  IconDots,
-  IconShare3,
-  IconTrash,
-  type Icon,
-} from "@tabler/icons-react"
+import {EllipsisVertical, Forward, Trash} from "lucide-react"
 
 import {
   DropdownMenu,
@@ -29,7 +24,6 @@ export function NavDocuments({
   items: {
     name: string
     url: string
-    icon: Icon
   }[]
 }) {
   const { isMobile } = useSidebar()
@@ -51,7 +45,7 @@ export function NavDocuments({
                   showOnHover
                   className="data-[state=open]:bg-accent rounded-sm"
                 >
-                  <IconDots />
+                  <EllipsisVertical />
                   <span className="sr-only">More</span>
                 </SidebarMenuAction>
               </DropdownMenuTrigger>
@@ -61,12 +55,120 @@ export function NavDocuments({
                 align={isMobile ? "end" : "start"}
               >
                 <DropdownMenuItem>
-                  <IconShare3 />
+                  <Forward/>
                   <span>Share</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem variant="destructive">
-                  <IconTrash />
+                  <Trash />
+                  <span>Delete</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </SidebarMenuItem>
+        ))}
+         {items.map((item) => (
+          <SidebarMenuItem key={item.name}>
+            <SidebarMenuButton asChild>
+              <Link href={`/c/${item.name}`}>
+                <span>{item.name}</span>
+              </Link>
+            </SidebarMenuButton>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <SidebarMenuAction
+                  showOnHover
+                  className="data-[state=open]:bg-accent rounded-sm"
+                >
+                  <EllipsisVertical />
+                  <span className="sr-only">More</span>
+                </SidebarMenuAction>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                className="w-24 rounded-lg"
+                side={isMobile ? "bottom" : "right"}
+                align={isMobile ? "end" : "start"}
+              >
+                <DropdownMenuItem>
+                  <Forward/>
+                  <span>Share</span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem variant="destructive">
+                  <Trash />
+                  <span>Delete</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </SidebarMenuItem>
+        ))}
+         {items.map((item) => (
+          <SidebarMenuItem key={item.name}>
+            <SidebarMenuButton asChild>
+              <Link href={`/c/${item.name}`}>
+                <span>{item.name}</span>
+              </Link>
+            </SidebarMenuButton>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <SidebarMenuAction
+                  showOnHover
+                  className="data-[state=open]:bg-accent rounded-sm"
+                >
+                  <EllipsisVertical />
+                  <span className="sr-only">More</span>
+                </SidebarMenuAction>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                className="w-24 rounded-lg"
+                side={isMobile ? "bottom" : "right"}
+                align={isMobile ? "end" : "start"}
+              >
+                <DropdownMenuItem>
+                  <Forward/>
+                  <span>Share</span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem variant="destructive">
+                  <Trash />
+                  <span>Delete</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </SidebarMenuItem>
+        ))}
+      </SidebarMenu>
+      <SidebarGroupLabel className="tracking-wider">Projects</SidebarGroupLabel>
+      <SidebarMenu>
+         {items.map((item) => (
+          <SidebarMenuItem key={item.name}>
+            <SidebarMenuButton asChild>
+              <Link href={`/c/${item.name}`}>
+                <span>{item.name}</span>
+              </Link>
+            </SidebarMenuButton>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <SidebarMenuAction
+                  showOnHover
+                  className="data-[state=open]:bg-accent rounded-sm"
+                >
+                  <EllipsisVertical />
+                  <span className="sr-only">More</span>
+                </SidebarMenuAction>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                className="w-24 rounded-lg"
+                side={isMobile ? "bottom" : "right"}
+                align={isMobile ? "end" : "start"}
+              >
+                <DropdownMenuItem>
+                  <Forward/>
+                  <span>Share</span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem variant="destructive">
+                  <Trash />
                   <span>Delete</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
