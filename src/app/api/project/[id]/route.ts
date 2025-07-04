@@ -4,7 +4,7 @@ import { db } from "@/db";
 import { aiChat } from "@/db/schema/ai-chat";
 
 
-// weather the requested user is admin or not of current chat
+// weather the requested user is admin or not of this current chat
 export const GET = authMiddleware(async (request: Request, session) => {
   try {
     const url = new URL(request.url);
@@ -32,7 +32,7 @@ export const GET = authMiddleware(async (request: Request, session) => {
     console.log('Project ID:', projectId);
     console.log('User ID:', session.userId)
 
-    const result = await db.select().from(aiChat).where(and(eq(aiChat.admin, userId), eq(aiChat.chatId, projectId), eq(aiChat.type, "admin")))
+    const result = await db.select().from(aiChat).where(and(eq(aiChat.admin, userId), eq(aiChat.user, userId), eq(aiChat.chatId, projectId), eq(aiChat.type, "admin")))
     
     // return Response.json(result[0], {status: 200});
     if(!result[0]){
