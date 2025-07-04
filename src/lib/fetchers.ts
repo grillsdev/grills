@@ -1,6 +1,6 @@
 import axios from "axios"
 
-import { AvailableModels, ProjectDetailRequest } from "./types";
+import { AvailableModels, ProjectAccessRequest, ProjectDetailRequest } from "./types";
 
 
 export const getModels = async (url: string): Promise<AvailableModels[]> => {
@@ -29,5 +29,16 @@ export const getProject = async(url:string): Promise<ProjectDetailRequest> => {
 
 export const requestAccess = async(url:string):Promise<number> => {
   const response = await axios.post(url, {})
+  return response.status
+}
+
+export const canIEnterInProject = async(url:string):Promise<boolean> => {
+  const response = await axios.get(url)
+  if(response.status===200) return true
+  return false
+}
+
+export const acceptAccessRequest = async(url:string, {arg}: {arg: ProjectAccessRequest}):Promise<number> => {
+  const response = await axios.post(url, arg)
   return response.status
 }

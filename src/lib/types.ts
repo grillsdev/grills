@@ -72,6 +72,7 @@ export interface ProjectDetailRequest {
   chatId:string;
   title:string;
   admin:string;
+  user:string;
   type:string;
   createdAt:Date;
   updatedAt:Date;
