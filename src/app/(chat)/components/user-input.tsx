@@ -6,7 +6,7 @@ import {
 } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
-import { IconSend as Send } from "@tabler/icons-react";
+import { Send } from "lucide-react";
 
 import { Textarea } from "@/components/ui/textarea";
 import { v4 as uuid } from "uuid";

@@ -10,7 +10,6 @@ import { UserInput } from "../../components/user-input";
 import { ChatMessage } from "../../components/message";
 import { getSelectedModel, getApiKey } from "@/lib/utils";
 
-import { UserChatBtn } from "../../components/user-chat";
 
 // Type definitions
 interface ChatMessageType {
@@ -139,7 +138,6 @@ export default function Chat() {
 
   return (
     <>
-    <UserChatBtn/>
      <div className="flex items-stretch h-[calc(100vh-76px)]">
       <div className="flex-1 transition-all duration-300 max-w-full">
         <div className="h-full flex flex-col">
@@ -149,7 +147,7 @@ export default function Chat() {
             ))}
             <ScrollBar orientation="vertical" />
           </ScrollArea>
-          <div className="py-2 px-3 absolute bottom-0 w-full">
+          <div className="py-2 px-3 absolute bottom-0 w-full flex flex-col items-center">
             <div className="w-full max-w-xl place-self-center">
               <UserInput
                 disable={isLoading}

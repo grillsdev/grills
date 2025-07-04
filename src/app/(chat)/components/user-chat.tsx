@@ -69,7 +69,7 @@ export const UserChatInterface = ({ isOpen, onClose }: {isOpen:boolean, onClose:
 
   return (
     <div
-      className={`fixed bottom-2.5 md:right-0 mx-2 md:mx-0 md:w-72 h-[30rem] md:h-[27.5rem] bg-base-800 rounded-md md:rounded-l-md md:rounded-r-none shadow-2xl flex flex-col z-50 transition-transform duration-500 ease-in-out transform ${
+      className={`fixed bottom-2.5 md:right-2.5 mx-2 md:mx-0 md:w-72 h-[30rem] md:h-[27.5rem] bg-base-800 rounded-md md:rounded-md  flex flex-col z-50 transition-transform duration-500 ease-in-out transform ${
         isOpen ? 'translate-x-0' : 'translate-x-full pointer-events-none opacity-0'
       }`}
     >
@@ -166,10 +166,9 @@ export const UserChatBtn = () => {
         className={`flex flex-col items-center justify-between py-2 fixed bottom-72 md:bottom-60 right-0 w-7 h-40 bg-base-700 rounded-l-[13px] shadow-lg transition-colors z-50 cursor-pointer ${isOpen && 'hidden'}`}
       >
         <Badge
-          className="h-5 min-w-5 rounded-full px-1 font-mono tabular-nums"
+          className="block h-2.5 w-0.5 rounded-full px-1 font-mono tabular-nums animate-pulse"
           variant="destructive"
         >
-          9
         </Badge>
 
         <div
