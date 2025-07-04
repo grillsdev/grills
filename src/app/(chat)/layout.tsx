@@ -5,6 +5,7 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 import { Toaster } from "sonner";
 import { authClient } from "@/lib/auth-client";
+import RequestAccessNotification from "./components/request-access-notification";
 
 export default function Layout({
   children,
@@ -20,6 +21,7 @@ export default function Layout({
     name: session?.user.name,
     email: session?.user.email,
     avatar: session?.user.image ?? "", // Fallback to empty string if no image
+    id:  session?.user.id
   };
 
   return (
@@ -36,8 +38,9 @@ export default function Layout({
                 richColors
                 closeButton 
                 expand
-                theme="dark"
+                theme="light"
               />
+              <RequestAccessNotification/>
             </div>
           </div>
         </div>
