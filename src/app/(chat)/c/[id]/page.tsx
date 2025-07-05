@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { useCompletion } from "@ai-sdk/react";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
@@ -10,22 +10,17 @@ import { UserInput } from "../../components/user-input";
 import { ChatMessage } from "../../components/message";
 import { getSelectedModel, getApiKey } from "@/lib/utils";
 
+import useSWRSubscription from 'swr/subscription'
+import { SSEChatCompletion } from "@/lib/types";
+import { type Message } from "@ai-sdk/react";
 
-// Type definitions
-interface ChatMessageType {
-  id: string;
-  role: 'user' | 'assistant';
-  content: string;
-  createdAt: Date;
-  type?: string;
-}
+
 
 export default function Chat() {
   const selectedM = getSelectedModel();
   const apiKey = getApiKey(selectedM?.llm || "");
-  const eventSourceRef = useRef<EventSource | null>(null);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [messages, setMessages] = useState<ChatMessageType[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [isEventStreaming, setIsEventStreaming] = useState(false)
   const { id: chatId } = useParams<{ id: string }>();
   
   const { 
@@ -33,7 +28,8 @@ export default function Chat() {
     handleInputChange, 
     handleSubmit, 
     isLoading, 
-    complete 
+    complete ,
+    setInput
   } = useCompletion({
     streamProtocol: "data",
     api: `/api/completion`,
@@ -76,65 +72,111 @@ export default function Chat() {
   }, [isLoading, complete]);
 
   // Handle SSE connection
-  const setupEventSource = useCallback(() => {
-    if (!chatId) return null;
+  // const setupEventSource = useCallback(() => {
+  //   if (!chatId) return null;
 
-    const eventSource = new EventSource(`/api/completion?chatId=${chatId}`);
+  //   const eventSource = new EventSource(`/api/completion?chatId=${chatId}`);
     
-    eventSource.onmessage = ({data}) => {
-      try {
-        // const message = JSON.parse(event.data) as ChatMessageType;
-        // setMessages(prev => [...prev, message]);
-        console.log(data)
-      } catch (error) {
-        console.error('Error parsing message:', error);
-      }
-    };
+  //   eventSource.onmessage = ({data}) => {
+  //     try {
+  //       // const message = JSON.parse(event.data) as ChatMessageType;
+  //       // setMessages(prev => [...prev, message]);
+  //       console.log(data)
+  //     } catch (error) {
+  //       console.error('Error parsing message:', error);
+  //     }
+  //   };
 
-    eventSource.onerror = (event: Event) => {
-      console.log("SSE connection error", event);
-      window.location.reload()
+  //   eventSource.onerror = (event: Event) => {
+  //     console.log("SSE connection error", event);
+  //     window.location.reload()
       
-      // if (eventSource.readyState === EventSource.CLOSED) {
-      //   console.log("Connection closed, attempting to reconnect...");
-      //   setTimeout(() => {
-      //     if (chatId) {
-      //       const newEventSource = setupEventSource();
-      //       if (newEventSource && eventSourceRef.current) {
-      //         eventSourceRef.current = newEventSource;
-      //       }
-      //     }
-      //   }, 2000);
-      // }
-    };
+  //     // if (eventSource.readyState === EventSource.CLOSED) {
+  //     //   console.log("Connection closed, attempting to reconnect...");
+  //     //   setTimeout(() => {
+  //     //     if (chatId) {
+  //     //       const newEventSource = setupEventSource();
+  //     //       if (newEventSource && eventSourceRef.current) {
+  //     //         eventSourceRef.current = newEventSource;
+  //     //       }
+  //     //     }
+  //     //   }, 2000);
+  //     // }
+  //   };
 
-    return eventSource;
-  }, [chatId]);
+  //   return eventSource;
+  // }, [chatId]);
+  
 
   // Initialize SSE connection
-  useEffect(() => {
-    if (!chatId) return;
+  // useEffect(() => {
+  //   if (!chatId) return;
     
-    // Close any existing connection
-    if (eventSourceRef.current) {
-      eventSourceRef.current.close();
-      eventSourceRef.current = null;
-    }
+  //   // Close any existing connection
+  //   if (eventSourceRef.current) {
+  //     eventSourceRef.current.close();
+  //     eventSourceRef.current = null;
+  //   }
     
-    // Create new connection
-    const newEventSource = setupEventSource();
-    if (newEventSource) {
-      eventSourceRef.current = newEventSource;
-    }
+  //   // Create new connection
+  //   const newEventSource = setupEventSource();
+  //   if (newEventSource) {
+  //     eventSourceRef.current = newEventSource;
+  //   }
     
-    // Cleanup function
-    return () => {
-      if (eventSourceRef.current) {
-        eventSourceRef.current.close();
-        eventSourceRef.current = null;
+  //   // Cleanup function
+  //   return () => {
+  //     if (eventSourceRef.current) {
+  //       eventSourceRef.current.close();
+  //       eventSourceRef.current = null;
+  //     }
+  //   };
+  // }, [chatId, setupEventSource]);
+   const {data} = useSWRSubscription(`/api/completion?chatId=${chatId}`, (key: string, {next}: {next: (error: Error | null, data?: SSEChatCompletion) => void}) => {
+    const es = new EventSource(key)
+    es.addEventListener('message', ({data}) => {
+      const newData: SSEChatCompletion = JSON.parse(data)
+      if(newData.role==="user"){
+        setIsEventStreaming(true)
+        setInput("")
+        setMessages(prevMsg => [...prevMsg, {id:newData.id, role: newData.role, content:newData.content, createdAt:newData.createdAt}])
       }
-    };
-  }, [chatId, setupEventSource]);
+      if(newData.role==="assistant"){
+      setMessages(prevMsg => {
+          const existingMsgIndex = prevMsg.findIndex(message => message.id === newData.id)
+          console.log(existingMsgIndex)
+          if(existingMsgIndex !== -1) {
+            // Update existing message
+            const updatedMessages = [...prevMsg]
+            updatedMessages[existingMsgIndex] = {
+              id: newData.id,
+              role: newData.role,
+              content: newData.content,
+              createdAt: newData.createdAt
+            }
+            return updatedMessages
+          } else {
+            // Add new message
+            return [...prevMsg, {
+              id: newData.id,
+              role: newData.role,
+              content: newData.content,
+              createdAt: newData.createdAt
+            }]
+          }
+        })
+
+      }
+      if(newData.role==="assistant" && newData.type==="chat_completed"){
+        setIsEventStreaming(false)
+      }
+      next(null, data)
+    })
+    es.addEventListener('error', () => next(new Error("Fetch Error")))
+    return () => es.close()
+  })
+
+  console.log(messages)
 
   return (
     <>
@@ -145,12 +187,16 @@ export default function Chat() {
             {messages.map((message) => (
               <ChatMessage key={message.id} id={message.id} message={message} />
             ))}
+            <div className="w-full flex flex-col py-3">
+              {isEventStreaming&&"Loading..."}
+            </div>
+            <div className="block pb-28"></div>
             <ScrollBar orientation="vertical" />
           </ScrollArea>
           <div className="py-2 px-3 absolute bottom-0 w-full flex flex-col items-center">
             <div className="w-full max-w-xl place-self-center">
               <UserInput
-                disable={isLoading}
+                disable={isLoading || isEventStreaming}
                 handleChatSubmit={handleSubmit}
                 handleChatInputChange={handleInputChange}
                 chatInput={input}

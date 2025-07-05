@@ -7,7 +7,6 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-import { AtSign } from "lucide-react";
 import CopyToClipboard from "./copy-to-clipboard";
 import type { MessageProps } from "@/lib/types";
 
@@ -17,7 +16,7 @@ const UserCollapsedInput = ({ content }: { content: string }) => {
 
   if (!shouldCollapse) {
     return (
-      <div className="p-3">
+      <div className="px-3 pb-4">
         <Markdown remarkPlugins={[remarkGfm]}>{content}</Markdown>
       </div>
     );
@@ -26,7 +25,7 @@ const UserCollapsedInput = ({ content }: { content: string }) => {
   return (
     <Accordion type="single" collapsible className="p-2">
       <AccordionItem value="item-1">
-        <AccordionTrigger className="hover:no-underline font-light">
+        <AccordionTrigger className="hover:no-underline font-light cursor-pointer">
           {content.substring(0, 110)}...
         </AccordionTrigger>
         <AccordionContent>
@@ -37,43 +36,47 @@ const UserCollapsedInput = ({ content }: { content: string }) => {
   );
 };
 
+ // <div className="block h-6 w-6 rounded-[13px] bg-gradient-to-b from-secondary to-accent-foreground" />
 
-
-export const ChatMessage = ({ id, message, isStreaming }: MessageProps) => {
+export const ChatMessage = ({ id, message }: MessageProps) => {
   return (
-    <div className={`px-2 sm:px-4 mb-4`} key={id}>
+    <div className="px-2 sm:px-4" key={id}>
       <div className="max-w-xs sm:max-w-md md:max-w-2xl mx-auto flex gap-2 sm:gap-4">
-        <div
-          className={`h-6 w-6 rounded-[13px] flex items-center justify-center shrink-0 ${
-            message.role === "assistant" &&
-            "bg-gradient-to-b from-secondary to-accent-foreground"
-          }`}
-        >
-          {message.role === "assistant" && <AtSign className="text-accent" />}
-        </div>
-        <div className="flex flex-col gap-4 flex-1 min-w-0">
-          {message.role === "assistant" ? (
-            <div className="leading-relaxed flex flex-col gap-4 group">
-                <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+        {/* User Message */}
+        {message.role === "user" && (
+          <div className="flex flex-row items-center gap-1 ">
+            <div className="-mt-5 h-5 w-5 rounded-[13px] bg-gradient-to-b from-secondary to-accent-foreground" />
+            <div className="flex flex-col gap-4 flex-1 min-w-0">
+              <div className="flex flex-col items-baseline group">
+                <div className="rounded-[27px] max-w-[85%] sm:max-w-[70%] text-sm text-gray-200 shadow-sm">
+                  <UserCollapsedInput content={message.content} />
+                </div>
+                <div className="w-[50rem] opacity-0 group-hover:opacity-100 transition-opacity duration-200  px-2.5 -mt-5 mb-1">
                   <CopyToClipboard text={message.content} />
                 </div>
-               {isStreaming && (
-                <div className="flex items-center gap-1 mt-2">
-                  <span className="block w-4 h-5 bg-transparent text-accent-foreground font-mono text-lg animate-pulse">||||</span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Assistant Message */}
+        {message.role === "assistant" && (
+          <>
+            <span className="px-0.5 font-semibold text-xl italic text-white -mt-1.5 ">
+              g
+            </span>
+            <div className="flex flex-col gap-4 flex-1 min-w-0">
+              <div className="leading-relaxed text-sm flex flex-col gap-4 group">
+                {message.content}
+                <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                  <div className="px-1.5 -mt-2">
+                    <CopyToClipboard text={message.content} />
+                  </div>
                 </div>
-              )}
-            </div>
-          ) : (
-            <div className="flex flex-col items-baseline-last group">
-              <div className="bg-[#2a2a2a] rounded-[27px] ml-auto max-w-[85%] sm:max-w-[70%] text-sm text-gray-200 shadow-sm">
-                <UserCollapsedInput content={message.content} />
-              </div>
-              <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                <CopyToClipboard text={message.content} />
               </div>
             </div>
-          )}
-        </div>
+          </>
+        )}
       </div>
     </div>
   );
