@@ -43,12 +43,23 @@ export interface MessageProps{
 //   threads: ThreadOverview[]
 // }
 
+/**
+ * {role: 'assistant', id: 'msg-37b2946a-a6f2-41bc-a413-58da672e5de4', content: 'Hello! How can I assist you', createdAt: '2025-07-05T00:13:00.768Z', type: 'chat_streaming'}
+ */
 
 export type ChatHistory = {
   chats: Message[]
 }
 
 export type Streaming = Message & {
+  type: "user_input" | "chat_streaming" | "chat_completed"
+}
+
+export interface SSEChatCompletion{
+  id:string
+  content:string
+  createdAt:Date
+  role: "user" | "assistant"
   type: "user_input" | "chat_streaming" | "chat_completed"
 }
 
