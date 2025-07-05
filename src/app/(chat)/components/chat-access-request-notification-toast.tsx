@@ -8,7 +8,7 @@ import { acceptAccessRequest } from '@/lib/fetchers'
 
 //adminId is logedIn users userId
 // it get reder on everyrequest so add the uniqkey refercen past and current if bioth are different then rerender other wice no rerender
-const RequestAccessNotification = () => {
+const AccessRequestNotification = () => {
   const {data} = useSWRSubscription<ProjectAccessRequest>(`/api/project`, (key: string, {next}: {next: (error: Error | null, data?: ProjectAccessRequest) => void}) => {
     const es = new EventSource(key)
     es.addEventListener('message', ({data}) => {
@@ -62,5 +62,5 @@ const RequestAccessNotification = () => {
   return null
 }
 
-export default RequestAccessNotification
+export default AccessRequestNotification
 
