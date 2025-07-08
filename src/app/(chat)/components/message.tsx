@@ -38,7 +38,7 @@ const UserCollapsedInput = ({ content }: { content: string }) => {
 
  // <div className="block h-6 w-6 rounded-[13px] bg-gradient-to-b from-secondary to-accent-foreground" />
 
-export const ChatMessage = ({ id, message }: MessageProps) => {
+export const ChatMessage = ({ id, message, isStreaming }: MessageProps) => {
   return (
     <div className="px-2 sm:px-4" key={id}>
       <div className="max-w-xs sm:max-w-md md:max-w-2xl mx-auto flex gap-2 sm:gap-4">
@@ -51,7 +51,7 @@ export const ChatMessage = ({ id, message }: MessageProps) => {
                 <div className="rounded-[27px] max-w-[85%] sm:max-w-[70%] text-sm text-gray-200 shadow-sm">
                   <UserCollapsedInput content={message.content} />
                 </div>
-                <div className="w-[50rem] opacity-0 group-hover:opacity-100 transition-opacity duration-200  px-2.5 -mt-5 mb-1">
+                <div className="w-[50rem] opacity-0 group-hover:opacity-100 transition-opacity duration-200  px-0.5 -mt-5 mb-1">
                   <CopyToClipboard text={message.content} />
                 </div>
               </div>
@@ -65,15 +65,16 @@ export const ChatMessage = ({ id, message }: MessageProps) => {
             <span className="px-0.5 font-semibold text-xl italic text-white -mt-1.5 ">
               g
             </span>
-            <div className="flex flex-col gap-4 flex-1 min-w-0">
+            <div className="flex flex-col gap-2 flex-1 min-w-0">
               <div className="leading-relaxed text-sm flex flex-col gap-4 group">
                 {message.content}
                 <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                  <div className="px-1.5 -mt-2">
+                  <div className="px-0.5 -mt-2">
                     <CopyToClipboard text={message.content} />
                   </div>
                 </div>
               </div>
+              {isStreaming&&"Loading..."}
             </div>
           </>
         )}

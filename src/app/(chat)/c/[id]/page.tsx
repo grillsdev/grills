@@ -14,7 +14,6 @@ import useSWRSubscription from "swr/subscription";
 import { SSEChatCompletion } from "@/lib/types";
 import { type Message } from "@ai-sdk/react";
 
-import SandpackUIRenderer from "../../components/sandpack-ui-renderer";
 import { useSidebar } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { Code } from "lucide-react";
@@ -24,6 +23,8 @@ import {
   ResizableHandle,
 } from "@/components/ui/resizable";
 import { useIsMobile } from "@/hooks/use-mobile";
+
+import Sandbox from "../../components/sandbox";
 
 export default function Chat() {
   const selectedM = getSelectedModel();
@@ -159,6 +160,7 @@ export default function Chat() {
           <ResizablePanel
             defaultSize={showSandpack ? 50 : 100}
             minSize={30}
+            id="chat-panel"
             className={`flex flex-col min-w-0 ${isMobile&&showSandpack&&"hidden"}`}
           >
             <div className="flex-1 min-h-0 flex flex-col">
@@ -208,12 +210,13 @@ export default function Chat() {
             <>
               <ResizableHandle withHandle className="" />
               <ResizablePanel
-                defaultSize={50}
-                minSize={20}
+              defaultSize={50} // A neutral default
+            minSize={showSandpack ? 30 : 0} // Set minSize to 0 when hidden, effectively collapsing it
+            id="sandpack-panel"
                 className="flex flex-col min-w-0 p-1.5 pb-1"
               >
                 <div className="h-full w-full overflow-hidden rounded-[16px] border shadow shadow-base-800">
-                  <SandpackUIRenderer changeWindowStateTo={setShowSandpack} />
+                  <Sandbox changeWindowStateTo={setShowSandpack} chatId={chatId}/>
                 </div>
               </ResizablePanel>
             </>
