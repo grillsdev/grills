@@ -1,41 +1,38 @@
-'use client';
-
-import { useState, useEffect, Suspense } from 'react';
+import { useState, Suspense } from 'react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { FileCode2, X, AppWindowMac, Loader2 } from 'lucide-react';
+import { FileCode2, X, AppWindowMac} from 'lucide-react';
 import CopyToClipboard from './copy-to-clipboard';
 import { Button } from '@/components/ui/button';
-import CodeViewer from './code-viewer';
-import CodeRenderer from './code-renderer';
+import { useStore } from '@nanostores/react'
+import { $sandbox } from '@/store/sandbox';
+
+
+import dynamic from "next/dynamic";
+
+const CodeRunner = dynamic(() => import("./code-renderer"), {
+  ssr: false,
+});
+const SyntaxHighlighter = dynamic(
+  () => import("./code-viewer"),
+  {
+    ssr: false,
+  },
+);
 
 const Sandbox = ({
   changeWindowStateTo,
-  chatId
 }: {
   changeWindowStateTo: (state: boolean) => void;
-  chatId: string; 
 }) => {
   const [activeTab, setActiveTab] = useState<'code' | 'render'>('code');
-  const [isPreviewReady, setIsPreviewReady] = useState(false);
   const [previewKey, setPreviewKey] = useState(1);
+  const sandbox = useStore($sandbox)
 
-  useEffect(() => {
-    if (activeTab === 'render') {
-      setIsPreviewReady(false);
-      const timer = setTimeout(() => {
-        setIsPreviewReady(true);
-      }, 500);
-      return () => clearTimeout(timer);
-    } else {
-      setIsPreviewReady(false);
-    }
-  }, [activeTab]);
 
   const handleTabChange = (value: 'code' | 'render') => {
     setActiveTab(value);
     if (value === 'render') {
       setPreviewKey(prev => prev + 1);
-      // setIsPreviewReady(false);
     }
   };
 
@@ -90,27 +87,18 @@ const Sandbox = ({
                   <div className="animate-pulse">Loading code viewer...</div>
                 </div>
               }>
-                <CodeViewer chatId={chatId}/>
+                <SyntaxHighlighter code={sandbox.code}/>
               </Suspense>
             </div>
           ) : (
             <div key={`preview-${previewKey}`} className="h-full">
-              {!isPreviewReady ? (
-                <div className="flex items-center justify-center h-full bg-base-300">
-                  <div className="flex flex-col items-center gap-2 text-center">
-                    <Loader2 className="h-7 w-7 animate-spin text-green-500 -mt-16" />
-                    <p className="text-black text-xs">Be ready</p>
-                  </div>
-                </div>
-              ) : (
-                <Suspense fallback={
+              <Suspense fallback={
                   <div className="flex items-center justify-center h-full">
                     <div className="animate-pulse">Loading renderer...</div>
                   </div>
                 }>
-                  <CodeRenderer />
+                  <CodeRunner code={sandbox.code}/>
                 </Suspense>
-              )}
             </div>
           )}
         </div>
