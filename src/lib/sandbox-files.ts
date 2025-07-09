@@ -201,34 +201,11 @@ function ThemeWrapper({ children }: {children:React.ReactNode}) {
   );
 }
 export default function App() {
-  const [count, setCount] = useState(0);
-  const [name, setName] = useState('');
-
-  // New function added here!
-  const handleButtonClick = (action) => {
-    if (action === 'increment') {
-      setCount(prevCount => prevCount + 1);
-    } else if (action === 'decrement') {
-      setCount(prevCount => prevCount - 1);
-    }
-  };
-
   return (
   <ThemeWrapper>
-  <div className="bg-black">
+  <>
    <Component.default/>
-  </div>
+  </>
   </ThemeWrapper>
   );
 }`;
-
-
-export const ComponentTsx = dedent`
-const Component = () => {
-return (
-<h1 className="text-primary bg-warning">Hello Aditya is here wassup</h1>
-)
-}
-
-export default Component
-`
