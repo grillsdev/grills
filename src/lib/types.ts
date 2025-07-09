@@ -28,8 +28,9 @@ export interface CurrentModel{
 
 export interface MessageProps{
   message:Message;
-  isStreaming?:boolean;
+  isStreaming:boolean;
   id:string
+  changeWindowStateTo:(state:boolean) => void
 }
 
 // export interface ThreadOverview{
@@ -106,4 +107,9 @@ export interface ProjectAccessRequest {
   requestedProjectTitle:string
   admin:string,
   type: "request_access" | "grant_access"
+}
+
+export interface SandboxStoreInterface{
+  id:string //perticular message id 
+  code:string
 }
