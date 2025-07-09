@@ -3,28 +3,13 @@ import {
   SandpackPreview,
   SandpackLayout,
 } from "@codesandbox/sandpack-react";
-import { AppTsx, ComponentTsx } from "@/lib/sandbox-files";
+import { AppTsx } from "@/lib/sandbox-files";
 
-
-const CodeRenderer = () => {
-//   const [mounted, setMounted] = useState(false);
-
-//   useEffect(() => {
-//     setMounted(true);
-//     return () => setMounted(false);
-//   }, []);
-
-//   if (!mounted) {
-//     return (
-//       <div className="flex items-center justify-center h-full">
-//         <div className="animate-pulse">Initializing preview...</div>
-//       </div>
-//     );
-//   }
+const CodeRenderer = ({code}:{code:string}) => {
 
   const files = {
     "/App.tsx": AppTsx,
-    '/Component.tsx': ComponentTsx,
+    '/Component.tsx': code,
     "/public/index.html": `<!DOCTYPE html>
       <html lang="en">
       <head>
