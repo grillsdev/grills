@@ -15,8 +15,7 @@ import { SSEChatCompletion } from "@/lib/types";
 import { type Message } from "@ai-sdk/react";
 
 import { useSidebar } from "@/components/ui/sidebar";
-import { Button } from "@/components/ui/button";
-import { Code } from "lucide-react";
+
 import {
   ResizablePanelGroup,
   ResizablePanel,
@@ -33,7 +32,7 @@ export default function Chat() {
   const [isEventStreaming, setIsEventStreaming] = useState(false);
   const { id: chatId } = useParams<{ id: string }>();
   const { setOpen: setSidebar } = useSidebar();
-  const [showSandpack, setShowSandpack] = useState(false);
+  const [sandboxWindow, setSandboxWindow] = useState(false);
   const isMobile = useIsMobile();
 
   const {
@@ -158,22 +157,12 @@ export default function Chat() {
       <div className="flex-1 min-h-0 flex flex-col">
         <ResizablePanelGroup direction="horizontal" className="w-full h-full">
           <ResizablePanel
-            defaultSize={showSandpack ? 50 : 100}
-            minSize={30}
+            minSize={40}
             id="chat-panel"
-            className={`flex flex-col min-w-0 ${isMobile&&showSandpack&&"hidden"}`}
+            className={`flex flex-col min-w-0 ${isMobile&&sandboxWindow&&"hidden"}`}
           >
             <div className="flex-1 min-h-0 flex flex-col">
               <div className="flex-1 overflow-hidden">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="gap-2"
-                  onClick={() => setShowSandpack(!showSandpack)}
-                >
-                  <Code size={16} />
-                  {showSandpack ? "Hide" : "Show"} Code Editor
-                </Button>
                 <ScrollArea className="h-full w-full">
                   <div className="p-4">
                     {messages.map((message) => (
@@ -185,6 +174,7 @@ export default function Chat() {
                           isLoading &&
                           messages[messages.length - 1]?.id === message.id
                         }
+                        changeWindowStateTo={setSandboxWindow}
                       />
                     ))}
                     <div className="h-4"></div>
@@ -206,17 +196,18 @@ export default function Chat() {
             </div>
           </ResizablePanel>
 
-          {showSandpack && (
+          {sandboxWindow && (
             <>
               <ResizableHandle withHandle className="" />
               <ResizablePanel
-              defaultSize={50} // A neutral default
-            minSize={showSandpack ? 30 : 0} // Set minSize to 0 when hidden, effectively collapsing it
+              defaultSize={60}
             id="sandpack-panel"
                 className="flex flex-col min-w-0 p-1.5 pb-1"
               >
                 <div className="h-full w-full overflow-hidden rounded-[16px] border shadow shadow-base-800">
-                  <Sandbox changeWindowStateTo={setShowSandpack} chatId={chatId}/>
+                  <Sandbox 
+                  changeWindowStateTo={setSandboxWindow} 
+                  />
                 </div>
               </ResizablePanel>
             </>
