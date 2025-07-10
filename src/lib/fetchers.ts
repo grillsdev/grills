@@ -1,6 +1,6 @@
 import axios from "axios"
 
-import { AvailableModels, ProjectAccessRequest, ProjectDetailRequest } from "./types";
+import { AvailableModels, ProjectAccessRequest, ProjectDetailRequest, UserProjectOverview } from "./types";
 
 
 export const getModels = async (url: string): Promise<AvailableModels[]> => {
@@ -14,6 +14,11 @@ export const createProject = async(url:string, { arg }: { arg: string }): Promis
     title:arg
   })
   return response.data
+}
+
+export const getUserProjects = async(url:string): Promise<UserProjectOverview[]> =>{
+  const response = await axios.get<{projects: UserProjectOverview[]}>(url)
+  return response.data.projects
 }
 
 // project -> parent container of the chat or u can say alternative name 

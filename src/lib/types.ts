@@ -34,20 +34,17 @@ export interface MessageProps{
   windowState:boolean
 }
 
-// export interface ThreadOverview{
-//   id:string;
-//   title:string;
-//   isPublic:boolean;
-//   updatedAt:Date
-// }
 
-// export type GetThreads = {
-//   threads: ThreadOverview[]
-// }
+export interface UserProjectOverview{
+  id:string
+  chatId:string
+  title:string
+  admin:string
+  type: "admin" | "joined" | "forked"
+  createdAt: Date
+  updatedAt: Date
+}
 
-/**
- * {role: 'assistant', id: 'msg-37b2946a-a6f2-41bc-a413-58da672e5de4', content: 'Hello! How can I assist you', createdAt: '2025-07-05T00:13:00.768Z', type: 'chat_streaming'}
- */
 
 export type ChatHistory = {
   chats: Message[]
@@ -91,14 +88,6 @@ export interface ProjectDetailRequest {
   updatedAt:Date;
 }
 
-/**
- *  const requestObj = {
-      userRequested:userId,
-      requestedPRoject: projectId,
-      admin:adminId,
-      type: "access_request"
-    }
- */
 
 export interface ProjectAccessRequest {
   id:string
