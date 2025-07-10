@@ -31,6 +31,7 @@ export interface MessageProps{
   isStreaming:boolean;
   id:string
   changeWindowStateTo:(state:boolean) => void
+  windowState:boolean
 }
 
 // export interface ThreadOverview{
@@ -112,4 +113,6 @@ export interface ProjectAccessRequest {
 export interface SandboxStoreInterface{
   id:string //perticular message id 
   code:string
+  isStreaming:boolean
+  type?: "btn"
 }
