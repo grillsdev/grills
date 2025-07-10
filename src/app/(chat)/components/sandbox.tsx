@@ -1,13 +1,12 @@
-import { useState, Suspense } from 'react';
+import { useState, Suspense, useEffect } from 'react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { FileCode2, X, AppWindowMac} from 'lucide-react';
+import { FileCode2, X, AppWindowMac, Loader2} from 'lucide-react';
 import CopyToClipboard from './copy-to-clipboard';
 import { Button } from '@/components/ui/button';
-import { useStore } from '@nanostores/react'
-import { $sandbox } from '@/store/sandbox';
-
 
 import dynamic from "next/dynamic";
+import { $sanboxObj } from '@/store/sandbox';
+import {useStore} from "@nanostores/react"
 
 const CodeRunner = dynamic(() => import("./code-renderer"), {
   ssr: false,
@@ -26,8 +25,37 @@ const Sandbox = ({
 }) => {
   const [activeTab, setActiveTab] = useState<'code' | 'render'>('code');
   const [previewKey, setPreviewKey] = useState(1);
-  const sandbox = useStore($sandbox)
+  const [currentCode, setCurrentCode] = useState("")
+  const [isCodeStreaming, setIsCodeStreaming] = useState(false)
+  const newSandboxObj = useStore($sanboxObj)
 
+  // neccessary for the rendering of the code and ui on btn cick
+  useEffect(()=>{
+    if (newSandboxObj?.type) {
+    setCurrentCode(newSandboxObj.code);
+  }
+  },[newSandboxObj])
+
+  // use  new sandbox state it can be done will be simpler
+  $sanboxObj.listen((sandbox, oldSandbox) => {
+    if (!sandbox) return;
+
+    if (sandbox['isStreaming'] && oldSandbox['isStreaming']) {
+      if (!isCodeStreaming) {
+        setIsCodeStreaming(true);
+        handleTabChange('code');
+      }
+      setCurrentCode(sandbox.code);
+      return;
+    }
+
+    if (!sandbox['isStreaming'] && oldSandbox['isStreaming']) {
+      setIsCodeStreaming(false);
+      handleTabChange('render');
+      return;
+    }
+
+  });
 
   const handleTabChange = (value: 'code' | 'render') => {
     setActiveTab(value);
@@ -35,6 +63,8 @@ const Sandbox = ({
       setPreviewKey(prev => prev + 1);
     }
   };
+
+  console.log("Current Code", currentCode)
 
 
   return (
@@ -58,10 +88,12 @@ const Sandbox = ({
               </TabsTrigger>
               <TabsTrigger
                 value="render"
+                disabled={isCodeStreaming}
                 className="flex items-center gap-1.5 rounded-[15.5px] text-xs data-[state=active]:border data-[state=active]:border-blue-200 data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700"
               >
                 <AppWindowMac size={16} />
                 Render
+                {isCodeStreaming&&(<Loader2 className='text-green-500 animate-spin'/>)}
               </TabsTrigger>
             </TabsList>
           </Tabs>
@@ -87,7 +119,7 @@ const Sandbox = ({
                   <div className="animate-pulse">Loading code viewer...</div>
                 </div>
               }>
-                <SyntaxHighlighter code={sandbox.code}/>
+                <SyntaxHighlighter code={currentCode}/>
               </Suspense>
             </div>
           ) : (
@@ -97,7 +129,7 @@ const Sandbox = ({
                     <div className="animate-pulse">Loading renderer...</div>
                   </div>
                 }>
-                  <CodeRunner code={sandbox.code}/>
+                  <CodeRunner code={currentCode}/>
                 </Suspense>
             </div>
           )}
