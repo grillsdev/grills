@@ -113,11 +113,13 @@ export default function Chat() {
           ]);
         }
         if (newData.role === "assistant") {
+          if(!sandboxWindow){
+          setSandboxWindow(true)
+        }
           setMessages((prevMsg) => {
             const existingMsgIndex = prevMsg.findIndex(
               (message) => message.id === newData.id
             );
-            console.log(existingMsgIndex);
             if (existingMsgIndex !== -1) {
               // Update existing message
               const updatedMessages = [...prevMsg];
@@ -152,6 +154,7 @@ export default function Chat() {
     }
   );
 
+
   return (
     <div className="h-[calc(100vh-76px)] flex flex-col">
       <div className="flex-1 min-h-0 flex flex-col">
@@ -175,6 +178,7 @@ export default function Chat() {
                           messages[messages.length - 1]?.id === message.id
                         }
                         changeWindowStateTo={setSandboxWindow}
+                        windowState={sandboxWindow}
                       />
                     ))}
                     <div className="h-4"></div>
