@@ -1,6 +1,6 @@
 "use client";
 import { authClient } from "@/lib/auth-client";
-import { CircleUserRound, LogOut } from "lucide-react"
+import { EllipsisVertical, LogOut } from "lucide-react"
 import { useRouter } from "next/navigation"
 
 import {
@@ -45,13 +45,11 @@ export function NavbarUser({
   return (
     <Menubar className="border-0 shadow-none p-0">
       <MenubarMenu>
-        <MenubarTrigger asChild className="rounded-full">
+        <MenubarTrigger asChild className="rounded-full cursor-pointer">
           <button
-            className="data-[state=open]:bg-transparent data-[state=open]:text-gray-100 flex items-center gap-2"
+            className="data-[state=open]:bg-background data-[state=open]:text-white flex items-center shadow-none"
           >
-            <span className="flex items-center rounded-full cursor-pointer text-base-300">
-              <CircleUserRound />
-            </span>
+              <EllipsisVertical className=""/>
           </button>
         </MenubarTrigger>
         <MenubarContent

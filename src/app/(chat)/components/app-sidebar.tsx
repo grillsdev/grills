@@ -10,119 +10,26 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { CirclePlus } from "lucide-react"
-
+import { CirclePlus} from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { ApiKeysDialogBtn } from "./api-keys-dialog"
 
+import { authClient } from "@/lib/auth-client";
+import { NavbarUser } from "./navbar-user"
 
-
-const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  navMain: [
-    {
-      title: "Dashboard",
-      url: "#",
-    },
-    {
-      title: "Lifecycle",
-      url: "#",
-    },
-    {
-      title: "Analytics",
-      url: "#",
-    },
-    {
-      title: "Projects",
-      url: "#",
-    },
-    {
-      title: "Team",
-      url: "#",
-    },
-  ],
-  navClouds: [
-    {
-      title: "Capture",
-      isActive: true,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Proposal",
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Prompts",
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-  ],
-  navSecondary: [
-    {
-      title: "Settings",
-      url: "#",
-    },
-    {
-      title: "Get Help",
-      url: "#",
-    },
-    {
-      title: "Search",
-      url: "#",
-    },
-  ],
-  documents: [
-    {
-      name: "Data Library",
-      url: "#",
-    },
-    {
-      name: "Reports",
-      url: "#",
-    },
-    {
-      name: "Word Assistant",
-      url: "#",
-    },
-  ],
-}
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  
+  const { data: session, isPending } = authClient.useSession();
+
+  if(isPending || !session) return null
+
+  const user = {
+    name: session?.user.name,
+    email: session?.user.email,
+    avatar: session?.user.image ?? "", // Fallback to empty string if no image
+    id:  session?.user.id
+  };
 
   return (
     <Sidebar collapsible="offcanvas" {...props}>
@@ -154,13 +61,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         {/* Change to Sidebar document */}
-        <NavDocuments items={data.documents} />
+        <NavDocuments/>
       </SidebarContent>
       <SidebarFooter>
 
-        <ApiKeysDialogBtn>
-        <Button variant="outline" className="w-full">API Keys</Button>
+        <div className="flex flex-row gap-3 items-center">
+         <div className="flex-1">
+           <ApiKeysDialogBtn>
+        <Button variant="outline" className="w-full flex-1">API Keys</Button>
         </ApiKeysDialogBtn>
+         </div>
+        <NavbarUser user={user}/>
+        </div>
       </SidebarFooter>
     </Sidebar>
   )

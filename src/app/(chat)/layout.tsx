@@ -17,18 +17,12 @@ export default function Layout({
 
   if(isPending || !session) return <p className="text-4xl tracking-tight py-[20rem] text-center">Loading....</p>
 
-  const user = {
-    name: session?.user.name,
-    email: session?.user.email,
-    avatar: session?.user.image ?? "", // Fallback to empty string if no image
-    id:  session?.user.id
-  };
-
+  
   return (
     <SidebarProvider>
       <AppSidebar variant="inset" />
       <SidebarInset>
-        <SideHeader user={user} />
+        <SideHeader/>
         <div className="flex flex-1 flex-col ">
           <div className="@container/main flex flex-1 flex-col gap-2">
             <div className="flex flex-col ">
