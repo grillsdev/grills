@@ -1,94 +1,65 @@
-// import { useEffect, useState, useCallback } from 'react';
-// import dedent from 'dedent';
-// import { highlightCode } from '@/lib/shiki';
+import { useEffect, useRef, useState } from "react";
+import { createHighlighter, type Highlighter } from "shiki/bundle/web";
 
-// const CodeViewer = ({ code: Hcode }: { code: string }) => {
-//   const [highlightedCode, setHighlightedCode] = useState('');
-//   const [isLoading, setIsLoading] = useState(true);
+const highlighterPromise = createHighlighter({
+  langs: [
+    "html",
+    "css",
+    "js",
+    "javascript",
+    "json",
+    "jsx",
+    "markdown",
+    "md",
+    "mdx",
+    "plaintext",
+    "py",
+    "sh",
+    "shell",
+    "sql",
+    "text",
+    "ts",
+    "tsx",
+    "txt",
+    "typescript",
+    "zsh",
+  ],
+  themes: ["vitesse-black"],
+});
 
-//   const highlight = useCallback(async (code: string) => {
-//     try {
-//       if (!code) return '';
-//       const highlighted = await highlightCode(dedent(code), 'typescript');
-//       return highlighted;
-//     } catch (error) {
-//       console.error('Error highlighting code:', error);
-//       return '';
-//     }
-//   }, []);
+/**
+ * 
+ * the client is creating multiple Highligter instance for eact code update wich is causing the freezing of the client
+ * so we have to implement the timeout with bach update ratheer then passing each new chunks coming in the stream
+ */
+export default function CodeViewer({ code }: { code: string }) {
+  const [html, setHtml] = useState("");
+  const [highlighter, setHighlighter] = useState<Highlighter | null>(null);
+  const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
-//   useEffect(() => {
-//     let isMounted = true;
-    
-//     const updateHighlight = async () => {
-//       setIsLoading(true);
-//       const result = await highlight(Hcode);
-//       if (isMounted) {
-//         setHighlightedCode(result);
-//         setIsLoading(false);
-//       }
-//     };
-
-//     updateHighlight();
-
-//     return () => {
-//       isMounted = false;
-//     };
-//   }, [Hcode, highlight]);
-
-//   if (isLoading || !highlightedCode) {
-//     return (
-//       <div className="flex items-center justify-center h-full">
-//         <div className="animate-pulse">Loading code...</div>
-//       </div>
-//     );
-//   }
-
-//   return (
-//     <div 
-//       className="text-[13px] overflow-x-auto overflow-y-visible bg-black p-4 pb-36 h-full"
-//       dangerouslySetInnerHTML={{ __html: highlightedCode }}
-//     />
-//   );
-// };
-
-// export default CodeViewer;
-
-import { useEffect, useState } from 'react';
-import dedent from 'dedent';
-import { highlightCode } from '@/lib/shiki';
-
-const CodeViewer = ({ code: hCode }: { code: string }) => {
-  const [highlightedCode, setHighlightedCode] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
-
+  // Load highlighter once
   useEffect(() => {
-    let isMounted = true;
-    
-    const highlight = async () => {
-      try {
-        setIsLoading(true);
-        const code = await highlightCode(dedent(hCode), 'typescript');
-        if (isMounted) {
-          setHighlightedCode(code);
-        }
-      } catch (error) {
-        console.error('Error highlighting code:', error);
-      } finally {
-        if (isMounted) {
-          setIsLoading(false);
-        }
-      }
-    };
+    highlighterPromise.then(setHighlighter);
+  }, []);
 
-    highlight();
-
+  // Debounce code highlighting
+  useEffect(() => {
+    if (!highlighter) return;
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      setHtml(
+        highlighter.codeToHtml(code, {
+          lang: "tsx",
+          theme: "vitesse-black",
+        })
+      );
+    }, 50); // in. millisecond
     return () => {
-      isMounted = false;
+      if (debounceRef.current) clearTimeout(debounceRef.current);
     };
-  }, [hCode]);
+  }, [code, highlighter]);
 
-  if (isLoading || !highlightedCode) {
+  if (!highlighter || !html) {
     return (
       <div className="flex items-center justify-center h-full">
         <div className="animate-pulse">Loading code...</div>
@@ -96,13 +67,7 @@ const CodeViewer = ({ code: hCode }: { code: string }) => {
     );
   }
 
-
   return (
-    <div 
-      className="text-[13px] overflow-x-auto overflow-y-visible bg-black p-4 pb-36 h-full"
-      dangerouslySetInnerHTML={{ __html: highlightedCode }}
-    />
+    <div className="text-[13px] p-4 bg-black h-full overflow-x-auto max-w-full pb-28" dangerouslySetInnerHTML={{ __html: html }} />
   );
-};
-
-export default CodeViewer
+}
