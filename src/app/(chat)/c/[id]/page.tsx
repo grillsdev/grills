@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useCompletion } from "@ai-sdk/react";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
@@ -24,6 +24,9 @@ import {
 import { useIsMobile } from "@/hooks/use-mobile";
 
 import Sandbox from "../../components/sandbox";
+import useSWRMutation from "swr/mutation";
+import { getChats } from "@/lib/fetchers";
+import { ChatSkeletonLoader } from "../../components/chat-loader-skeleton";
 
 export default function Chat() {
   const selectedM = getSelectedModel();
@@ -34,61 +37,69 @@ export default function Chat() {
   const { setOpen: setSidebar } = useSidebar();
   const [sandboxWindow, setSandboxWindow] = useState(false);
   const isMobile = useIsMobile();
+  const [isPending, startTransition] = useTransition();
+  const { trigger, isMutating: isChatLoadiong } = useSWRMutation(
+    `/api/completion/user/chat?chatId=${chatId}`,
+    getChats
+  );
 
-  const {
-    input,
-    handleInputChange,
-    handleSubmit,
-    isLoading,
-    complete,
-    setInput,
-  } = useCompletion({
-    streamProtocol: "data",
-    api: `/api/completion`,
-    body: {
-      messages: messages,
-      chatId: chatId,
-      model: selectedM?.model,
-      llm: selectedM?.llm,
-      apiKey: apiKey,
-    },
-    onError: (err: Error) => {
-      toast.error(JSON.parse(err.message), {
-        position: "bottom-right",
-      });
-    },
-    onFinish: () => {
-      const isMsgStored = localStorage.getItem("llm-query-state");
-      if (isMsgStored) {
-        localStorage.removeItem("llm-query-state");
-      }
-    },
-  });
-
-  // Handle stored messages
   useEffect(() => {
-    const isMsgStored = localStorage.getItem("llm-query-state");
-    if (isMsgStored && !isLoading) {
-      try {
-        const msg = JSON.parse(isMsgStored);
-        if (msg?.message) {
-          complete(msg.message).finally(() => {
-            localStorage.removeItem("llm-query-state");
-          });
-        }
-      } catch (error) {
-        console.error("Error processing stored message:", error);
-        localStorage.removeItem("llm-query-state");
-      }
+    async function getUserChats() {
+      const chats = await trigger();
+      setMessages(chats);
     }
-  }, [isLoading, complete]);
+    getUserChats();
+  }, [trigger]);
+
 
   useEffect(() => {
     setSidebar(false);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const {} = useSWRSubscription(
+  const { input, handleInputChange, handleSubmit, isLoading, setInput } =
+    useCompletion({
+      streamProtocol: "data",
+      api: `/api/completion`,
+      body: {
+        messages: messages,
+        chatId: chatId,
+        model: selectedM?.model,
+        llm: selectedM?.llm,
+        apiKey: apiKey,
+      },
+      onError: (err: Error) => {
+        toast.error(JSON.parse(err.message), {
+          position: "bottom-right",
+        });
+      },
+      onFinish: () => {
+        const isMsgStored = localStorage.getItem("llm-query-state");
+        if (isMsgStored) {
+          localStorage.removeItem("llm-query-state");
+        }
+      },
+    });
+
+  // Handle stored messages
+  // useEffect(() => {
+  //   const isMsgStored = localStorage.getItem("llm-query-state");
+  //   if (isMsgStored && !isLoading) {
+  //     try {
+  //       const msg = JSON.parse(isMsgStored);
+  //       if (msg?.message) {
+  //         complete(msg.message).finally(() => {
+  //           localStorage.removeItem("llm-query-state");
+  //         });
+  //       }
+  //     } catch (error) {
+  //       console.error("Error processing stored message:", error);
+  //       localStorage.removeItem("llm-query-state");
+  //     }
+  //   }
+  // }, [isLoading, complete]);
+
+  const {error} = useSWRSubscription(
     `/api/completion?chatId=${chatId}`,
     (
       key: string,
@@ -113,9 +124,12 @@ export default function Chat() {
           ]);
         }
         if (newData.role === "assistant") {
-          if(!sandboxWindow){
-          setSandboxWindow(true)
-        }
+          if (!sandboxWindow) {
+            startTransition(() => {
+              setSandboxWindow(true);
+              console.log(isPending)
+            });
+          }
           setMessages((prevMsg) => {
             const existingMsgIndex = prevMsg.findIndex(
               (message) => message.id === newData.id
@@ -124,10 +138,8 @@ export default function Chat() {
               // Update existing message
               const updatedMessages = [...prevMsg];
               updatedMessages[existingMsgIndex] = {
-                id: newData.id,
-                role: newData.role,
+                ...updatedMessages[existingMsgIndex], // Keep existing data
                 content: newData.content,
-                createdAt: newData.createdAt,
               };
               return updatedMessages;
             } else {
@@ -154,7 +166,9 @@ export default function Chat() {
     }
   );
 
-
+  if(error) return window.location.reload()
+    
+  if (isChatLoadiong) return <ChatSkeletonLoader />;
   return (
     <div className="h-[calc(100vh-76px)] flex flex-col">
       <div className="flex-1 min-h-0 flex flex-col">
@@ -162,13 +176,15 @@ export default function Chat() {
           <ResizablePanel
             minSize={40}
             id="chat-panel"
-            className={`flex flex-col min-w-0 ${isMobile&&sandboxWindow&&"hidden"}`}
+            className={`flex flex-col min-w-0 ${
+              isMobile && sandboxWindow && "hidden"
+            }`}
           >
             <div className="flex-1 min-h-0 flex flex-col">
               <div className="flex-1 overflow-hidden">
                 <ScrollArea className="h-full w-full">
                   <div className="p-4">
-                    {messages.map((message) => (
+                    {messages?.map((message) => (
                       <ChatMessage
                         key={message.id}
                         id={message.id}
@@ -204,14 +220,12 @@ export default function Chat() {
             <>
               <ResizableHandle withHandle className="" />
               <ResizablePanel
-              defaultSize={60}
-            id="sandpack-panel"
+                defaultSize={60}
+                id="sandpack-panel"
                 className="flex flex-col min-w-0 p-1.5 pb-1"
               >
                 <div className="h-full w-full overflow-hidden rounded-[16px] border shadow shadow-base-800">
-                  <Sandbox 
-                  changeWindowStateTo={setSandboxWindow} 
-                  />
+                  <Sandbox changeWindowStateTo={setSandboxWindow}/>
                 </div>
               </ResizablePanel>
             </>
