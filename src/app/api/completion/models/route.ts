@@ -21,10 +21,12 @@ export const GET = authMiddleware(async (request: Request, session) => {
 });
 
 
-// verification for each model  
-export async function POST(req:Response) {
-    const body = await req.json()
+// verification for each model 
+export const POST = authMiddleware(async (request:Request, session)=>{
+    const body = await request.json()
     const { prompt: apiKey, llm } = body as { llm: string; prompt: string }
+    console.log(session.id)
+
     try{
       let model;
       let baseUrl;
@@ -51,4 +53,4 @@ export async function POST(req:Response) {
       return Response.json({error: "Invalid api key"}, {status: 500})
     }
 
-}
+})
