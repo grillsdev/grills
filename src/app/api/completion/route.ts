@@ -1,21 +1,22 @@
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
-// import { streamText, generateText } from 'ai';
-import { streamText } from 'ai';
-
-import { createOpenAI } from '@ai-sdk/openai';
-// import { createGoogleGenerativeAI } from '@ai-sdk/google';
-// import { createOpenRouter } from '@ai-sdk/openrouter';
-import { v4 as uuidv4 } from 'uuid';
-import { Redis as UpstashR } from '@upstash/redis';
-// import { db } from '@/lib/db'; // Adjust path as needed
-// import { message } from '@/lib/schema'; // Adjust path as needed
-// import { eq } from 'drizzle-orm';
-
-import { type Message } from 'ai';
 import { NextRequest } from 'next/server';
+import { Redis as UpstashR } from '@upstash/redis';
+import Redis from "ioredis"
 
+import { streamText, type Message } from 'ai';
+import { createOpenAI } from '@ai-sdk/openai';
+import { v4 as uuidv4 } from 'uuid';
+import { auth } from '@/lib/auth';
+
+
+import { db } from '@/db';
+import { eq } from 'drizzle-orm';
+
+import { aiChat } from '@/db/schema/ai-chat';
+import { CompletionRequest } from '@/lib/types';
+import { promptShadcn as sysPrompt } from '@/lib/prompt-shadcn';
 
 // Initialize Redis
 export const redis = new UpstashR({
@@ -24,93 +25,31 @@ export const redis = new UpstashR({
   keepAlive:true
 });
 
-// Type definitions
-type LLMProvider = "openai" | "gemini" | "openrouter" | "groq";
-
-
-interface CompletionRequest {
-  prompt: string;
-  chatId: string;
-  messages: Message[];
-  llm: LLMProvider;
-  apiKey: string;
-  model: string;
-}
-
 
 export async function POST(request: Request) {
+  const session = await auth.api.getSession({
+        headers: request.headers,
+  });
+  if (!session) {
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
   try {
     // Parse request body
     const body: CompletionRequest = await request.json();
     const { prompt, chatId, messages, llm, apiKey, model } = body;
 
-
-  console.log("~~~~~~~~CHATID Completion~~~~~~~~~~~~~~~`", chatId)
-    
+    if(!chatId) return Response.json(
+      "Please navigate to Valid Chat Page" , 
+      { status: 500 }
+    );
     
     // Get user ID from authentication
     // const userId = await getUserId(request);
-    console.log(llm, apiKey, model);
-
-    // Validation
-    // if (!chatId || !userId) {
-    //   return NextResponse.json(
-    //     { error: "Chat Id or User Id required" }, 
-    //     { status: 407 }
-    //   );
-    // }
-    
-    // if (!apiKey) {
-    //   return NextResponse.json(
-    //     { message: "Invalid key" }, 
-    //     { status: 400 }
-    //   );
-    // }
-
-    // if (!prompt) {
-    //   return NextResponse.json(
-    //     { error: "Prompt is required" }, 
-    //     { status: 400 }
-    //   );
-    // }
-
-    // Initialize AI provider based on LLM type
-    // let operator: any;
-
-    // switch (llm) {
-    //   case "openai":
-    //     operator = createOpenAI({
-    //       apiKey: apiKey
-    //     });
-    //     break;
-    //   case "gemini":
-    //     operator = createGoogleGenerativeAI({
-    //       apiKey: apiKey
-    //     });
-    //     break;
-    //   case "openrouter":
-    //     operator = createOpenRouter({
-    //       apiKey: apiKey,
-    //     });
-    //     break;
-    //   case "groq":
-    //     operator = createOpenAI({
-    //       apiKey: apiKey,
-    //       baseURL: "https://api.groq.com/openai/v1",
-    //     });
-    //     break;
-    //   default:
-    //     return NextResponse.json(
-    //       { message: "Invalid llm" }, 
-    //       { status: 400 }
-    //     );
-    // }
-
-    // Generate IDs for tracking
-    
+     console.log(llm, apiKey, model);
 
     const operator = createOpenAI({
-      apiKey: apiKey
+      apiKey: "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",
+      baseURL: "https://api.groq.com/openai/v1"
     });
     const generatedUserInputId = `usr-${uuidv4()}`;
     const generatedMsgId = `msg-${uuidv4()}`;
@@ -140,13 +79,19 @@ export async function POST(request: Request) {
 
     // Publish user input to Redis
     await redis.publish(`chat:${chatId}`, JSON.stringify(userInputObj));
-    await redis.lpush(`chat:${chatId}:messages`, JSON.stringify(userInputObj));
+    await redis.lpush(`chat:${chatId}:messages`, JSON.stringify({
+      role: "user",
+      content: prompt,
+      id: generatedUserInputId,
+      createdAt: new Date(),
+      chatId: chatId
+    }));
 
     // Create AI stream
     const result = streamText({
-      model: operator.chat("gpt-4o-mini-2024-07-18"),
+      model: operator.chat("moonshotai/kimi-k2-instruct"),
       messages: newMssgArray,
-      system: `you are a ai assistant name Gass you are 10 days old and you will only answer what is asked by the user nothing more nothing less.`,
+      system: sysPrompt,
       onChunk: ({ chunk }) => {
         if (chunk.type === "text-delta") {
           wholeSentence += chunk.textDelta;
@@ -171,37 +116,6 @@ export async function POST(request: Request) {
           })
         );
 
-        // Save message reference to database
-        // const newMsg = {
-        //   id: chatId,
-        //   userId: userId,
-        //   createdAt: new Date(),
-        //   updatedAt: new Date(),
-        // };
-        
-        // await db
-        //   .insert(message)
-        //   .values(newMsg)
-        //   .onConflictDoUpdate({
-        //     target: message.id,
-        //     set: {
-        //       updatedAt: new Date(),
-        //     },
-        //   });
-
-        // Generate title for new conversations
-        // if (msgLen === 0) {
-        //   const { text: generatedTitle } = await generateText({
-        //     model: operator.chat(model),
-        //     prompt: `Generate a title under 56 characters for the following content. Prioritize Content1: ${text}. If the title derived from Content1 is not descriptive or meaningful, then use Context2: ${prompt} for title generation instead. Never use both. NOTE: never use quote the tile should simply be text witoout the quote:`,
-        //   });
-          
-        //   await db
-        //     .update(message)
-        //     .set({ title: generatedTitle })
-        //     .where(eq(message.id, chatId));
-        // }
-
         // Publish completion event
         await redis.publish(
           `chat:${chatId}`,
@@ -214,6 +128,9 @@ export async function POST(request: Request) {
             chatId: chatId,
           })
         );
+
+        // update the last update 
+        await db.update(aiChat).set({updatedAt: new Date()}).where(eq(aiChat.user, session.user.id))
       },
       onError: (err) => {
         console.log("Error", err);
@@ -229,8 +146,6 @@ export async function POST(request: Request) {
     );
   }
 }
-
-import Redis from "ioredis"
 
 //connect to the stream/perticular ai room in order to get liveupdate
 export async function GET(request: NextRequest) {
