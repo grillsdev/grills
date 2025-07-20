@@ -41,7 +41,6 @@ export default function CodeViewer({ code }: { code: string }) {
   useEffect(() => {
     highlighterPromise.then(setHighlighter);
   }, []);
-
   // Debounce code highlighting
   useEffect(() => {
     if (!highlighter) return;

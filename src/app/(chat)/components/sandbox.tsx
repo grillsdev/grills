@@ -1,4 +1,4 @@
-import { useState, Suspense, useEffect } from 'react';
+import { useState, Suspense, useEffect, useCallback} from 'react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { FileCode2, X, AppWindowMac, Loader2} from 'lucide-react';
 import CopyToClipboard from './copy-to-clipboard';
@@ -8,9 +8,11 @@ import dynamic from "next/dynamic";
 import { $sanboxObj } from '@/store/sandbox';
 import {useStore} from "@nanostores/react"
 
+
 const CodeRunner = dynamic(() => import("./code-renderer"), {
   ssr: false,
 });
+
 const SyntaxHighlighter = dynamic(
   () => import("./code-viewer"),
   {
@@ -25,46 +27,53 @@ const Sandbox = ({
 }) => {
   const [activeTab, setActiveTab] = useState<'code' | 'render'>('code');
   const [previewKey, setPreviewKey] = useState(1);
-  const [currentCode, setCurrentCode] = useState("")
+  const [currentCode, setCurrentCode] = useState<{code:string, pkg:string[]}>({code:"", pkg:[]})
   const [isCodeStreaming, setIsCodeStreaming] = useState(false)
   const newSandboxObj = useStore($sanboxObj)
 
+
   // neccessary for the rendering of the code and ui on btn cick
+  //this will force rerender if the current stored the same code
   useEffect(()=>{
     if (newSandboxObj?.type) {
-    setCurrentCode(newSandboxObj.code);
+    setCurrentCode({code: newSandboxObj.code, pkg:newSandboxObj.pkg || []});
   }
   },[newSandboxObj])
 
-  // use  new sandbox state it can be done will be simpler
-  $sanboxObj.listen((sandbox, oldSandbox) => {
-    if (!sandbox) return;
 
-    if (sandbox['isStreaming'] && oldSandbox['isStreaming']) {
-      if (!isCodeStreaming) {
-        setIsCodeStreaming(true);
-        handleTabChange('code');
-      }
-      setCurrentCode(sandbox.code);
-      return;
-    }
-
-    if (!sandbox['isStreaming'] && oldSandbox['isStreaming']) {
-      setIsCodeStreaming(false);
-      handleTabChange('render');
-      return;
-    }
-
-  });
-
-  const handleTabChange = (value: 'code' | 'render') => {
+ const handleTabChange = useCallback((value: 'code' | 'render') => {
     setActiveTab(value);
     if (value === 'render') {
       setPreviewKey(prev => prev + 1);
     }
-  };
+  }, []);
 
-  console.log("Current Code", currentCode)
+  // Handle sandbox object changes with proper cleanup
+  useEffect(() => {
+    const unsubscribe = $sanboxObj.listen((sandbox, oldSandbox) => {
+      if (!sandbox) return;
+
+      if (sandbox['isStreaming'] && oldSandbox['isStreaming']) {
+        setIsCodeStreaming(prev => {
+          if (!prev) {
+            handleTabChange('code');
+            return true;
+          }
+          return prev;
+        });
+        setCurrentCode({code: newSandboxObj.code, pkg:newSandboxObj.pkg || []});
+        return;
+      }
+
+      if (!sandbox['isStreaming'] && oldSandbox['isStreaming']) {
+        setIsCodeStreaming(false);
+        handleTabChange('render');
+        return;
+      }
+    });
+
+    return unsubscribe;
+  }, [handleTabChange, newSandboxObj.code, newSandboxObj.pkg]);
 
 
   return (
@@ -98,7 +107,7 @@ const Sandbox = ({
             </TabsList>
           </Tabs>
           <div className="flex items-center space-x-2">
-            <CopyToClipboard text={""} />
+            <CopyToClipboard text={currentCode.code} />
             <Button
               onClick={() => changeWindowStateTo(false)}
               variant="ghost"
@@ -111,15 +120,16 @@ const Sandbox = ({
         </div>
 
         {/* Content Area */}
+        
         <div className="flex-1 min-h-0 overflow-auto relative ">
           {activeTab === 'code' ? (
-            <div key="code-viewer" className="h-full overflow-hidden">
+            <div className="h-full overflow-x-auto">
               <Suspense fallback={
                 <div className="flex items-center justify-center h-full">
                   <div className="animate-pulse">Loading code viewer...</div>
                 </div>
               }>
-                <SyntaxHighlighter code={currentCode}/>
+                <SyntaxHighlighter code={currentCode.code}/>
               </Suspense>
             </div>
           ) : (
@@ -129,7 +139,7 @@ const Sandbox = ({
                     <div className="animate-pulse">Loading renderer...</div>
                   </div>
                 }>
-                  <CodeRunner code={currentCode}/>
+                  <CodeRunner code={currentCode.code} pkg={currentCode.pkg}/>
                 </Suspense>
             </div>
           )}
@@ -139,4 +149,3 @@ const Sandbox = ({
 };
 
 export default Sandbox
-

@@ -27,7 +27,7 @@ const StartProjectDialog = ({openWindow, windowState}: {openWindow: boolean; win
 
   useEffect(()=>{
     if(data){
-      redirect(`/c/${data.chatId}?q=new`)
+      redirect(`/c/${data.chatId}`)
     }
   },[data])
 
@@ -62,7 +62,7 @@ const StartProjectDialog = ({openWindow, windowState}: {openWindow: boolean; win
               placeholder="Enter project name"
               className="w-full mt-2"
               maxLength={250}
-              minLength={10}
+              minLength={5}
               required
             />
           </>

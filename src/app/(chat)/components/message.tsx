@@ -1,4 +1,4 @@
-import { memo, useEffect } from "react";
+import { memo, useEffect} from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import {
@@ -8,9 +8,8 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-import type { MessageProps } from "@/lib/types";
+import type { GeneratedCodeContent, MessageProps } from "@/lib/types";
 
-import { extractFirstCodeBlock } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 
@@ -41,7 +40,7 @@ const UserCollapsedInput = ({ content }: { content: string }) => {
   );
 };
 
-const UserMessage = ({ content }: { content: string }) => {
+const UserMessage = memo(({ content }: { content: string }) => {
   return (
     <div className="flex flex-row items-start gap-1 ">
       <div className="h-5 w-5 rounded-[13px] bg-gradient-to-b from-secondary to-accent-foreground" />
@@ -56,15 +55,19 @@ const UserMessage = ({ content }: { content: string }) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+})
+
 
 // eslint-disable-next-line react/display-name
 const MemoizedMarkdown = memo(({ children }: { children: string }) => (
   <Markdown remarkPlugins={[remarkGfm]}>{children}</Markdown>
 ));
 
-const AssistantMessage = ({
+import { parse } from 'best-effort-json-parser'
+
+
+const AssistantMessage = memo(({
   id,
   content,
   isStreaming,
@@ -77,24 +80,24 @@ const AssistantMessage = ({
   changeWindowState: (state: boolean) => void;
   windowState:boolean
 }) => {
-  const { isCodeLoading, pre_code, code, post_code } = extractFirstCodeBlock(
-    content,
-    isStreaming
-  );
+  const sb = $sanboxObj.get();
+  const parsedContent:GeneratedCodeContent = parse(content) 
+  console.log(parsedContent)
+  
 
   useEffect(() => {
-    const sb = $sanboxObj.get();
-
     if (isStreaming) {
       if (sb.id !== id) {
-        $sanboxObj.set({ id, code: code || "", isStreaming: true });
+        $sanboxObj.set({ id, code: parsedContent.code || "", isStreaming: true });
       } else {
-        $sanboxObj.setKey("code", code || "");
+        $sanboxObj.setKey("code", parsedContent.code || "");
+        $sanboxObj.setKey("pkg", parsedContent.pkgs)
       }
-    } else if (!isStreaming && sb.id === id) {
+    } else if (!isStreaming && sb.id === id && sb.isStreaming === true) {
       $sanboxObj.setKey("isStreaming", false);
     }
-  }, [id, code, isStreaming]);
+  }, [id, isStreaming, parsedContent.code, parsedContent.pkgs, sb.isStreaming, sb.id]);
+
 
   return (
     <>
@@ -103,27 +106,27 @@ const AssistantMessage = ({
       </span>
       <div className="">
         <div className="text-sm flex flex-col gap-3 group">
-          <MemoizedMarkdown>{pre_code}</MemoizedMarkdown>
-          {code && (
+          <MemoizedMarkdown>{parsedContent.pre_code}</MemoizedMarkdown>
+          {parsedContent.code && (
             <Button
               size="sm"
               variant={"outline"}
-              disabled={isCodeLoading}
+              disabled={isStreaming}
               onClick={() => {
                 if(!windowState){
                   changeWindowState(true);
                 }
-                $sanboxObj.set({ id, type:"btn",  code: code, isStreaming: false});
+                $sanboxObj.set({ id, type:"btn", pkg: parsedContent.pkgs,  code: parsedContent.code, isStreaming: false});
               }}
-              className="w-fit py-4 font-light ring ring-accent-foreground my-3 active:ring-rose-400"
+              className="w-fit py-4 font-light ring ring-accent-foreground my-3 data-[state=open]:ring-rose-400"
             >
-              {isCodeLoading && (
+              {isStreaming && sb.id===id&&(
                 <Loader2 className="text-green-500 animate-spin" />
               )}{" "}
               Component
             </Button>
           )}
-          <MemoizedMarkdown>{post_code}</MemoizedMarkdown>
+          <MemoizedMarkdown>{parsedContent.post_code}</MemoizedMarkdown>
 
           {/* <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
             <div className="px-0.5 ">
@@ -135,9 +138,9 @@ const AssistantMessage = ({
       </div>
     </>
   );
-};
+});
 
-export const ChatMessage = ({
+export const ChatMessage = memo(({
   id,
   message,
   isStreaming,
@@ -163,4 +166,9 @@ export const ChatMessage = ({
       </div>
     </div>
   );
-};
+});
+
+
+UserMessage.displayName = "UserMessage"
+AssistantMessage.displayName = "AssistantMessage"
+ChatMessage.displayName = "ChatMessage"

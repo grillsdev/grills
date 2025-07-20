@@ -94,7 +94,7 @@ const UserInput = ({
         className="relative flex flex-col items-center"
       >
         <Textarea
-          className={`w-full pt-3 pb-20 resize-none rounded-4xl border placeholder:text-base-400 max-h-72 no-scrollbar ${
+          className={`w-full pt-3 pb-20 resize-none rounded-4xl border placeholder:text-base-400 placeholder:text-xs max-h-72 no-scrollbar ${
             !isHomePage && "backdrop-blur-3xl"
           }  ${disable && "!cursor-not-allowed"}`}
           placeholder="What is meaning is meaning of life...."

@@ -26,7 +26,6 @@ export function NavDocuments() {
   const { isMobile } = useSidebar()
 
   const currentChatPage = usePathname().split("/")[2]
-  console.log(currentChatPage)
 
 
   if(isLoading)  return <div className="h-[25rem] flex items-center justify-center"><Loader2 width={"25"} className="text-base-400 animate-[spin_0.4s_linear_infinite]"/></div>

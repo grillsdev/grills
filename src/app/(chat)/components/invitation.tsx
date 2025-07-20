@@ -18,8 +18,8 @@ export const Invitation = () => {
   const pathname = usePathname();
   const paths = pathname.split("/")
   const isChatPage = paths[1] === "c" && paths[2];
-  const {data, isLoading, error} = useSWR(`/api/project/${paths[2]}`, amIAdmin, {
-    errorRetryCount:2
+  const {data, isLoading, error} = useSWR(pathname!=="/"?`/api/project/${paths[2]}`:null, amIAdmin, {
+    shouldRetryOnError:false
   })
 
   if (!isChatPage || isLoading || error) return null;
