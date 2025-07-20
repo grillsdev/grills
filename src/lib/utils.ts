@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
-import { CurrentModel } from "./types";
+import { CurrentModel, GeneratedCodeContent } from "./types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -56,51 +56,19 @@ export const LLMProviderIcons: Record<string, string> = {
   groq: "/groq.png",
 };
 
+export function completeJSONChunk(chunk: string): GeneratedCodeContent {
+  let fixed = chunk.trim();
 
+  // If ends in an unclosed string (e.g., an open quote without closing)
+  const quoteCount = (fixed.match(/"/g) || []).length;
+  if (quoteCount % 2 !== 0) {
+    fixed += '"'; // close last open quote
+  }
 
-export const extractFirstCodeBlock = (content: string, isStreaming: boolean) => {
-  // Find where code block starts and ends
-  const startTag = '<generated_code>';
-  const endTag = '</generated_code>';
-  
-  const startPos = content.indexOf(startTag);
-  const endPos = content.indexOf(endTag);
-  
-  // Set up our return values
-  let beforeCode = '';
-  let code: string | null = null;
-  let afterCode = '';
-  let isLoading = false;
-  
-  // If no start tag found, everything is "before code"
-  if (startPos === -1) {
-    beforeCode = content.trim();
-    return { pre_code: beforeCode, code, post_code: afterCode, isLoading };
+  // If missing closing curly brace
+  if (!fixed.trim().endsWith("}")) {
+    fixed += "}"; // close object
   }
-  
-  // Get text before the code block
-  beforeCode = content.slice(0, startPos).trim();
-  
-  // Check if we have a complete code block
-  if (endPos !== -1 && endPos > startPos) {
-    // Complete block - extract the code and text after
-    const codeStart = startPos + startTag.length;
-    code = content.slice(codeStart, endPos).trim();
-    afterCode = content.slice(endPos + endTag.length).trim();
-  } else if (isStreaming) {
-    // Still streaming - get partial code
-    const codeStart = startPos + startTag.length;
-    code = content.slice(codeStart).trim();
-    isLoading = true;
-  } else {
-    // Not streaming but incomplete - something went wrong
-    isLoading = true;
-  }
-  
-  return {
-    pre_code: beforeCode,
-    code,
-    post_code: afterCode,
-    isCodeLoading: isLoading
-  };
-};
+  console.log(fixed)
+  return JSON.parse(fixed);
+}

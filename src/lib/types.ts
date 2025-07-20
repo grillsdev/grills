@@ -103,5 +103,13 @@ export interface SandboxStoreInterface{
   id:string //perticular message id 
   code:string
   isStreaming:boolean
+  pkg?:string[]
   type?: "btn"
+}
+
+export interface GeneratedCodeContent{
+  pre_code:string
+  code:string
+  post_code:string
+  pkgs: string[]
 }

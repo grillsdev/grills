@@ -81,7 +81,7 @@ function ThemeWrapper({ children }: {children:React.ReactNode}) {
       --popover-foreground: var(--base-800);
       --primary: var(--primary-800);
       --primary-foreground: var(--color-white);
-      --secondary: var(--base-100);
+      --secondary: var(--base-900);
       --secondary-foreground: var(--base-800);
       --muted: var(--base-50);
       --muted-foreground: var(--base-600);
