@@ -1,11 +1,27 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  async headers() {
+    return [
+      {
+        source: '/c/:path*',
+        headers: [
+          {
+            key: 'Cross-Origin-Embedder-Policy',
+            value: 'require-corp'
+          },
+          {
+            key: 'Cross-Origin-Opener-Policy',
+            value: 'same-origin'
+          }
+        ]
+      }
+    ]
+  }
 };
 
-export default nextConfig;
-
-// added by create cloudflare to enable calling `getCloudflareContext()` in `next dev`
+// Keep your Cloudflare setup
 import { initOpenNextCloudflareForDev } from '@opennextjs/cloudflare';
 initOpenNextCloudflareForDev();
+
+export default nextConfig;
