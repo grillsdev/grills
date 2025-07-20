@@ -1,1 +1,0 @@
-ALTER TABLE "ai_chat" ALTER COLUMN "chat_id" SET DATA TYPE text;

@@ -1,40 +1,12 @@
 {
   "version": "7",
-  "dialect": "postgresql",
+  "dialect": "sqlite",
   "entries": [
     {
       "idx": 0,
       "version": "7",
-      "when": 1750696980188,
-      "tag": "0000_slim_zeigeist",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1750774602682,
-      "tag": "0001_ambitious_enchantress",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1751354113993,
-      "tag": "0002_workable_redwing",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1751359564570,
-      "tag": "0003_elite_ken_ellis",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1751638937004,
-      "tag": "0004_late_kulan_gath",
+      "when": 1752840385803,
+      "tag": "0000_perpetual_logan",
       "breakpoints": true
     }
   ]
