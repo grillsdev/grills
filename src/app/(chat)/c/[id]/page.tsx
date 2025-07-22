@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useState } from "react";
 import { useCompletion } from "@ai-sdk/react";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
@@ -37,7 +37,7 @@ export default function Chat() {
   const { setOpen: setSidebar } = useSidebar();
   const [sandboxWindow, setSandboxWindow] = useState(false);
   const isMobile = useIsMobile();
-  const [isPending, startTransition] = useTransition();
+  // const [isPending, startTransition] = useTransition();
   const { trigger, isMutating: isChatLoadiong } = useSWRMutation(
     `/api/completion/user/chat?chatId=${chatId}`,
     getChats
@@ -50,7 +50,6 @@ export default function Chat() {
     }
     getUserChats();
   }, [trigger]);
-
 
   useEffect(() => {
     setSidebar(false);
@@ -69,7 +68,7 @@ export default function Chat() {
         apiKey: apiKey,
       },
       onError: (err: Error) => {
-        toast.error(JSON.parse(err.message), {
+        toast.error(err.message, {
           position: "bottom-right",
         });
       },
@@ -99,7 +98,7 @@ export default function Chat() {
   //   }
   // }, [isLoading, complete]);
 
-  const {error} = useSWRSubscription(
+  const { error } = useSWRSubscription(
     `/api/completion?chatId=${chatId}`,
     (
       key: string,
@@ -124,12 +123,12 @@ export default function Chat() {
           ]);
         }
         if (newData.role === "assistant") {
-          if (!sandboxWindow) {
-            startTransition(() => {
-              setSandboxWindow(true);
-              console.log(isPending)
-            });
-          }
+          // if (!sandboxWindow) {
+          //   startTransition(() => {
+          //     setSandboxWindow(true);
+          //     console.log(isPending)
+          //   });
+          // }
           setMessages((prevMsg) => {
             const existingMsgIndex = prevMsg.findIndex(
               (message) => message.id === newData.id
@@ -166,8 +165,8 @@ export default function Chat() {
     }
   );
 
-  if(error) return window.location.reload()
-    
+  if (error) return window.location.reload();
+
   if (isChatLoadiong) return <ChatSkeletonLoader />;
   return (
     <div className="h-[calc(100vh-76px)] flex flex-col">
@@ -180,7 +179,7 @@ export default function Chat() {
               isMobile && sandboxWindow && "hidden"
             }`}
           >
-            <div className="flex-1 min-h-0 flex flex-col">
+            <div className="flex-1 min-h-0 flex flex-col relative">
               <div className="flex-1 overflow-hidden">
                 <ScrollArea className="h-full w-full">
                   <div className="p-4">
@@ -197,12 +196,13 @@ export default function Chat() {
                         windowState={sandboxWindow}
                       />
                     ))}
-                    <div className="h-4"></div>
+                    {/* <ThemeDialogSection/> */}
+                    <div className="h-32"></div>
                   </div>
                 </ScrollArea>
               </div>
 
-              <div className="py-2 px-3 bottom-0  flex flex-col items-center w-full">
+              {/* <div className="py-2 px-3 bottom-0  flex flex-col items-center w-full">
                 <div className="w-full max-w-xl">
                   <UserInput
                     disable={isLoading || isEventStreaming}
@@ -211,6 +211,16 @@ export default function Chat() {
                     chatInput={input}
                   />
                 </div>
+              </div> */}
+                <div className="py-2 px-3 absolute bottom-0 w-full flex justify-center">
+                <div className="w-full max-w-xl ">
+                  <UserInput
+                    disable={isLoading || isEventStreaming}
+                    handleChatSubmit={handleSubmit}
+                    handleChatInputChange={handleInputChange}
+                    chatInput={input}
+                  />
+                </div>{" "}
               </div>
               {/*  */}
             </div>
@@ -225,7 +235,7 @@ export default function Chat() {
                 className="flex flex-col min-w-0 p-1.5 pb-1"
               >
                 <div className="h-full w-full overflow-hidden rounded-[16px] border shadow shadow-base-800">
-                  <Sandbox changeWindowStateTo={setSandboxWindow}/>
+                  <Sandbox changeWindowStateTo={setSandboxWindow} />
                 </div>
               </ResizablePanel>
             </>
