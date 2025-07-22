@@ -2092,6 +2092,7 @@ TabsContent.displayName = TabsPrimitive.Content.displayName
 export { Tabs, TabsList, TabsTrigger, TabsContent }`;
 
 export const textarea = `import * as React from "react"
+import { cn } from "@/lib/utils"
 
 export interface TextareaProps
   extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {}
@@ -4341,24 +4342,5 @@ export const indexCSS = `
       body {
         @apply bg-background text-foreground;
       }
-    }
-
-
-    no-scrollbar::-webkit-scrollbar {
-          display: none;
-    }
-
-    .no-scrollbar {
-      -ms-overflow-style: none; /* IE and Edge */
-      scrollbar-width: none; /* Firefox */
-    }
-
-    .smooth-scroll [data-radix-scroll-area-viewport] {
-      scroll-behavior: smooth;
-    }
-
-    code[class*="language-"],
-    pre[class*="language-"] {
-      font-family: 'Inconsolata', monospace !important;
     }
     `
