@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
-import { CurrentModel, GeneratedCodeContent } from "./types";
+import { CurrentModel, SavedTheme } from "./types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -56,19 +56,10 @@ export const LLMProviderIcons: Record<string, string> = {
   groq: "/groq.png",
 };
 
-export function completeJSONChunk(chunk: string): GeneratedCodeContent {
-  let fixed = chunk.trim();
-
-  // If ends in an unclosed string (e.g., an open quote without closing)
-  const quoteCount = (fixed.match(/"/g) || []).length;
-  if (quoteCount % 2 !== 0) {
-    fixed += '"'; // close last open quote
-  }
-
-  // If missing closing curly brace
-  if (!fixed.trim().endsWith("}")) {
-    fixed += "}"; // close object
-  }
-  console.log(fixed)
-  return JSON.parse(fixed);
+export const getLocalSavedTheme = (): SavedTheme | null => {
+  const savedTheme = localStorage.getItem("selectedTheme");
+    if (savedTheme) {
+      return (JSON.parse(savedTheme) as SavedTheme);
+    }
+    return null
 }
