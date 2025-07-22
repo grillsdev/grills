@@ -1,6 +1,6 @@
 import axios from "axios"
 
-import { AvailableModels, ProjectAccessRequest, ProjectDetailRequest, UserProjectOverview } from "./types";
+import { AvailableModels, ProjectAccessRequest, ProjectDetailRequest, savedTheme, UserProjectOverview } from "./types";
 import type { Message } from "ai";
 
 
@@ -52,4 +52,9 @@ export const acceptAccessRequest = async(url:string, {arg}: {arg: ProjectAccessR
 export const getChats = async(url:string): Promise<Message[]> => {
   const response = await axios.get<{messages: Message[]}>(url)
   return response.data.messages
+}
+
+export const getSavedTheme = async(url:string): Promise<savedTheme[]> => {
+  const response = await axios.get(url)
+  return response.data
 }
