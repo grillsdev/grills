@@ -18,6 +18,7 @@ import { getSelectedModel, getApiKey } from "@/lib/utils";
 
 import { ModelSelect } from "./model-select-dialog";
 import { APIKeysDialog } from "./api-keys-dialog";
+import UserTheme from "./theme";
 
 
 const UserInput = ({
@@ -94,7 +95,7 @@ const UserInput = ({
         className="relative flex flex-col items-center"
       >
         <Textarea
-          className={`w-full pt-3 pb-20 resize-none rounded-4xl border placeholder:text-base-400 placeholder:text-xs max-h-72 no-scrollbar ${
+          className={`w-full pt-3 pb-20 resize-none rounded-4xl border placeholder:text-base-400 placeholder:text-xs placeholder:px-1 max-h-72 no-scrollbar ${
             !isHomePage && "backdrop-blur-3xl"
           }  ${disable && "!cursor-not-allowed"}`}
           placeholder="What is meaning is meaning of life...."
@@ -108,9 +109,10 @@ const UserInput = ({
           value={isHomePage ? homePageInput : chatInput}
           name="userInput"
         />
-        <div className="relative flex flex-row items-center justify-center w-full">
-          <div className="absolute left-3 bottom-3">
+        <div className="relative flex  w-full">
+          <div className="flex flex-row items-center absolute left-3 bottom-1.5">
             <ModelSelectBtn/>
+            <UserTheme/>
           </div>
           <button
             type="submit"
