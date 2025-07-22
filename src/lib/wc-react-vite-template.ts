@@ -162,8 +162,7 @@ dist
             "lucide-react": "^0.507.0",
             "react": "^19.0.0",
             "react-dom": "^19.0.0",
-            "tailwind-merge": "^3.2.0",
-            "tailwindcss": "^4.1.5"
+            "tailwind-merge": "^3.2.0"
         },
         "devDependencies": {
             "@types/node": "^22.15.3",
@@ -536,11 +535,6 @@ dist
           }`,
         },
       },
-      "index.css": {
-        file: {
-          contents: shadcnComponents.indexCSS,
-        },
-      },
       // You can add a vite-env.d.ts if you use Vite's env variables, for now, it's simple.
       "vite-env.d.ts": {
         file: {
@@ -561,3 +555,4 @@ dist
     },
   },
 };
+
