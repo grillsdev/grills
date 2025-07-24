@@ -20,14 +20,14 @@ const UserCollapsedInput = ({ content }: { content: string }) => {
 
   if (!shouldCollapse) {
     return (
-      <div className="px-3 pb-4">
+      <div className="px-2.5 text-sm font-medium">
         <Markdown remarkPlugins={[remarkGfm]}>{content}</Markdown>
       </div>
     );
   }
 
   return (
-    <Accordion type="single" collapsible className="p-2">
+    <Accordion type="single" collapsible className="px-2.5 max-w-96 -mt-5">
       <AccordionItem value="item-1">
         <AccordionTrigger className="hover:no-underline font-light cursor-pointer">
           {content.substring(0, 110)}...
@@ -42,18 +42,13 @@ const UserCollapsedInput = ({ content }: { content: string }) => {
 
 const UserMessage = memo(({ content }: { content: string }) => {
   return (
-    <div className="flex flex-row items-start gap-1 ">
-      <div className="h-5 w-5 rounded-[13px] bg-gradient-to-b from-secondary to-accent-foreground" />
+    <div className="flex flex-row">
+      <div className="block h-5 w-5 rounded-[13px] bg-gradient-to-b from-secondary to-accent-foreground" />
       <div className="flex flex-col gap-4 flex-1 min-w-0">
-        <div className="flex flex-col items-baseline group">
           <div className="w-full text-sm text-gray-200 shadow-sm">
             <UserCollapsedInput content={content} />
           </div>
-          {/* <div className="w-[50rem] opacity-0 group-hover:opacity-100 transition-opacity duration-200  px-3 -mt-3 mb-1">
-            <CopyToClipboard text={content} />
-          </div> */}
         </div>
-      </div>
     </div>
   )
 })
@@ -82,7 +77,6 @@ const AssistantMessage = memo(({
 }) => {
   const sb = $sanboxObj.get();
   const parsedContent:GeneratedCodeContent = parse(content) 
-  console.log(parsedContent)
   
 
   useEffect(() => {
@@ -94,18 +88,22 @@ const AssistantMessage = memo(({
         $sanboxObj.setKey("pkg", parsedContent.pkgs)
       }
     } else if (!isStreaming && sb.id === id && sb.isStreaming === true) {
+      console.log("removing the sb id and isStreaming")
       $sanboxObj.setKey("isStreaming", false);
+      $sanboxObj.setKey("id", '');
     }
   }, [id, isStreaming, parsedContent.code, parsedContent.pkgs, sb.isStreaming, sb.id]);
 
 
+
+
   return (
-    <>
+    <div className="flex flex-row gap-3 my-7">
       <span className="px-0.5 font-semibold text-xl italic text-white -mt-1.5 ">
         g
       </span>
       <div className="">
-        <div className="text-sm flex flex-col gap-3 group">
+        <div className="text-sm flex flex-col gap-1">
           <MemoizedMarkdown>{parsedContent.pre_code}</MemoizedMarkdown>
           {parsedContent.code && (
             <Button
@@ -120,7 +118,7 @@ const AssistantMessage = memo(({
               }}
               className="w-fit py-4 font-light ring ring-accent-foreground my-3 data-[state=open]:ring-rose-400"
             >
-              {isStreaming && sb.id===id&&(
+              {isStreaming && sb.id === id &&(
                 <Loader2 className="text-green-500 animate-spin" />
               )}{" "}
               Component
@@ -128,15 +126,10 @@ const AssistantMessage = memo(({
           )}
           <MemoizedMarkdown>{parsedContent.post_code}</MemoizedMarkdown>
 
-          {/* <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-            <div className="px-0.5 ">
-              <CopyToClipboard text={content} />
-            </div>
-          </div> */}
         </div>
         {isStreaming && "Loading..."}
       </div>
-    </>
+    </div>
   );
 });
 
@@ -149,7 +142,7 @@ export const ChatMessage = memo(({
 }: MessageProps) => {
   return (
     <div className="px-2 sm:px-4" key={id}>
-      <div className="max-w-xs sm:max-w-md md:max-w-2xl mx-auto flex gap-2 sm:gap-4">
+      <div className="max-w-xs sm:max-w-md md:max-w-2xl mx-auto">
         {/* User Message */}
         {message.role === "user" && <UserMessage content={message.content} />}
 

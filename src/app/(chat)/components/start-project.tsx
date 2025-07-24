@@ -16,9 +16,10 @@ import useSWRMutation from 'swr/mutation'
 
 import { createProject } from "@/lib/fetchers";
 
-const StartProjectDialog = ({openWindow, windowState}: {openWindow: boolean; windowState: (state: boolean) => void;}) => {
+export const StartProjectDialog = ({openWindow, windowState}: {openWindow: boolean; windowState: (state: boolean) => void;}) => {
   const [projectName, setProjectName] = useState("");
-  const {trigger, data, error, isMutating} = useSWRMutation('/api/project', createProject)
+  const [projectType, setProjectType] = useState<"individual" | "team">("team")
+  const {trigger, data, isMutating} = useSWRMutation('/api/project', createProject)
 
   const startCreatingProject = (e:FormEvent) => {
     e.preventDefault()
@@ -31,7 +32,6 @@ const StartProjectDialog = ({openWindow, windowState}: {openWindow: boolean; win
     }
   },[data])
 
-  console.log("ERROR", error)
 
   return (
     <Dialog open={openWindow} onOpenChange={windowState}>
@@ -60,24 +60,31 @@ const StartProjectDialog = ({openWindow, windowState}: {openWindow: boolean; win
               value={projectName}
               onChange={(e) => setProjectName(e.target.value)}
               placeholder="Enter project name"
-              className="w-full mt-2"
+              className="mt-2"
               maxLength={250}
               minLength={5}
               required
             />
           </>
 
+          <div className="flex flex-row items-center gap-3">
+            <Button variant={"outline"} type="button" className={`${projectType==="individual"&&"border-4"}`} onClick={()=>setProjectType("individual")}>Individual</Button>
+            <Button variant={"outline"} type="button" className={`${projectType==="team"&&"border-4"}`} onClick={()=>setProjectType("team")}>Team</Button>
+
+          </div>
+
           {/* Continue Button */}
-        <p className="text-xs underline italic text-blue-400 flex flex-row gap-1 items-center tracking-wide font-medium"> Permitted user have right to modify the chat at any time</p>
-          <div className="flex justify-end pt-2">
+          <div className="flex flex-col items-center gap-2">
             <Button
             type="submit"
             disabled={projectName.trim().length < 0 || isMutating}
-            className="px-6"
+            className="px-6 w-full"
             name="start_project_input"
             >
              {isMutating&&( <Loader2 className="animate-spin"/>)} Continue
             </Button>
+        <p className="text-[11px] underline italic text-blue-400 flex flex-row gap-1 items-center tracking-wide font-medium"> Permitted user have right to modify the chat at any time</p>
+
           </div>
         </form>
       </DialogContent>

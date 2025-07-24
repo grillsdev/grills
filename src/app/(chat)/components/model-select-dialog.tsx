@@ -61,7 +61,7 @@ export const ModelSelect = ({
         </DialogHeader>
         <div className="mt-6">
           <Tabs defaultValue={models[0]?.name} className="w-full">
-            <TabsList className="w-full mb-4 overflow-x-auto">
+            <TabsList className="w-full mb-2 overflow-x-auto">
               {models.map((llm) => (
                 <TabsTrigger
                   key={llm.id}
@@ -73,13 +73,14 @@ export const ModelSelect = ({
               ))}
             </TabsList>
 
-            <div className="h-[400px] block overflow-y-visible">
+            <div className="h-[400px]">
               {models.map((llm) => (
-                <TabsContent key={llm.id} value={llm.name}>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 space-y-3">
+                <TabsContent key={llm.id} value={llm.name} className="h-[21rem] overflow-auto">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 space-y-3 pb-2 overflow-y-visible">
                     {llm.models.map((model) => (
                       <div
                         key={`${model.id}`}
+                        role="button"
                         onClick={() => {
                           updateCurrentModel({
                             llm: llm.name,
@@ -88,7 +89,7 @@ export const ModelSelect = ({
                           });
                           handleOpenWindow(false);
                         }}
-                        className={`flex flex-col gap-2 sm:gap-4 items-center py-3 sm:py-5 cursor-pointer text-sm w-24 h-24 sm:w-30 sm:h-30 border rounded-4xl ${
+                        className={`flex flex-col gap-2 sm:gap-3 items-center py-3 sm:py-5 cursor-pointer text-sm w-24 h-24 sm:w-30 sm:h-30 border rounded-4xl  ${
                           currentModel?.model === model.name
                             ? "border-primary"
                             : ""
@@ -143,7 +144,7 @@ export const ModelSelectBtn = ({
             className="text-xs font-light"
           >
             {currentSelectedModel ? currentSelectedModel.modelTitle : "Select model"}
-            <ChevronDown />
+            <ChevronDown/>
           </Button>
         ) : (
           children

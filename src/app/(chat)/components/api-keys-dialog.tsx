@@ -93,17 +93,16 @@ export const APIKeysDialog = ({
       <DialogContent className="sm:max-w-md" tabIndex={-1}>
 
        
-        <DialogHeader className="space-y-3">
+        <DialogHeader className="">
           <DialogTitle className="text-xl font-normal">
             Enter Your API Keys
           </DialogTitle>
           <DialogDescription>
-            We never keep your API keys in our database. Instead, they are kept
-            locally on your browser.
+            API keys will be saved in your browser. <span className="text-xs text-primary">OpenAI, Gemini, Open Router, TogetherAI and Groq</span>
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-5 mt-3">
+        <div className="space-y-5 mt-3 max-h-[23.5rem] overflow-y-auto no-scrollbar">
           {llms.map((model) => (
             <ApiInput llmTitle={model.title} llmName={model.name} key={model.id} />
           ))}
