@@ -43,19 +43,6 @@ export default function Chat() {
     getChats
   );
 
-  useEffect(() => {
-    async function getUserChats() {
-      const chats = await trigger();
-      setMessages(chats);
-    }
-    getUserChats();
-  }, [trigger]);
-
-  useEffect(() => {
-    setSidebar(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const { input, handleInputChange, handleSubmit, isLoading, setInput } =
     useCompletion({
       streamProtocol: "data",
@@ -71,6 +58,7 @@ export default function Chat() {
         toast.error(err.message, {
           position: "bottom-right",
         });
+        setIsEventStreaming(false)
       },
       onFinish: () => {
         const isMsgStored = localStorage.getItem("llm-query-state");
@@ -79,24 +67,37 @@ export default function Chat() {
         }
       },
     });
+  
+    useEffect(() => {
+    setSidebar(false);
+    const isMsgStored = localStorage.getItem("llm-query-state");
+    if (isMsgStored) {
+    const msg = JSON.parse(isMsgStored) as {message:string}
+    console.log("Stored msg", msg.message)
+    setInput(msg.message)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  // Handle stored messages
-  // useEffect(() => {
-  //   const isMsgStored = localStorage.getItem("llm-query-state");
-  //   if (isMsgStored && !isLoading) {
-  //     try {
-  //       const msg = JSON.parse(isMsgStored);
-  //       if (msg?.message) {
-  //         complete(msg.message).finally(() => {
-  //           localStorage.removeItem("llm-query-state");
-  //         });
-  //       }
-  //     } catch (error) {
-  //       console.error("Error processing stored message:", error);
-  //       localStorage.removeItem("llm-query-state");
-  //     }
-  //   }
-  // }, [isLoading, complete]);
+  //If local storage input is being set as input then trigger the submittion
+  useEffect(() => {
+  const isMsgStored = localStorage.getItem("llm-query-state");
+  if (isMsgStored && input) {
+    // const syntheticEvent = {
+    //   preventDefault: () => {},
+    // };
+    handleSubmit();
+    localStorage.removeItem("llm-query-state"); // Clean up after submission
+  }
+}, [input, handleSubmit]);
+
+   useEffect(() => {
+    async function getUserChats() {
+      const chats = await trigger();
+      setMessages(chats);
+    }
+    getUserChats();
+  }, [trigger]);
 
   const { error } = useSWRSubscription(
     `/api/completion?chatId=${chatId}`,
@@ -201,18 +202,7 @@ export default function Chat() {
                   </div>
                 </ScrollArea>
               </div>
-
-              {/* <div className="py-2 px-3 bottom-0  flex flex-col items-center w-full">
-                <div className="w-full max-w-xl">
-                  <UserInput
-                    disable={isLoading || isEventStreaming}
-                    handleChatSubmit={handleSubmit}
-                    handleChatInputChange={handleInputChange}
-                    chatInput={input}
-                  />
-                </div>
-              </div> */}
-                <div className="py-2 px-3 absolute bottom-0 w-full flex justify-center">
+              <div className="py-2 px-3 absolute bottom-0 w-full flex justify-center">
                 <div className="w-full max-w-xl ">
                   <UserInput
                     disable={isLoading || isEventStreaming}

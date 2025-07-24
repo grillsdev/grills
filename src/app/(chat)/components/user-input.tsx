@@ -4,12 +4,11 @@ import {
   type ChangeEvent,
   type FormEvent,
 } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 import { Send } from "lucide-react";
 
 import { Textarea } from "@/components/ui/textarea";
-import { v4 as uuid } from "uuid";
 
 import { toast } from "sonner";
 
@@ -18,6 +17,7 @@ import { getSelectedModel, getApiKey } from "@/lib/utils";
 
 import { ModelSelect } from "./model-select-dialog";
 import { APIKeysDialog } from "./api-keys-dialog";
+import { StartProjectDialog } from "./start-project";
 import UserTheme from "./theme";
 
 
@@ -37,9 +37,9 @@ const UserInput = ({
   const [homePageInput, setHomePageInput] = useState<string>("");
   const [modelDShouldOpen, setModelDShouldOpen] = useState<boolean>(false)
   const [apiDShouldOpen, setApiDShouldOpen] = useState<boolean>(false)
+  const [startProjectDShouldOpen, setStartProjectDShouldOpen] = useState(false)
 
   const pathname = usePathname();
-  const router = useRouter();
 
   const isHomePage = pathname === "/";
 
@@ -68,10 +68,11 @@ const UserInput = ({
 
 
     if (isHomePage) {
-      const setId = (uuid as () => string)();
-     localStorage.setItem('llm-query-state', JSON.stringify({id:setId, message:homePageInput}));
-      router.push(`/c/${setId}?q=new`);
+      // save the current user query in local storage
+     localStorage.setItem('llm-query-state', JSON.stringify({message:homePageInput}));
+     setStartProjectDShouldOpen(true)
     }
+    //if not home page submit the chat 
     handleChatSubmit?.();
   };
 
@@ -124,6 +125,7 @@ const UserInput = ({
       </form>
       <ModelSelect openWindow={modelDShouldOpen} handleOpenWindow={()=>setModelDShouldOpen(false)}/>
       <APIKeysDialog openWindow={apiDShouldOpen} windowState={setApiDShouldOpen}/>
+      <StartProjectDialog openWindow={startProjectDShouldOpen} windowState={setStartProjectDShouldOpen}/>
     </>
   );
 };
