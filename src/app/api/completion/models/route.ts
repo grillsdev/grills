@@ -5,6 +5,9 @@ import { createOpenAI } from '@ai-sdk/openai';
 import { generateText } from 'ai';
 import { authMiddleware } from '@/lib/auth-middleware';
 
+import { LLMProvider } from '@/lib/types';
+import { LLMsOpenAICompatibleEndpoint } from '@/lib/utils';
+
 
 export const GET = authMiddleware(async (request: Request, session) => {
   console.log("Authenticated user in the model route:", session.userId);
@@ -21,27 +24,32 @@ export const GET = authMiddleware(async (request: Request, session) => {
 });
 
 
-// verification for each model 
-export const POST = authMiddleware(async (request:Request, session)=>{
+// verification for each LLM
+export const POST = authMiddleware(async (request:Request)=>{
     const body = await request.json()
-    const { prompt: apiKey, llm } = body as { llm: string; prompt: string }
-    console.log(session.id)
+    const { prompt: apiKey, llm } = body as { llm: LLMProvider; prompt: string }
 
     try{
       let model;
-      let baseUrl;
       switch(llm){
         case "gemini":
           model = "gemini-2.0-flash"
-          baseUrl = "https://generativelanguage.googleapis.com/v1beta/openai/"
+          break
+        case "openrouter":
+          model = "mistralai/ministral-3b";
+          break
+        case "togetherai":
+          model = "Qwen/Qwen3-235B-A22B-Instruct-2507-tput";
+          break
+        case "groq":
+          model = "qwen/qwen3-32b";
           break
         default:
           model = "gpt-3.5-turbo"
-          baseUrl = "https://api.openai.com/v1/"
       }
       const openai = createOpenAI({
       apiKey:apiKey,
-      baseURL: baseUrl
+      baseURL: LLMsOpenAICompatibleEndpoint[llm]
      })
     const {text} = await generateText({
       model: openai(model),

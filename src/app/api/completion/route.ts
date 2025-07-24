@@ -5,7 +5,7 @@ import { NextRequest } from 'next/server';
 import { Redis as UpstashR } from '@upstash/redis';
 import Redis from "ioredis"
 
-import { streamText, type Message } from 'ai';
+import { streamText, type Message, Output } from 'ai';
 import { createOpenAI } from '@ai-sdk/openai';
 import { v4 as uuidv4 } from 'uuid';
 import { auth } from '@/lib/auth';
@@ -19,12 +19,21 @@ import { CompletionRequest } from '@/lib/types';
 import { promptShadcn as sysPrompt } from '@/lib/prompt-shadcn';
 
 // Initialize Redis
-export const redis = new UpstashR({
+const redis = new UpstashR({
   url: process.env.UPSTASH_REDIS_REST_URL!,
   token: process.env.UPSTASH_REDIS_REST_TOKEN!,
   keepAlive:true
 });
 
+import { z } from "zod"
+import { LLMsOpenAICompatibleEndpoint } from '@/lib/utils';
+
+const codeGenerationSchema = z.object({
+  pre_code: z.string().describe("What is gonna be generated, some detail, proccess and key point"),
+  code: z.string().describe("Code geenration for UI component"),
+  post_code: z.string().describe("Detail about code generation"),
+  pkgs: z.array(z.string()).describe("npm pakages to be needed for this UI component")
+})
 
 export async function POST(request: Request) {
   const session = await auth.api.getSession({
@@ -43,14 +52,17 @@ export async function POST(request: Request) {
       { status: 500 }
     );
     
-    // Get user ID from authentication
-    // const userId = await getUserId(request);
-     console.log(llm, apiKey, model);
+    if(!llm || !apiKey || !model){
+      return Response.json("Please add the API Key of that particular model", {status: 500})
+    }
+
+    console.log(llm, model)
 
     const operator = createOpenAI({
-      apiKey: "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",
-      baseURL: "https://api.groq.com/openai/v1"
+      apiKey: apiKey,
+      baseURL: LLMsOpenAICompatibleEndpoint[llm]
     });
+
     const generatedUserInputId = `usr-${uuidv4()}`;
     const generatedMsgId = `msg-${uuidv4()}`;
     
@@ -89,9 +101,12 @@ export async function POST(request: Request) {
 
     // Create AI stream
     const result = streamText({
-      model: operator.chat("moonshotai/kimi-k2-instruct"),
+      model: operator.chat(model),
       messages: newMssgArray,
       system: sysPrompt,
+      experimental_output: Output.object({
+        schema: codeGenerationSchema
+      }),
       onChunk: ({ chunk }) => {
         if (chunk.type === "text-delta") {
           wholeSentence += chunk.textDelta;

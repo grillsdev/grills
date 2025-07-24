@@ -61,7 +61,7 @@ export interface SSEChatCompletion {
   type: "user_input" | "chat_streaming" | "chat_completed";
 }
 
-export type LLMProvider = "openai" | "gemini" | "openrouter" | "groq";
+export type LLMProvider = "openai" | "gemini" | "openrouter" | "togetherai" | "groq";
 
 export interface CompletionRequest {
   prompt: string;

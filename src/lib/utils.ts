@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
-import { CurrentModel, SavedTheme } from "./types";
+import { CurrentModel, SavedTheme, LLMProvider} from "./types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -53,8 +53,17 @@ export const LLMProviderIcons: Record<string, string> = {
   anthropic: "/anthropic-icon.svg",
   gemini: "/gemini-icon.svg",
   openrouter: "/openrouter.jpeg",
+  togetherai: "/togetherai.png",
   groq: "/groq.png",
 };
+
+export const LLMsOpenAICompatibleEndpoint: Record<LLMProvider, string> = {
+  openai: "https://api.openai.com/v1",
+  gemini: "https://generativelanguage.googleapis.com/v1beta/openai/",
+  openrouter: "https://openrouter.ai/api/v1",
+  togetherai: "https://api.together.xyz/v1",
+  groq: "https://api.groq.com/openai/v1",
+}
 
 export const getLocalSavedTheme = (): SavedTheme | null => {
   const savedTheme = localStorage.getItem("selectedTheme");
