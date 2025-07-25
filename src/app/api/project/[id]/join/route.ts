@@ -2,7 +2,7 @@
 // export const dynamic = 'force-dynamic'
 
 import { eq, and } from "drizzle-orm";
-import { db } from "@/db";
+import { getDb } from "@/db";
 import { aiChat } from "@/db/schema/ai-chat";
 import { auth } from "@/lib/auth";
 import { Redis as UpstashR } from "@upstash/redis";
@@ -11,7 +11,7 @@ import { ProjectAccessRequest } from "@/lib/types";
 import { v4 as uuid } from "uuid";
 import { redirect } from "next/navigation";
 
-export const redis = new UpstashR({
+const redis = new UpstashR({
   url: process.env.UPSTASH_REDIS_REST_URL!,
   token: process.env.UPSTASH_REDIS_REST_TOKEN!,
   keepAlive: true,
@@ -25,6 +25,7 @@ export async function GET(
   try {
     const { id: projectId } = await params;
 
+    const db = await getDb()
     const result = await db
       .select()
       .from(aiChat)
@@ -61,6 +62,7 @@ export async function POST(
   /**
    * if the requested user had already join the project redirect it to the chatpage
    */
+  const db = await getDb()
   const isAlreadeayJoined = await db
     .select()
     .from(aiChat)

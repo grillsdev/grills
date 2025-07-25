@@ -1,6 +1,6 @@
 import { authMiddleware } from "@/lib/auth-middleware";
 import { eq, and } from "drizzle-orm";
-import { db } from "@/db";
+import { getDb } from "@/db";
 import { aiChat } from "@/db/schema/ai-chat";
 
 
@@ -28,10 +28,9 @@ export const GET = authMiddleware(async (request: Request, session) => {
         { status: 400 }
       );
     }
-    
-    console.log('Project ID:', projectId);
-    console.log('User ID:', session.userId)
+  
 
+    const db = await getDb()
     const result = await db.select().from(aiChat).where(and(eq(aiChat.admin, userId), eq(aiChat.user, userId), eq(aiChat.chatId, projectId), eq(aiChat.type, "admin")))
     
     // return Response.json(result[0], {status: 200});

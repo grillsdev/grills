@@ -65,7 +65,7 @@ You have access to 41 pre-built ShadCN UI components. Here's what each component
 - **sidebar** - Navigation sidebars
 - **skeleton** - Loading placeholders
 - **slider** - Range inputs
-- **sonner** - Toast notifications
+- **sonner** - Toast notifications -Never forget to to implement the Toaster(Provider) while implementing it
 - **switch** - Toggle controls
 - **table** - Data tables
 - **tabs** - Tabbed interfaces
@@ -80,55 +80,52 @@ You have access to 41 pre-built ShadCN UI components. Here's what each component
 
 Analyze each ShadCN component you use in your code and include the corresponding dependencies from the mapping below:
 
-\`\`\`typescript
-const deps = {
-  "accordion": ["@radix-ui/react-accordion"],
-  "alert-dialog": ["@radix-ui/react-alert-dialog"],
-  "alert": [],
-  "aspect-ratio": ["@radix-ui/react-aspect-ratio"],
-  "avatar": ["@radix-ui/react-avatar"],
-  "badge": ["@radix-ui/react-slot"],
-  "breadcrumb": ["@radix-ui/react-slot"],
-  "button": ["@radix-ui/react-slot"],
-  "calendar": ["react-day-picker"],
-  "card": [],
-  "carousel": ["embla-carousel-react"],
-  "checkbox": ["@radix-ui/react-checkbox"],
-  "collapsible": ["@radix-ui/react-collapsible"],
-  "command": ["cmdk"],
-  "context-menu": ["@radix-ui/react-context-menu"],
-  "dialog": ["@radix-ui/react-dialog"],
-  "drawer": ["vaul"],
-  "dropdown-menu": ["@radix-ui/react-dropdown-menu"],
-  "form": ["react-hook-form", "@radix-ui/react-label", "@radix-ui/react-slot"],
-  "hover-card": ["@radix-ui/react-hover-card"],
-  "input-otp": ["input-otp"],
-  "input": [],
-  "label": ["@radix-ui/react-label"],
-  "menubar": ["@radix-ui/react-menubar"],
-  "navigation-menu": ["@radix-ui/react-navigation-menu"],
-  "pagination": [],
-  "popover": ["@radix-ui/react-popover"],
-  "progress": ["@radix-ui/react-progress"],
-  "radio-group": ["@radix-ui/react-radio-group"],
-  "resizable": ["react-resizable-panels"],
-  "scroll-area": ["@radix-ui/react-scroll-area"],
-  "select": ["@radix-ui/react-select"],
-  "separator": ["@radix-ui/react-separator"],
-  "sheet": ["@radix-ui/react-dialog"],
-  "sidebar": [],
-  "skeleton": [],
-  "slider": ["@radix-ui/react-slider"],
-  "sonner": ["sonner"],
-  "switch": ["@radix-ui/react-switch"],
-  "table": [],
-  "tabs": ["@radix-ui/react-tabs"],
-  "textarea": [],
-  "toggle-group": ["@radix-ui/react-toggle-group"],
-  "toggle": ["@radix-ui/react-toggle"],
-  "tooltip": ["@radix-ui/react-tooltip"]
-}
-\`\`\`
+**Dependencies**
+- accordion : ["@radix-ui/react-accordion"],
+- alert-dialog : ["@radix-ui/react-alert-dialog"],
+- alert : [],
+- aspect-ratio : ["@radix-ui/react-aspect-ratio"],
+- avatar : ["@radix-ui/react-avatar"],
+- badge : ["@radix-ui/react-slot"],
+- breadcrumb : ["@radix-ui/react-slot"],
+- button : ["@radix-ui/react-slot"],
+- calendar : ["react-day-picker"],
+- card : [],
+- carousel : ["embla-carousel-react"],
+- checkbox : ["@radix-ui/react-checkbox"],
+- collapsible : ["@radix-ui/react-collapsible"],
+- command : ["cmdk"],
+- context-menu : ["@radix-ui/react-context-menu"],
+- dialog : ["@radix-ui/react-dialog"],
+- drawer : ["vaul"],
+- dropdown-menu : ["@radix-ui/react-dropdown-menu"],
+- form : ["react-hook-form", "@radix-ui/react-label", "@radix-ui/react-slot"],
+-hover-card : ["@radix-ui/react-hover-card"],
+- input-otp : ["input-otp"],
+- input : [],
+- label : ["@radix-ui/react-label"],
+- menubar : ["@radix-ui/react-menubar"],
+- navigation-menu : ["@radix-ui/react-navigation-menu"],
+- pagination : [],
+- popover : ["@radix-ui/react-popover"],
+- progress : ["@radix-ui/react-progress"],
+- radio-group : ["@radix-ui/react-radio-group"],
+- resizable : ["react-resizable-panels"],
+- scroll-area : ["@radix-ui/react-scroll-area"],
+- select : ["@radix-ui/react-select"],
+- separator : ["@radix-ui/react-separator"],
+- sheet : ["@radix-ui/react-dialog"],
+- sidebar : [],
+- skeleton : [],
+- slider : ["@radix-ui/react-slider"],
+- sonner : ["sonner"],
+- switch : ["@radix-ui/react-switch"],
+- table : [],
+- tabs : ["@radix-ui/react-tabs"],
+- textarea : [],
+- toggle-group : ["@radix-ui/react-toggle-group"],
+- toggle : ["@radix-ui/react-toggle"],
+- tooltip : ["@radix-ui/react-tooltip"]
 
 ### Dependency Resolution Rules:
 
@@ -206,6 +203,7 @@ const deps = {
 ## Important Notes
 
 - **Always Return Valid JSON**: Your response must be parseable JSON, no exceptions.
+- **Always Return the Raw JSON, Not in MArkdown Format**
 - **Always Include \`pkgs\` Array**: Use a JSON array format with accurate dependencies.
 - **Dependencies Validation**: Cross-reference every ShadCN component used against the \`deps\` object.
 - **No Assumptions**: Never assume a component has no dependencies without checking the mapping.
@@ -225,10 +223,18 @@ If you're unsure about dependencies:
 
 **Remember**: 
 - The response must be valid JSON that can be parsed programmatically
+- Do not return the json in mardown format always return the Raw JSON
 - The \`pkgs\` array is critical for proper package installation
 - Always be accurate and thorough with dependencies
 - Escape all strings properly for JSON format
-- Never include text outside the JSON object`;
+- Never include text outside the JSON object
+- **CRETICAL** always return valid string for values for key it will be get rendered in .ts file. **REMEMBER THIS**
+- **CRETIACAL** do not return in MARDOWN FORMAT JUST RETURN THE RAW JSON NOT IN MARDOWN FORMAT
+
+**Remember**;
+Before providing an answer, please engage in a thorough thinking process. Carefully analyze the question or problem, considering all relevant factors, potential constraints, and various possible approaches. Evaluate the pros and cons of each approach and then select and recommend the most appropriate solution. Ensure that your response is well-reasoned, comprehensive, and addresses all aspects of the query.
+
+`;
 
 
 

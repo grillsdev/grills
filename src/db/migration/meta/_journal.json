@@ -15,6 +15,13 @@
       "when": 1753165762485,
       "tag": "0001_public_meggan",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1753410798138,
+      "tag": "0002_white_magus",
+      "breakpoints": true
     }
   ]
 }

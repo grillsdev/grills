@@ -45,20 +45,26 @@ const CodeRenderer = ({ code, pkg }: { code: string; pkg: string[] }) => {
 
   const startWebcontainer = async () => {
     setIsLoading(true);
-    const installArgs = ["install", ...pkg];
+    /**
+     * If pakages is available only then run the npm add
+     */
+    if(pkg.length>0){
+    const installArgs = ["add", ...pkg];
     const installDep = await wcInstance.current?.spawn("npm", installArgs);
+      console.log(installArgs, "~~~~DEPS")
 
-    // installDep?.output.pipeTo(new WritableStream({
-    // write(data) {
-    //   console.log(data);
-    // },
-    // }))
+    installDep?.output.pipeTo(new WritableStream({
+    write(data) {
+      console.log(data);
+    },
+    }))
     // Wait for installation to complete
     const installExitCode = await installDep?.exit;
 
     if (installExitCode !== 0) {
       setError(true);
       setIsLoading(false);
+    }
     }
 
     //add the component file
@@ -84,7 +90,7 @@ const CodeRenderer = ({ code, pkg }: { code: string; pkg: string[] }) => {
     // const readableString = decoder.decode(pkgFile);
     // console.log(readableString);
     // const compFile = await wcInstance.current?.fs.readFile(
-    //   "/src/index.css"
+    //   "/src/components/ui/separator.tsx"
     // );
     // const decoder2 = new TextDecoder("utf-8");
     // const readableString2 = decoder2.decode(compFile);

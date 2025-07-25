@@ -1,5 +1,5 @@
 
-import { db } from "@/db";
+import { getDb} from "@/db";
 import { auth } from "@/lib/auth";
 
 import { aiChat } from "@/db/schema/ai-chat";
@@ -37,6 +37,7 @@ export async function POST(request: Request) {
     };
 
     // Insert new chat into database
+    const db = await getDb()
     await db
       .insert(aiChat)
       .values(newAIChat)

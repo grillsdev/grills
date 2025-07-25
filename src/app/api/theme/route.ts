@@ -7,7 +7,7 @@ import { authMiddleware } from "@/lib/auth-middleware";
 
 import { themeVerificationPrompt } from "@/lib/prompt-shadcn";
 import { themeSchema } from "@/lib/types";
-import { db } from "@/db";
+import { getDb } from "@/db";
 import { userTheme } from "@/db/schema/theme";
 
 const operator = createOpenAI({
@@ -17,6 +17,7 @@ const operator = createOpenAI({
 export const POST = authMiddleware(async (request: Request, session) => {
   const context = await request.json();
   const userId = session.userId
+  const db = await getDb()
 
   const { object } = await generateObject({
     model: operator.chat("gpt-4o-mini-2024-07-18"),
@@ -33,6 +34,7 @@ export const POST = authMiddleware(async (request: Request, session) => {
 
 export const GET = authMiddleware(async (request: Request, session) => {
     const userId = session.userId
+    const db = await getDb()
     const savedThemes = await db.select({
       id:userTheme.id,
       name:userTheme.name,

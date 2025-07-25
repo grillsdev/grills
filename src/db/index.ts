@@ -1,39 +1,21 @@
-// import 'dotenv/config';
-// import { drizzle } from 'drizzle-orm/node-postgres';
-// import { Pool } from 'pg';
+import "dotenv/config";
+import { cache } from "react";
+import { getCloudflareContext } from "@opennextjs/cloudflare";
+import { drizzle } from "drizzle-orm/node-postgres";
+import { Pool } from "pg";
 
-// import * as modelSchema from './schema/model';
-// import * as aiChatSchema from './schema/ai-chat';
+import * as modelSchema from "./schema/model";
+import * as aiChatSchema from "./schema/ai-chat";
 
-// const pool = new Pool({
-//   connectionString: process.env.DATABASE_URL,
-//   ssl: process.env.NODE_ENV === 'production' 
-//     ? { rejectUnauthorized: false } 
-//     : false
-// });
+export const getDb = cache(async () => {
+  const { env } = await getCloudflareContext({ async: true });
+  const connectionString = env.HYPERDRIVE.connectionString;
 
-// export const db = drizzle(pool, {
-//   schema: { ...modelSchema, ...aiChatSchema }
-// });
+  const pool = new Pool({
+    connectionString,
+    // You don't want to reuse the same connection for multiple requests
+    maxUses: 1,
+  });
 
-import 'dotenv/config';
-import { drizzle } from 'drizzle-orm/node-postgres';
-import { Pool } from 'pg';
-
-import * as modelSchema from './schema/model';
-import * as aiChatSchema from './schema/ai-chat';
-
-const pool = new Pool({
-  user: "avnadmin",
-  password: "AVNS_hc6FE_AiGWzRFSB840X",
-  host: "grills-esting-adityapushkar850-862f.c.aivencloud.com",
-  port: 27138,
-  database: "defaultdb",
-  ssl: {
-    rejectUnauthorized: false, // This allows self-signed certificates
-  },
-});;
-
-export const db = drizzle(pool, {
-  schema: { ...modelSchema, ...aiChatSchema }
+  return drizzle({ client: pool, schema: { ...modelSchema, ...aiChatSchema } });
 });

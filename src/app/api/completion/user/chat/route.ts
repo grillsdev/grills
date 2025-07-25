@@ -1,6 +1,16 @@
-import { NextRequest } from "next/server";
-import { redis } from "../../route";
+/**
+ * Get the Chat history
+ */
 
+
+import { NextRequest } from "next/server";
+import { Redis as UpstashR } from '@upstash/redis';
+
+const redis = new UpstashR({
+  url: process.env.UPSTASH_REDIS_REST_URL!,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+  keepAlive:true
+});
 
 export async function GET(request:NextRequest){
   try{

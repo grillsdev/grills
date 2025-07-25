@@ -20,8 +20,8 @@ const nextConfig: NextConfig = {
   }
 };
 
-// Keep your Cloudflare setup
 import { initOpenNextCloudflareForDev } from '@opennextjs/cloudflare';
 initOpenNextCloudflareForDev();
+
 
 export default nextConfig;

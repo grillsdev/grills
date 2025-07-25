@@ -11,7 +11,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { auth } from '@/lib/auth';
 
 
-import { db } from '@/db';
+import { getDb } from '@/db';
 import { eq } from 'drizzle-orm';
 
 import { aiChat } from '@/db/schema/ai-chat';
@@ -56,13 +56,12 @@ export async function POST(request: Request) {
       return Response.json("Please add the API Key of that particular model", {status: 500})
     }
 
-    console.log(llm, model)
-
     const operator = createOpenAI({
       apiKey: apiKey,
       baseURL: LLMsOpenAICompatibleEndpoint[llm]
     });
 
+    const db = await getDb()
     const generatedUserInputId = `usr-${uuidv4()}`;
     const generatedMsgId = `msg-${uuidv4()}`;
     

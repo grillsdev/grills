@@ -14,9 +14,9 @@ export default function Layout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { data: session, isPending } = authClient.useSession();
+  const {isPending } = authClient.useSession();
 
-  if(isPending || !session) return <p className="text-4xl tracking-tight py-[20rem] text-center">Loading....</p>
+  if(isPending) return <p className="text-4xl tracking-tight py-[20rem] text-center">Loading....</p>
 
   return (
     <WcProvider>

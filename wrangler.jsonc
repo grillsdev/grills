@@ -17,7 +17,15 @@
 	},
 	"observability": {
 		"enabled": true
-	}
+	},
+	// Add this to your wrangler.jsonc
+	"hyperdrive": [
+		{
+		"binding": "HYPERDRIVE",
+		"id": "b47b2e6ac8264f95b52e1e3f07b29259",
+		"localConnectionString": "postgres://junglefowl:tM4-tL2_yW3_iR6=jQ7-@asia-south2-001.proxy.kinsta.app:30778/great-turquoise-cobra"
+		}
+	]
 	/**
 	 * Smart Placement
 	 * Docs: https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement

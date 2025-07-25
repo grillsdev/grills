@@ -1,6 +1,6 @@
 // for short polling weather i joined the chat/ptoject or not and return the data
 import { auth } from "@/lib/auth";
-import { db } from "@/db";
+import { getDb } from "@/db";
 import { eq, and } from "drizzle-orm";
 import { aiChat } from "@/db/schema/ai-chat";
 
@@ -18,6 +18,7 @@ export async function GET(
     }
     const { id: projectId } = await params;
 
+    const db = await getDb()
     const result = await db
       .select()
       .from(aiChat)

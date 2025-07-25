@@ -6,13 +6,6 @@ export default defineConfig({
   schema: './src/db/schema',
   dialect: 'postgresql',
   dbCredentials: {
-    host: "grills-esting-adityapushkar850-862f.c.aivencloud.com",
-    port: 27138,
-    user: "avnadmin",
-    password: "AVNS_hc6FE_AiGWzRFSB840X",
-    database: "defaultdb",
-    ssl: {
-      rejectUnauthorized: false, // This allows self-signed certificates
-    }
+    url: "postgres://junglefowl:tM4-tL2_yW3_iR6=jQ7-@asia-south2-001.proxy.kinsta.app:30778/great-turquoise-cobra"
   },
 });

@@ -1,0 +1,28 @@
+name = "grills"
+main = "src/worker.ts"
+compatibility_date = "2024-07-24"
+
+# For local development
+[dev]
+port = 8787
+ip = "127.0.0.1"
+
+# D1 Database configuration
+[[d1_databases]]
+binding = "DB"  # available in your Worker on env.DB
+database_name = "grills-db"
+database_id = ""  # You'll need to replace this with your actual D1 database ID
+
+# For local development with D1
+[[unsafe.bindings]]
+name = "DB"
+type = "d1"
+database_id = "local"
+
+# Environment variables
+[vars]
+NODE_ENV = "development"
+
+# Add any other environment variables here
+# [vars]
+# MY_VARIABLE = "my-value"

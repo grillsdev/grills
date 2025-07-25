@@ -1,0 +1,1 @@
+ALTER TABLE "model" ADD COLUMN "created_at" timestamp NOT NULL;

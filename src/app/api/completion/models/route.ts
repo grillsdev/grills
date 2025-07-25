@@ -1,4 +1,4 @@
-import { db } from '@/db/index';
+import { getDb } from '@/db/index';
 import { llm, model } from '@/db/schema/model';
 
 import { createOpenAI } from '@ai-sdk/openai';
@@ -9,8 +9,8 @@ import { LLMProvider } from '@/lib/types';
 import { LLMsOpenAICompatibleEndpoint } from '@/lib/utils';
 
 
-export const GET = authMiddleware(async (request: Request, session) => {
-  console.log("Authenticated user in the model route:", session.userId);
+export const GET = authMiddleware(async () => {
+  const db = await getDb()
   
   const llms = await db.select().from(llm);
   const models = await db.select().from(model);
@@ -28,7 +28,7 @@ export const GET = authMiddleware(async (request: Request, session) => {
 export const POST = authMiddleware(async (request:Request)=>{
     const body = await request.json()
     const { prompt: apiKey, llm } = body as { llm: LLMProvider; prompt: string }
-
+    console.log(llm)
     try{
       let model;
       switch(llm){
@@ -51,7 +51,7 @@ export const POST = authMiddleware(async (request:Request)=>{
       apiKey:apiKey,
       baseURL: LLMsOpenAICompatibleEndpoint[llm]
      })
-    const {text} = await generateText({
+     const {text} = await generateText({
       model: openai(model),
       prompt: "just return me with what is the 1+1 in words thats is nothing more or nothing less "
     })

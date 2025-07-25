@@ -7,7 +7,9 @@ declare namespace Cloudflare {
 		ASSETS: Fetcher;
 	}
 }
-interface CloudflareEnv extends Cloudflare.Env {}
+interface CloudflareEnv extends Cloudflare.Env {
+  HYPERDRIVE: any;
+}
 
 // Begin runtime types
 /*! *****************************************************************************

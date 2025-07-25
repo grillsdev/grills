@@ -3,7 +3,7 @@ import { CreateChatRequest } from "@/lib/types";
 import { v4 as uuid } from "uuid";
 
 import { aiChat } from "@/db/schema/ai-chat";
-import { db } from "@/db";
+import { getDb } from "@/db";
 import { auth } from "@/lib/auth";
 import Redis from "ioredis";
 
@@ -21,6 +21,7 @@ export const POST = authMiddleware(async (request: Request, session) => {
     }
 
     // Generate unique chat ID
+    const db = await getDb()
     const chatId = uuid() //act -> ai_chat
 
     // Prepare chat data for insertion

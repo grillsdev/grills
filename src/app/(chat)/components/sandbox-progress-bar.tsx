@@ -9,7 +9,7 @@ export function ProgressBar() {
   const [progress, setProgress] = useState(0)
   const startTimeRef = useRef<number | null>(null)
   const duration = 120 * 1000; // 120 seconds in milliseconds
-  const speedFactor = 6; // Increase this value to speed up the progress
+  const speedFactor = 8; // Increase this value to speed up the progress
 
   const animate = (currentTime: number) => {
     if (!startTimeRef.current) startTimeRef.current = currentTime;
