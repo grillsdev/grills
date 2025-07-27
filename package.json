@@ -54,6 +54,7 @@
 		"pg": "^8.16.3",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0",
+		"react-full-screen": "^1.1.1",
 		"react-markdown": "^10.1.0",
 		"react-resizable-panels": "^3.0.3",
 		"remark-gfm": "^4.0.1",

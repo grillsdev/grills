@@ -5,7 +5,7 @@ import { NextRequest } from 'next/server';
 import { Redis as UpstashR } from '@upstash/redis';
 import Redis from "ioredis"
 
-import { streamText, type Message, Output } from 'ai';
+import { streamText, Output } from 'ai';
 import { createOpenAI } from '@ai-sdk/openai';
 import { v4 as uuidv4 } from 'uuid';
 import { auth } from '@/lib/auth';
@@ -46,6 +46,8 @@ export async function POST(request: Request) {
     // Parse request body
     const body: CompletionRequest = await request.json();
     const { prompt, chatId, messages, llm, apiKey, model } = body;
+    const db = await getDb()
+    const generatedMsgId = `msg-${uuidv4()}`;
 
     if(!chatId) return Response.json(
       "Please navigate to Valid Chat Page" , 
@@ -56,52 +58,38 @@ export async function POST(request: Request) {
       return Response.json("Please add the API Key of that particular model", {status: 500})
     }
 
-    const operator = createOpenAI({
-      apiKey: apiKey,
-      baseURL: LLMsOpenAICompatibleEndpoint[llm]
-    });
+    const operator = createOpenAI({ apiKey: apiKey, baseURL: LLMsOpenAICompatibleEndpoint[llm]});
 
-    const db = await getDb()
-    const generatedUserInputId = `usr-${uuidv4()}`;
-    const generatedMsgId = `msg-${uuidv4()}`;
+    const lastMessage = messages[messages.length-1]
+    console.log(messages)
+    if(lastMessage.role !== "user") return Response.json("Invalid message array", {status: 500})
     
-    // Create user input object
-    const userInputObj = {
+    console.log("~~~~PROMPT~~~~~", prompt)
+    // Create a user input stream to all other user in oder stream to all other user
+    const userInputStreamObj = {
       role: "user",
-      content: prompt,
-      id: generatedUserInputId,
-      createdAt: new Date(),
+      content: lastMessage.content,
+      id: lastMessage.id,
+      createdAt: lastMessage.createdAt,
       type: "user_input",
       chatId: chatId
     } as const;
 
-    const msgLen = messages ? messages.length : 0;
-
-    // Build message array
-    // if 0 messaegs create a new msg iwht user prompt only otherwise append to old msg[] obj
-    let newMssgArray:Message[]
-    if (msgLen > 0) {
-      newMssgArray = [...messages, userInputObj];
-    } else {
-      newMssgArray = [userInputObj];
-    }
-
-    let wholeSentence = "";
-
-    // Publish user input to Redis
-    await redis.publish(`chat:${chatId}`, JSON.stringify(userInputObj));
+    // Stream the user input to all other joined users
+    await redis.publish(`chat:${chatId}`, JSON.stringify(userInputStreamObj));
+    // save the user input in the reddis
     await redis.lpush(`chat:${chatId}:messages`, JSON.stringify({
       role: "user",
-      content: prompt,
-      id: generatedUserInputId,
-      createdAt: new Date(),
+      content: lastMessage.content,
+      id: lastMessage.id,
+      createdAt: lastMessage.createdAt,
       chatId: chatId
     }));
 
-    // Create AI stream
+    let wholeSentence = "";
     const result = streamText({
       model: operator.chat(model),
-      messages: newMssgArray,
+      messages: messages,
       system: sysPrompt,
       experimental_output: Output.object({
         schema: codeGenerationSchema

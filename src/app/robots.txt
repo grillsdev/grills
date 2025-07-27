@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /lp
+Disallow: /feedback
+Disallow: /langtest
+
+Sitemap: https://www.crawlstop.com/sitemap.xml

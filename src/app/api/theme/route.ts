@@ -6,24 +6,26 @@ import { createOpenAI } from "@ai-sdk/openai";
 import { authMiddleware } from "@/lib/auth-middleware";
 
 import { themeVerificationPrompt } from "@/lib/prompt-shadcn";
-import { themeSchema } from "@/lib/types";
+import { CreateThemeContext, LLMProvider, themeSchema } from "@/lib/types";
 import { getDb } from "@/db";
 import { userTheme } from "@/db/schema/theme";
+import { LLMsOpenAICompatibleEndpoint } from "@/lib/utils";
 
-const operator = createOpenAI({
-  apiKey: "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"
-});
 
 export const POST = authMiddleware(async (request: Request, session) => {
-  const context = await request.json();
+  const context: CreateThemeContext = await request.json();
   const userId = session.userId
   const db = await getDb()
-
+console.log("~~~~Context~~~~~~", context)
+  const operator = createOpenAI({
+    apiKey: context.apiKey,
+    baseURL: LLMsOpenAICompatibleEndpoint[context.llm as LLMProvider]
+  });
   const { object } = await generateObject({
-    model: operator.chat("gpt-4o-mini-2024-07-18"),
+    model: operator.chat(context.model),
     schema: themeSchema,
     system: themeVerificationPrompt,
-    prompt: `Validate this: ${JSON.stringify(context)}`,
+    prompt: `Validate this: ${JSON.stringify(context.content)}`,
   });
   if(object.isValid){
     await db.insert(userTheme).values({name: object.name, color: object.color, data: object.data, createdAt: new Date(), user: userId})

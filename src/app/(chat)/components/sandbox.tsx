@@ -1,6 +1,8 @@
 import { useState, Suspense, useEffect, useCallback} from 'react';
+import { FullScreen, useFullScreenHandle } from "react-full-screen";
+
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { FileCode2, X, AppWindowMac, Loader2} from 'lucide-react';
+import { FileCode2, X, AppWindowMac, Loader2, Maximize} from 'lucide-react';
 import CopyToClipboard from './copy-to-clipboard';
 import { Button } from '@/components/ui/button';
 
@@ -30,6 +32,7 @@ const Sandbox = ({
   const [currentCode, setCurrentCode] = useState<{code:string, pkg:string[]}>({code:"", pkg:[]})
   const [isCodeStreaming, setIsCodeStreaming] = useState(false)
   const newSandboxObj = useStore($sanboxObj)
+  const handle = useFullScreenHandle();
 
 
   // neccessary for the rendering of the code and ui on btn cick
@@ -107,6 +110,16 @@ const Sandbox = ({
             </TabsList>
           </Tabs>
           <div className="flex items-center space-x-2">
+             {activeTab==="render"&&(
+              <Button
+             onClick={handle.enter}
+              variant="ghost"
+              size="icon"
+              className="text-xs text-base-100"
+            >
+              <Maximize size={16} />
+            </Button>
+             )}
             <CopyToClipboard text={currentCode.code} />
             <Button
               onClick={() => changeWindowStateTo(false)}
@@ -121,7 +134,7 @@ const Sandbox = ({
 
         {/* Content Area */}
         
-        <div className="flex-1 min-h-0 overflow-auto relative ">
+        <div className="flex-1 min-h-0 ">
           {activeTab === 'code' ? (
             <div className="h-full overflow-x-auto">
               <Suspense fallback={
@@ -139,7 +152,9 @@ const Sandbox = ({
                     <div className="animate-pulse">Loading renderer...</div>
                   </div>
                 }>
+                  <FullScreen handle={handle} className='h-full'>
                   <CodeRunner code={currentCode.code} pkg={currentCode.pkg}/>
+                  </FullScreen>
                 </Suspense>
             </div>
           )}

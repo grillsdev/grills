@@ -15,6 +15,7 @@ import { SSEChatCompletion } from "@/lib/types";
 import { type Message } from "@ai-sdk/react";
 
 import { useSidebar } from "@/components/ui/sidebar";
+import { v4 as uuid } from "uuid";
 
 import {
   ResizablePanelGroup,
@@ -37,7 +38,6 @@ export default function Chat() {
   const { setOpen: setSidebar } = useSidebar();
   const [sandboxWindow, setSandboxWindow] = useState(false);
   const isMobile = useIsMobile();
-  // const [isPending, startTransition] = useTransition();
   const { trigger, isMutating: isChatLoadiong } = useSWRMutation(
     `/api/completion/user/chat?chatId=${chatId}`,
     getChats
@@ -58,7 +58,7 @@ export default function Chat() {
         toast.error(err.message, {
           position: "bottom-right",
         });
-        setIsEventStreaming(false)
+        setIsEventStreaming(false);
       },
       onFinish: () => {
         const isMsgStored = localStorage.getItem("llm-query-state");
@@ -67,31 +67,36 @@ export default function Chat() {
         }
       },
     });
-  
-    useEffect(() => {
+
+  useEffect(() => {
     setSidebar(false);
     const isMsgStored = localStorage.getItem("llm-query-state");
     if (isMsgStored) {
-    const msg = JSON.parse(isMsgStored) as {message:string}
-    console.log("Stored msg", msg.message)
-    setInput(msg.message)
+      const msg = JSON.parse(isMsgStored) as { message: string };
+      console.log("Stored msg", msg.message);
+      if (msg.message === "") {
+        // if message content is empty and present exit the fucntion while removeing the item from local storage
+        localStorage.removeItem("llm-query-state");
+        return;
+      }
+      setInput(msg.message);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   //If local storage input is being set as input then trigger the submittion
   useEffect(() => {
-  const isMsgStored = localStorage.getItem("llm-query-state");
-  if (isMsgStored && input) {
-    // const syntheticEvent = {
-    //   preventDefault: () => {},
-    // };
-    handleSubmit();
-    localStorage.removeItem("llm-query-state"); // Clean up after submission
-  }
-}, [input, handleSubmit]);
+    const isMsgStored = localStorage.getItem("llm-query-state");
+    if (isMsgStored && input) {
+      // const syntheticEvent = {
+      //   preventDefault: () => {},
+      // };
+      handleSubmit();
+      localStorage.removeItem("llm-query-state"); // Clean up after submission
+    }
+  }, [input, handleSubmit]);
 
-   useEffect(() => {
+  useEffect(() => {
     async function getUserChats() {
       const chats = await trigger();
       setMessages(chats);
@@ -110,26 +115,10 @@ export default function Chat() {
       const es = new EventSource(key);
       es.addEventListener("message", ({ data }) => {
         const newData: SSEChatCompletion = JSON.parse(data);
-        if (newData.role === "user") {
-          setIsEventStreaming(true);
-          setInput("");
-          setMessages((prevMsg) => [
-            ...prevMsg,
-            {
-              id: newData.id,
-              role: newData.role,
-              content: newData.content,
-              createdAt: newData.createdAt,
-            },
-          ]);
-        }
-        if (newData.role === "assistant") {
-          // if (!sandboxWindow) {
-          //   startTransition(() => {
-          //     setSandboxWindow(true);
-          //     console.log(isPending)
-          //   });
-          // }
+        if (newData.role === "user" || newData.role === "assistant") {
+          if(!isEventStreaming){
+            setIsEventStreaming(true);
+          }
           setMessages((prevMsg) => {
             const existingMsgIndex = prevMsg.findIndex(
               (message) => message.id === newData.id
@@ -165,6 +154,20 @@ export default function Chat() {
       return () => es.close();
     }
   );
+
+  const handleSubmitAndAppendUserMesg = () => {
+    const userMsgId = `usr-${uuid()}`;
+    const newMessage = messages
+    messages.push({
+        id: userMsgId,
+        role: "user",
+        content: input,
+        createdAt: new Date(),
+    })
+    setMessages(newMessage);
+    handleSubmit()
+    setInput("")
+  };
 
   if (error) return window.location.reload();
 
@@ -205,8 +208,8 @@ export default function Chat() {
               <div className="py-2 px-3 absolute bottom-0 w-full flex justify-center">
                 <div className="w-full max-w-xl ">
                   <UserInput
-                    disable={isLoading || isEventStreaming}
-                    handleChatSubmit={handleSubmit}
+                    disable={isLoading}
+                    handleChatSubmit={handleSubmitAndAppendUserMesg}
                     handleChatInputChange={handleInputChange}
                     chatInput={input}
                   />

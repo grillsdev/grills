@@ -45,6 +45,7 @@ const UserInput = ({
 
   const handleSubmit = async (e?: FormEvent<HTMLFormElement>) => {
     e?.preventDefault();
+    console.log("runing handle user input")
 
     if(disable) return
 
@@ -108,10 +109,14 @@ const UserInput = ({
             handleKeyDown(e).catch(() => console.log("error while submitting"));
           }}
           value={isHomePage ? homePageInput : chatInput}
+          disabled={disable}
           name="userInput"
         />
         <div className="relative flex  w-full">
-          <div className="flex flex-row items-center absolute left-3 bottom-1.5">
+          <div 
+          onClick={(e) => e.stopPropagation()}
+          className="flex flex-row items-center absolute left-3 bottom-1.5"
+          >
             <ModelSelectBtn/>
             <UserTheme/>
           </div>

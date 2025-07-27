@@ -60,6 +60,7 @@ const MemoizedMarkdown = memo(({ children }: { children: string }) => (
 ));
 
 import { parse } from 'best-effort-json-parser'
+import FireIcon from "./fire-icon";
 
 
 const AssistantMessage = memo(({
@@ -127,7 +128,9 @@ const AssistantMessage = memo(({
           <MemoizedMarkdown>{parsedContent.post_code}</MemoizedMarkdown>
 
         </div>
-        {isStreaming && "Loading..."}
+        {isStreaming && (
+          <FireIcon height={35} width={35}/>
+        )}
       </div>
     </div>
   );

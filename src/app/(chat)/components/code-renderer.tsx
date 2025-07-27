@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import { FileSystemTree } from "@webcontainer/api";
 import { useWebcontainer } from "@/contexts/webcontainer-provider";
 
-import ProgressBar from "./sandbox-progress-bar";
 import { getLocalSavedTheme } from "@/lib/utils";
 import * as shadcnComponents from "@/lib/shadcn-components";
 
 import dedent from "dedent";
+import { Loader2 } from "lucide-react";
 
 const getIndexCss = () => {
   const isLocalTheme = getLocalSavedTheme();
@@ -48,24 +48,24 @@ const CodeRenderer = ({ code, pkg }: { code: string; pkg: string[] }) => {
     /**
      * If pakages is available only then run the npm add
      */
-    if(pkg.length>0){
-    const installArgs = ["add", ...pkg];
-    const installDep = await wcInstance.current?.spawn("npm", installArgs);
-      console.log(installArgs, "~~~~DEPS")
+    // if(pkg.length>0){
+    // const installArgs = ["add", ...pkg];
+    // const installDep = await wcInstance.current?.spawn("npm", installArgs);
+    //   console.log(installArgs, "~~~~DEPS")
 
-    installDep?.output.pipeTo(new WritableStream({
-    write(data) {
-      console.log(data);
-    },
-    }))
-    // Wait for installation to complete
-    const installExitCode = await installDep?.exit;
+    // installDep?.output.pipeTo(new WritableStream({
+    // write(data) {
+    //   console.log(data);
+    // },
+    // }))
+    // // Wait for installation to complete
+    // const installExitCode = await installDep?.exit;
 
-    if (installExitCode !== 0) {
-      setError(true);
-      setIsLoading(false);
-    }
-    }
+    // if (installExitCode !== 0) {
+    //   setError(true);
+    //   setIsLoading(false);
+    // }
+    // }
 
     //add the component file
     const componentTSX: FileSystemTree = {
@@ -101,27 +101,35 @@ const CodeRenderer = ({ code, pkg }: { code: string; pkg: string[] }) => {
   if (!wcURL || isLoading) {
     return (
       <div className="flex items-center justify-center h-[27.5rem] w-full text-green-500 animate-in">
-        <ProgressBar />
+        <div className="flex flex-col items-center justify-between gap-3">
+          <Loader2 width={29} className="animate-[spin_0.4s_linear_infinite]"/>
+        <span className="text-xs bottom-0 relative animate-pulse font-medium">Installing dependencies sometimes takes time.</span>
+        </div>
       </div>
     );
   }
 
   return (
-    <iframe
-      key={wcURL}
-      width="100%"
-      height="100%"
-      src={wcURL}
-      sandbox="allow-scripts allow-modals allow-same-origin allow-forms"
-      className="bg-accent"
-      onLoad={() => {
-        // Optional: Add logs here
-        console.log("Iframe loaded:", wcURL);
-      }}
-      onError={(e) => {
-        console.error("Iframe load error:", e);
-      }}
-    />
+    <div className="h-full">       
+  <iframe       
+    key={wcURL}       
+    width="100%"       
+    height="100%"       
+    src={wcURL}       
+    sandbox="allow-scripts allow-modals allow-same-origin allow-forms"       
+    className="bg-accent flex-1 min-h-0 border-0"
+    style={{ 
+      overflow: 'auto',
+      WebkitOverflowScrolling: 'touch' // Better scrolling on mobile
+    }}
+    onLoad={() => {         
+      console.log("Iframe loaded:", wcURL);       
+    }}       
+    onError={(e) => {         
+      console.error("Iframe load error:", e);       
+    }}     
+  />     
+</div>
   );
 };
 

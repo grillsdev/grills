@@ -124,6 +124,13 @@ export const themeSchema = z.object({
 });
 
 
+export interface CreateThemeContext {
+  llm:string
+  model:string
+  apiKey:string
+  content:string
+}
+
 export interface SavedTheme {
   id:string,
   name:string,
