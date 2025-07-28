@@ -1,3 +1,5 @@
+'use client'
+
 interface FireIconProps {
   width?: number
   height?: number
