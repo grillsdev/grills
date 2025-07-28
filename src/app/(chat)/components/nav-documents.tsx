@@ -1,29 +1,29 @@
 import useSWR from "swr"
 import Link from "next/link"
-import {EllipsisVertical, Forward, Loader2, Trash, Split} from "lucide-react"
+import { Loader2, Split} from "lucide-react"
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+// import {
+//   DropdownMenu,
+//   DropdownMenuContent,
+//   DropdownMenuItem,
+//   DropdownMenuSeparator,
+//   DropdownMenuTrigger,
+// } from "@/components/ui/dropdown-menu"
 import {
   SidebarGroup,
   SidebarGroupLabel,
   SidebarMenu,
-  SidebarMenuAction,
+  // SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
-  useSidebar,
+  // useSidebar,
 } from "@/components/ui/sidebar"
 import { getUserProjects } from "@/lib/fetchers"
 import { usePathname } from "next/navigation"
 
 export function NavDocuments() {
   const {data, isLoading} = useSWR("/api/completion/user", getUserProjects)
-  const { isMobile } = useSidebar()
+  // const { isMobile } = useSidebar()
 
   const currentChatPage = usePathname().split("/")[2]
 
@@ -41,7 +41,7 @@ export function NavDocuments() {
                 {item.type==="joined"&&<Split/>} <span>{item.title}</span>
               </Link>
             </SidebarMenuButton>
-            <DropdownMenu>
+            {/* <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuAction
                   showOnHover
@@ -66,7 +66,7 @@ export function NavDocuments() {
                   <span>Delete</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
-            </DropdownMenu>
+            </DropdownMenu> */}
           </SidebarMenuItem>
         ))}
       </SidebarMenu>
