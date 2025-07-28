@@ -93,11 +93,11 @@ export const APIKeysDialog = ({
       <DialogContent className="sm:max-w-md" tabIndex={-1}>
 
        
-        <DialogHeader className="">
-          <DialogTitle className="text-xl font-normal">
+        <DialogHeader>
+          <DialogTitle className="text-left">
             Enter Your API Keys
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="text-left">
             API keys will be saved in your browser. <span className="text-xs text-primary">OpenAI, Gemini, Open Router, TogetherAI and Groq</span>
           </DialogDescription>
         </DialogHeader>
