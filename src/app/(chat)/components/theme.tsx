@@ -48,7 +48,6 @@ export function ThemeDialog({ savedThemes, reload}: {savedThemes: SavedTheme[], 
     api: '/api/theme',
     schema: themeSchema,
     onFinish({object, error}){
-      console.log("~~~OBJ", object)
       console.log(error)
       // Handle validation errors from AI response
       if(!object?.isValid){
@@ -61,6 +60,11 @@ export function ThemeDialog({ savedThemes, reload}: {savedThemes: SavedTheme[], 
         reload()
       }
       return;
+    },
+    onError(){
+     toast.error("Not enough API credits left.",{
+          position: "top-center"
+      })
     }
   });
 
@@ -101,7 +105,7 @@ export function ThemeDialog({ savedThemes, reload}: {savedThemes: SavedTheme[], 
     }
 
     // Submit theme data to AI for processing
-    submit({llm: selectedModel.llm, model:selectedModel.model, apiKey: isSelectedModelAPIKeyAvail, content: themeData})
+    submit({llm: selectedModel.llm, apiKey: isSelectedModelAPIKeyAvail, content: themeData})
   }
 
   /**
@@ -145,10 +149,10 @@ export function ThemeDialog({ savedThemes, reload}: {savedThemes: SavedTheme[], 
       <DialogOverlay />
       
       {/* Main dialog content for theme selection */}
-      <DialogContent className="px-4 pt-7 pb-10">
+      <DialogContent className="px-4 pt-7 pb-10 ">
         <DialogHeader>
-          <DialogTitle>Select Theme</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className='text-left'>Select Theme</DialogTitle>
+          <DialogDescription className='text-left'>
             Choose from your saved themes or create a new one.
           </DialogDescription>
         </DialogHeader>
@@ -161,7 +165,7 @@ export function ThemeDialog({ savedThemes, reload}: {savedThemes: SavedTheme[], 
         </div>
         
         {/* Grid layout for displaying available themes */}
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-4">
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
           {savedThemes.map((theme) => (
             <Button
               key={theme.id}
@@ -177,8 +181,8 @@ export function ThemeDialog({ savedThemes, reload}: {savedThemes: SavedTheme[], 
                 className="inline-block w-4 h-4 border-none rounded-full mr-0.5 "
                 style={{ backgroundColor: theme.color }}
               />
-              {/* Truncated theme name for display */}
-              {theme.name.substring(0, 9)}
+              <span className='hidden md:block'>{theme.name.substring(0, 9)}</span>
+              <span className='block md:hidden'>{theme.name.split(" ")[0]}</span>
             </Button>
           ))}
         </div>
