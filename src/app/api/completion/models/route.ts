@@ -10,7 +10,8 @@ import { LLMsOpenAICompatibleEndpoint } from '@/lib/utils';
 
 
 export async function GET(request: Request) {
-  const session = await auth.api.getSession({
+  try{
+     const session = await auth.api.getSession({
           headers: request.headers,
     });
     if (!session) {
@@ -26,7 +27,10 @@ export async function GET(request: Request) {
     models: models.filter(m => m.llmId === l.id)
   }));
   
-  return Response.json(result);
+  return Response.json(result, {status:200});
+  }catch(err){
+    return Response.json(`${err}`, {status:500})
+  }
 };
 
 

@@ -8,8 +8,8 @@ export const llm = pgTable("llm", {
 
 export const model = pgTable("model", {
     id: uuid('id').defaultRandom().primaryKey().notNull().unique(),
-    title: varchar({length: 225}).notNull(), //public facing model name
-    name: varchar({length: 225}).notNull(), //for internal use 
+    title: varchar('title', {length: 225}).notNull(),
+    name: varchar('name', {length: 225}).notNull(),
     llmId: uuid("llm_id").references(()=>llm.id, {onDelete:'cascade'}).notNull(),
     createdAt: timestamp("created_at").notNull()
 })
