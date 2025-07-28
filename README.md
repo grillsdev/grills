@@ -34,3 +34,5 @@ Add the diable on sse streaing on the input btn
 sandbox bad behaviur on new cide streaming 
 loading svg
 
+###
+Hnadle Some unautenticated route ASAPP (if posible remove authMiddle and handle that in the middlewre and get the sessiondata by session.get)
