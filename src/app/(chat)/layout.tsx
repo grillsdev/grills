@@ -8,6 +8,7 @@ import { authClient } from "@/lib/auth-client";
 import AccessRequestNotification from "./components/chat-access-request-notification-toast";
 
 import { WcProvider } from "@/contexts/webcontainer-provider";
+import FireIcon from "./components/fire-icon";
 
 export default function Layout({
   children,
@@ -16,7 +17,11 @@ export default function Layout({
 }>) {
   const {isPending } = authClient.useSession();
 
-  if(isPending) return <p className="text-4xl tracking-tight py-[20rem] text-center">Loading....</p>
+  if(isPending) return (
+    <div className="w-screen h-screen flex flex-col items-center justify-center">
+      <FireIcon height={150} width={150}/>
+    </div>
+  )
 
   return (
     <WcProvider>
