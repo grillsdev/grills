@@ -1,15 +1,21 @@
+import { auth } from '@/lib/auth';
 import { getDb } from '@/db/index';
 import { llm, model } from '@/db/schema/model';
 
 import { createOpenAI } from '@ai-sdk/openai';
 import { generateText } from 'ai';
-import { authMiddleware } from '@/lib/auth-middleware';
 
 import { LLMProvider } from '@/lib/types';
 import { LLMsOpenAICompatibleEndpoint } from '@/lib/utils';
 
 
-export const GET = authMiddleware(async () => {
+export async function GET(request: Request) {
+  const session = await auth.api.getSession({
+          headers: request.headers,
+    });
+    if (!session) {
+      return Response.json({ error: "Unauthorized" }, { status: 401 });
+    }
   const db = await getDb()
   
   const llms = await db.select().from(llm);
@@ -21,11 +27,18 @@ export const GET = authMiddleware(async () => {
   }));
   
   return Response.json(result);
-});
+};
 
 
 // verification for each LLM
-export const POST = authMiddleware(async (request:Request)=>{
+// remove the authMiddleare
+export async function POST(request: Request) {
+  const session = await auth.api.getSession({
+          headers: request.headers,
+    });
+    if (!session) {
+      return Response.json({ error: "Unauthorized" }, { status: 401 });
+    }
     const body = await request.json()
     const { prompt: apiKey, llm } = body as { llm: LLMProvider; prompt: string }
     console.log(llm)
@@ -61,4 +74,4 @@ export const POST = authMiddleware(async (request:Request)=>{
       return Response.json({error: "Invalid api key"}, {status: 500})
     }
 
-})
+}
