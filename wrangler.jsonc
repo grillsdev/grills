@@ -22,7 +22,7 @@
 	"hyperdrive": [
 		{
 		"binding": "HYPERDRIVE",
-		"id": "b47b2e6ac8264f95b52e1e3f07b29259",
+        "id": "dfb225070b9141a9893cd0929c4b7828",
 		"localConnectionString": "postgres://junglefowl:tM4-tL2_yW3_iR6=jQ7-@asia-south2-001.proxy.kinsta.app:30778/great-turquoise-cobra"
 		}
 	]

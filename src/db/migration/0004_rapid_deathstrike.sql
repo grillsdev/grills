@@ -1,0 +1,1 @@
+ALTER TABLE "model" ALTER COLUMN "created_at" SET NOT NULL;
