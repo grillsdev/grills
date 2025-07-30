@@ -89,7 +89,6 @@ const AssistantMessage = memo(({
         $sanboxObj.setKey("pkg", parsedContent.pkgs)
       }
     } else if (!isStreaming && sb.id === id && sb.isStreaming === true) {
-      console.log("removing the sb id and isStreaming")
       $sanboxObj.setKey("isStreaming", false);
       $sanboxObj.setKey("id", '');
     }
