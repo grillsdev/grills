@@ -5,8 +5,8 @@ import { useWebcontainer } from "@/contexts/webcontainer-provider";
 import { getLocalSavedTheme } from "@/lib/utils";
 import * as shadcnComponents from "@/lib/shadcn-components";
 
-import dedent from "dedent";
 import { Loader2 } from "lucide-react";
+import { $sanboxObj } from "@/store/sandbox";
 
 const getIndexCss = () => {
   const isLocalTheme = getLocalSavedTheme();
@@ -32,48 +32,32 @@ const getIndexCss = () => {
   return shadcnComponents.indexCSS;
 };
 
-const CodeRenderer = ({ code, pkg }: { code: string; pkg: string[] }) => {
+const CodeRenderer = () => {
   const { wcInstance, wcURL } = useWebcontainer();
   const [isLoading, setIsLoading] = useState(true);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [error, setError] = useState(false);
+  //always get the last code/selected
+  const sb = $sanboxObj.get()
+  const code = sb.code
+  const pkg = sb.pkg || []
+
 
   useEffect(() => {
     startWebcontainer();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [code, pkg]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
 
   const startWebcontainer = async () => {
     setIsLoading(true);
-    /**
-     * If pakages is available only then run the npm add
-     */
-    // if(pkg.length>0){
-    // const installArgs = ["add", ...pkg];
-    // const installDep = await wcInstance.current?.spawn("npm", installArgs);
-    //   console.log(installArgs, "~~~~DEPS")
-
-    // installDep?.output.pipeTo(new WritableStream({
-    // write(data) {
-    //   console.log(data);
-    // },
-    // }))
-    // // Wait for installation to complete
-    // const installExitCode = await installDep?.exit;
-
-    // if (installExitCode !== 0) {
-    //   setError(true);
-    //   setIsLoading(false);
-    // }
-    // }
-
     //add the component file
     const componentTSX: FileSystemTree = {
       src: {
         directory: {
           "Component.tsx": {
             file: {
-              contents: dedent`${code}`,
+              contents: code,
             },
           },
           "index.css": {
@@ -89,24 +73,46 @@ const CodeRenderer = ({ code, pkg }: { code: string; pkg: string[] }) => {
     // const decoder = new TextDecoder("utf-8");
     // const readableString = decoder.decode(pkgFile);
     // console.log(readableString);
-    // const compFile = await wcInstance.current?.fs.readFile(
-    //   "/src/components/ui/separator.tsx"
-    // );
-    // const decoder2 = new TextDecoder("utf-8");
-    // const readableString2 = decoder2.decode(compFile);
-    // console.log(readableString2);
+    
+    //No pkgs just return
+    if(pkg.length < 1) {
+      setIsLoading(false)
+      return
+    }
+
+    const configProcess = await wcInstance.current?.spawn("npm", ["config", "set", "yes", "true"]);
+    await configProcess?.exit;
+    const installArgs = ["shadcn@latest", "add", ...pkg || []];
+    const installDep = await wcInstance.current?.spawn("npx", installArgs);
+    if(!installDep) return
+
+    installDep.output.pipeTo(new WritableStream({
+    write(data) {
+      console.log(data)
+      console.log("⬇️ 📦 downloading pkgs 📦 ⬇️");
+    }
+    }))
+    // Wait for installation to complete
+    const installExitCode = await installDep.exit
+
+    if (!isLoading && installExitCode !== 0) {
+      setError(true);
+      setIsLoading(false);
+      console.error("Error while downloding the pkgs please refresh the page")
+    }else{
     setIsLoading(false);
+    }
   };
 
   if (!wcURL || isLoading) {
     return (
       <div className="flex items-center justify-center h-[27.5rem] w-full text-green-500 animate-in">
-        <div className="flex flex-col items-center justify-between gap-3">
+           <div className="flex flex-col items-center justify-between gap-3">
           <Loader2 width={29} className="animate-[spin_0.4s_linear_infinite]"/>
-        <span className="text-xs bottom-0 relative animate-pulse font-medium">Installing dependencies sometimes takes time.</span>
+          {!wcURL&&(<span className="text-xs bottom-0 relative animate-pulse font-medium">Installing dependencies sometimes takes time.</span>)}
         </div>
       </div>
-    );
+    )
   }
 
   return (
