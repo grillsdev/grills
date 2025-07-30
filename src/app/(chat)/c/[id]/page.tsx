@@ -74,27 +74,23 @@ export default function Chat() {
     if (isMsgStored) {
       const msg = JSON.parse(isMsgStored) as { message: string };
       console.log("Stored msg", msg.message);
-      if (msg.message === "") {
-        // if message content is empty and present exit the fucntion while removeing the item from local storage
-        localStorage.removeItem("llm-query-state");
-        return;
-      }
-      setInput(msg.message);
+      if (msg.message.trim() === "" )return;
+      setInput(msg.message)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   //If local storage input is being set as input then trigger the submittion
   useEffect(() => {
-    const isMsgStored = localStorage.getItem("llm-query-state");
-    if (isMsgStored && input) {
-      // const syntheticEvent = {
-      //   preventDefault: () => {},
-      // };
-      handleSubmit();
-      localStorage.removeItem("llm-query-state"); // Clean up after submission
+    if(!input) return;
+    const isMsgStored = localStorage.getItem("llm-query-state") ;
+    if (isMsgStored) {
+      const msg = JSON.parse(isMsgStored) as { message: string };
+      if(!msg.message || msg.message.trim() === "") return; 
+      handleSubmitAndAppendUserMesg()
     }
-  }, [input, handleSubmit]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [input]);
 
   useEffect(() => {
     async function getUserChats() {
