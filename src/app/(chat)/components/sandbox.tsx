@@ -29,19 +29,9 @@ const Sandbox = ({
 }) => {
   const [activeTab, setActiveTab] = useState<'code' | 'render'>('code');
   const [previewKey, setPreviewKey] = useState(1);
-  const [currentCode, setCurrentCode] = useState<{code:string, pkg:string[]}>({code:"", pkg:[]})
   const [isCodeStreaming, setIsCodeStreaming] = useState(false)
   const newSandboxObj = useStore($sanboxObj)
   const handle = useFullScreenHandle();
-
-
-  // neccessary for the rendering of the code and ui on btn cick
-  //this will force rerender if the current stored the same code
-  useEffect(()=>{
-    if (newSandboxObj?.type) {
-    setCurrentCode({code: newSandboxObj.code, pkg:newSandboxObj.pkg || []});
-  }
-  },[newSandboxObj])
 
 
  const handleTabChange = useCallback((value: 'code' | 'render') => {
@@ -51,7 +41,11 @@ const Sandbox = ({
     }
   }, []);
 
-  // Handle sandbox object changes with proper cleanup
+  /**
+   * if the previously there is a streaming but now there is not streeming and while streaming tab 'code' me  change hojata h
+   * to hame wapis code to render m lana h after getting stream for that tracking we have to use the currentSandbox and oldSandbox 
+   * bot tha params(current, oldinstance) it provied by nanostore itself
+   */
   useEffect(() => {
     const unsubscribe = $sanboxObj.listen((sandbox, oldSandbox) => {
       if (!sandbox) return;
@@ -64,7 +58,6 @@ const Sandbox = ({
           }
           return prev;
         });
-        setCurrentCode({code: newSandboxObj.code, pkg:newSandboxObj.pkg || []});
         return;
       }
 
@@ -120,7 +113,7 @@ const Sandbox = ({
               <Maximize size={16} />
             </Button>
              )}
-            <CopyToClipboard text={currentCode.code} />
+            <CopyToClipboard text={newSandboxObj.code} />
             <Button
               onClick={() => changeWindowStateTo(false)}
               variant="ghost"
@@ -142,7 +135,7 @@ const Sandbox = ({
                   <div className="animate-pulse">Loading code viewer...</div>
                 </div>
               }>
-                <SyntaxHighlighter code={currentCode.code}/>
+                <SyntaxHighlighter/>
               </Suspense>
             </div>
           ) : (
@@ -153,7 +146,7 @@ const Sandbox = ({
                   </div>
                 }>
                   <FullScreen handle={handle} className='h-full'>
-                  <CodeRunner code={currentCode.code} pkg={currentCode.pkg}/>
+                  <CodeRunner/>
                   </FullScreen>
                 </Suspense>
             </div>
