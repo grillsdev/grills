@@ -72,3 +72,23 @@ export const getLocalSavedTheme = (): SavedTheme | null => {
     }
     return null
 }
+
+export async function getPromptTxt(): Promise<string> {
+      const fileUrl = 'https://bucket.grills.dev/prompt.txt';
+      
+      try {
+        const response = await fetch(fileUrl);
+        if (!response.ok) {
+          return ""
+        }
+        const textContent = await response.text();
+        return JSON.stringify(textContent)
+
+        // For JSON:
+        // const jsonData = await response.json();
+        // return new Response(JSON.stringify(jsonData));
+      } catch (error) {
+        console.log(error)
+        return ""
+      }
+    }

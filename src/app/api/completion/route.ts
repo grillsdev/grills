@@ -16,7 +16,7 @@ import { eq } from 'drizzle-orm';
 
 import { aiChat } from '@/db/schema/ai-chat';
 import { CompletionRequest } from '@/lib/types';
-import { promptShadcn as sysPrompt } from '@/lib/prompt-shadcn';
+
 
 // Initialize Redis
 const redis = new UpstashR({
@@ -26,7 +26,7 @@ const redis = new UpstashR({
 });
 
 import { z } from "zod"
-import { LLMsOpenAICompatibleEndpoint } from '@/lib/utils';
+import { getPromptTxt, LLMsOpenAICompatibleEndpoint } from '@/lib/utils';
 
 const codeGenerationSchema = z.object({
   pre_code: z.string().describe("What is gonna be generated, some detail, proccess and key point"),
@@ -45,7 +45,7 @@ export async function POST(request: Request) {
   try {
     // Parse request body
     const body: CompletionRequest = await request.json();
-    const { prompt, chatId, messages, llm, apiKey, model } = body;
+    const { chatId, messages, llm, apiKey, model } = body;
     const db = await getDb()
     const generatedMsgId = `msg-${uuidv4()}`;
 
@@ -61,10 +61,8 @@ export async function POST(request: Request) {
     const operator = createOpenAI({ apiKey: apiKey, baseURL: LLMsOpenAICompatibleEndpoint[llm]});
 
     const lastMessage = messages[messages.length-1]
-    console.log(messages)
     if(lastMessage.role !== "user") return Response.json("Invalid message array", {status: 500})
     
-    console.log("~~~~PROMPT~~~~~", prompt)
     // Create a user input stream to all other user in oder stream to all other user
     const userInputStreamObj = {
       role: "user",
@@ -85,6 +83,8 @@ export async function POST(request: Request) {
       createdAt: lastMessage.createdAt,
       chatId: chatId
     }));
+
+    const sysPrompt = await getPromptTxt()
 
     let wholeSentence = "";
     const result = streamText({
