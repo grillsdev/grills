@@ -263,8 +263,8 @@ function UserTheme() {
    */
 
   //Not woeking properly in the prod rm this 
-  const reload = () => {
-    mutate()
+  const reload = async () => {
+    await mutate()
   }
 
   return (
