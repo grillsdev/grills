@@ -1,3 +1,4 @@
+import { $sanboxObj } from "@/store/sandbox";
 import { useEffect, useRef, useState } from "react";
 import { createHighlighter, type Highlighter } from "shiki/bundle/web";
 
@@ -32,10 +33,11 @@ const highlighterPromise = createHighlighter({
  * the client is creating multiple Highligter instance for eact code update wich is causing the freezing of the client
  * so we have to implement the timeout with bach update ratheer then passing each new chunks coming in the stream
  */
-export default function CodeViewer({ code }: { code: string }) {
+export default function CodeViewer() {
   const [html, setHtml] = useState("");
   const [highlighter, setHighlighter] = useState<Highlighter | null>(null);
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
+  const sandbox = $sanboxObj.get()
 
   // Load highlighter once
   useEffect(() => {
@@ -47,7 +49,7 @@ export default function CodeViewer({ code }: { code: string }) {
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
       setHtml(
-        highlighter.codeToHtml(code, {
+        highlighter.codeToHtml(sandbox.code, {
           lang: "tsx",
           theme: "vitesse-black",
         })
@@ -56,7 +58,7 @@ export default function CodeViewer({ code }: { code: string }) {
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
-  }, [code, highlighter]);
+  }, [sandbox.code, highlighter]);
 
   if (!highlighter || !html) {
     return (
