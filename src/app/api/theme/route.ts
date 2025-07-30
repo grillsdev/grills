@@ -5,7 +5,7 @@ import { generateObject } from "ai";
 import { createOpenAI } from "@ai-sdk/openai";
 
 
-import { themeVerificationPrompt } from "@/lib/prompt-shadcn";
+import { themeVerificationPrompt } from "@/lib/prompt";
 import { CreateThemeContext, LLMProvider, themeSchema } from "@/lib/types";
 import { getDb } from "@/db";
 import { userTheme } from "@/db/schema/theme";
