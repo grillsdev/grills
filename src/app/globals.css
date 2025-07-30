@@ -211,6 +211,10 @@ no-scrollbar::-webkit-scrollbar {
   scroll-behavior: smooth;
 }
 
+.animate-scroll {
+  animation: scroll 20s linear infinite;
+}
+
 @keyframes scroll {
   0% {
     transform: translateX(0);
@@ -218,13 +222,4 @@ no-scrollbar::-webkit-scrollbar {
   100% {
     transform: translateX(-50%);
   }
-}
-
-.animate-scroll {
-  animation: scroll 20s linear infinite;
-}
-
-code[class*="language-"],
-pre[class*="language-"] {
-  font-family: 'Inconsolata', monospace !important;
 }
