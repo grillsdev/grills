@@ -44,7 +44,7 @@ export default function Home() {
           <div className="flex items-center justify-between h-12">
             {/* Logo with dot pattern */}
             <div className="flex flex-row  justify-center">
-              <span className="text-xl tracking-wider italic font-medium text-white">grills <span className="text-xs text-secondary tracking-tighter italic-none">alpha 0.0.1</span></span>
+              <span className="text-xl tracking-wider italic font-medium text-white">grills <span className="text-xs text-secondary tracking-tighter italic-none">beta</span></span>
             </div>
 
             
