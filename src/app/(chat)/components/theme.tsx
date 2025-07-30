@@ -239,7 +239,7 @@ export function ThemeDialog({ savedThemes, reload}: {savedThemes: SavedTheme[], 
                 onClick={(e) => e.stopPropagation()}
               >
                 {isLoading && (<Loader2 className='animate-spin'/>)} 
-                Save Theme
+                Verify theme
               </Button>
             </SheetFooter>
           </form>
@@ -261,6 +261,8 @@ function UserTheme() {
    * Reload function to trigger SWR revalidation
    * Called after successful theme creation to refresh the theme list
    */
+
+  //Not woeking properly in the prod rm this 
   const reload = () => {
     mutate()
   }
