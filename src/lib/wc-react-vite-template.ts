@@ -315,18 +315,7 @@ dist
         file: {
           contents: `/// <reference types="vite/client" />`,
         },
-      },
-      ".stackblitzrc": {
-        file: {
-          contents: `
-            {
-            "persist": [
-                "node_modules"
-            ]
-            }
-            `,
-        },
-      },
+      }
     },
   },
 };
