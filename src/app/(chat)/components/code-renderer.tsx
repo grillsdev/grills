@@ -76,6 +76,7 @@ const CodeRenderer = () => {
     
     //No pkgs just return
     if(pkg.length < 1) {
+      console.log("❌ No pkgs ❌")
       setIsLoading(false)
       return
     }
@@ -84,6 +85,9 @@ const CodeRenderer = () => {
     await configProcess?.exit;
     const installArgs = ["shadcn@latest", "add", ...pkg || []];
     const installDep = await wcInstance.current?.spawn("npx", installArgs);
+
+    console.log("📋 pkgs 📋", pkg)
+    console.log("⬇️ yet to downlode dowloding pkgs ⬇️", installArgs)
 
     installDep?.output.pipeTo(new WritableStream({
     write(data) {
@@ -95,7 +99,15 @@ const CodeRenderer = () => {
     const installExitCode = await installDep?.exit
     console.log("♦️ exit code ♦️", installExitCode)
 
-    
+    const dir = await wcInstance.current?.fs.readdir("/src/components/ui")
+    console.log("✅ ui files added ✅", dir)
+
+    // console.log("~~Side bar~~~")
+    // const pkgFile =  await wcInstance.current?.fs.readFile('/src/components/ui/sidebar.tsx')
+    // const decoder = new TextDecoder("utf-8");
+    // const readableString = decoder.decode(pkgFile);
+    // console.log(readableString);
+
     setIsLoading(false);
   };
 
