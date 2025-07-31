@@ -94,6 +94,7 @@ const CodeRenderer = () => {
     }))
     // Wait for installation to complete
     const installExitCode = await installDep.exit
+    console.log(installExitCode)
 
     if (!isLoading && installExitCode !== 0) {
       setError(true);

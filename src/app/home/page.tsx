@@ -63,7 +63,7 @@ export default function Home() {
         <div className="text-center space-y-7">
           {/* Main Heading */}
           <div className="space-y-8">
-            <h1 className="text-5xl md:text-5xl lg:text-6xl font-light leading-[0.9] tracking-tight max-w-5xl mx-auto">
+            <h1 className="text-5xl lg:text-6xl font-light leading-[0.9] tracking-tight max-w-5xl mx-auto">
               Build functional
               <br />
               <span className="font-normal">shadcn components</span>
