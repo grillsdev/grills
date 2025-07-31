@@ -94,17 +94,17 @@ export async function POST(request: Request) {
       experimental_output: Output.object({
         schema: codeGenerationSchema
       }),
-      onChunk: async({ chunk }) => {
+      onChunk: ({ chunk }) => {
         if (chunk.type === "text-delta") {
           wholeSentence += chunk.textDelta;
         }
-        await redis.publish(`chat:${chatId}`, JSON.stringify({
+        redis.publish(`chat:${chatId}`, JSON.stringify({
           role: "assistant",
           id: generatedMsgId,
           content: wholeSentence,
           createdAt: new Date(),
           type: "chat_streaming",
-        }));
+        }))
       },
       onFinish: async ({ text }) => {
         // Save generated content to Redis
