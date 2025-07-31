@@ -84,25 +84,19 @@ const CodeRenderer = () => {
     await configProcess?.exit;
     const installArgs = ["shadcn@latest", "add", ...pkg || []];
     const installDep = await wcInstance.current?.spawn("npx", installArgs);
-    if(!installDep) return
 
-    installDep.output.pipeTo(new WritableStream({
+    installDep?.output.pipeTo(new WritableStream({
     write(data) {
       console.log(data)
       console.log("⬇️ 📦 downloading pkgs 📦 ⬇️");
     }
     }))
     // Wait for installation to complete
-    const installExitCode = await installDep.exit
+    const installExitCode = await installDep?.exit
     console.log("♦️ exit code ♦️", installExitCode)
 
-    if (!isLoading && installExitCode !== 0) {
-      setError(true);
-      setIsLoading(false);
-      console.error("Error while downloding the pkgs please refresh the page")
-    }else{
+    
     setIsLoading(false);
-    }
   };
 
   if (!wcURL || isLoading) {
