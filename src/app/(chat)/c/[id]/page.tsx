@@ -73,24 +73,11 @@ export default function Chat() {
     const isMsgStored = localStorage.getItem("llm-query-state");
     if (isMsgStored) {
       const msg = JSON.parse(isMsgStored) as { message: string };
-      console.log("Stored msg", msg.message);
       if (msg.message.trim() === "" )return;
       setInput(msg.message)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  //If local storage input is being set as input then trigger the submittion
-  useEffect(() => {
-    if(!input) return;
-    const isMsgStored = localStorage.getItem("llm-query-state") ;
-    if (isMsgStored) {
-      const msg = JSON.parse(isMsgStored) as { message: string };
-      if(!msg.message || msg.message.trim() === "") return; 
-      handleSubmitAndAppendUserMesg()
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [input]);
 
   useEffect(() => {
     async function getUserChats() {
