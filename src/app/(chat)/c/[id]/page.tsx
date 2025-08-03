@@ -46,7 +46,8 @@ export default function Chat() {
   const { input, handleInputChange, handleSubmit, isLoading, setInput } =
     useCompletion({
       streamProtocol: "data",
-      api: `/api/completion`,
+      api: `https://vishvakarma-3d5dw.sevalla.app`,
+      credentials: "include",
       body: {
         messages: messages,
         chatId: chatId,
@@ -152,6 +153,7 @@ export default function Chat() {
     setInput("")
   };
 
+  // HAe to remove this 
   if (error) return window.location.reload();
 
   if (isChatLoadiong) return <ChatSkeletonLoader />;
