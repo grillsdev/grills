@@ -46,7 +46,7 @@ export default function Chat() {
   const { input, handleInputChange, handleSubmit, isLoading, setInput } =
     useCompletion({
       streamProtocol: "data",
-      api: `https://vishvakarma-3d5dw.sevalla.app`,
+      api: process.env.NEXT_PUBLIC_COMPLETION_API + "/completion",
       credentials: "include",
       body: {
         messages: messages,
