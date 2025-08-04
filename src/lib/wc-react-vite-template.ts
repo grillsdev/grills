@@ -170,7 +170,6 @@ dist
             "@vitejs/plugin-react": "^4.3.4",
             "globals": "^16.0.0",
             "tw-animate-css": "^1.2.9",
-            "typescript": "~5.7.2",
             "vite": "^6.3.1"
         }
         }
