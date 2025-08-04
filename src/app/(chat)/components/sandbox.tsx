@@ -131,8 +131,8 @@ const Sandbox = ({
           {activeTab === 'code' ? (
             <div className="h-full overflow-x-auto">
               <Suspense fallback={
-                <div className="flex items-center justify-center h-full">
-                  <div className="animate-pulse">Loading code viewer...</div>
+                <div className="flex items-center justify-center h-[27.5rem]">
+                  <div className="animate-pulse font-medium text-green-500">Loading...</div>
                 </div>
               }>
                 <SyntaxHighlighter/>
