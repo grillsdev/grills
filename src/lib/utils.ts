@@ -1,12 +1,11 @@
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 
-import { CurrentModel, SavedTheme, LLMProvider} from "./types";
+import { CurrentModel, SavedTheme, LLMProvider } from "./types";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
-
 
 export const saveKeys = (llm: string, key: string) => {
   const haveKeys = localStorage.getItem("llmKeys");
@@ -34,16 +33,15 @@ export const getApiKey = (llm: string): string | null => {
   return keys ? keys[llm] || null : null;
 };
 
-
 export const getSelectedModel = (): CurrentModel | null => {
   // Only access localStorage if we're in the browser
-  if (typeof window !== 'undefined') {
+  if (typeof window !== "undefined") {
     const getCurrentModel = localStorage.getItem("selected-model");
     if (getCurrentModel) {
-        const selectedModel = JSON.parse(getCurrentModel) as CurrentModel;
-        return selectedModel;
+      const selectedModel = JSON.parse(getCurrentModel) as CurrentModel;
+      return selectedModel;
     }
-    return null
+    return null;
   }
   return null;
 };
@@ -63,32 +61,46 @@ export const LLMsOpenAICompatibleEndpoint: Record<LLMProvider, string> = {
   openrouter: "https://openrouter.ai/api/v1",
   togetherai: "https://api.together.xyz/v1",
   groq: "https://api.groq.com/openai/v1",
-}
+};
 
 export const getLocalSavedTheme = (): SavedTheme | null => {
   const savedTheme = localStorage.getItem("selectedTheme");
-    if (savedTheme) {
-      return (JSON.parse(savedTheme) as SavedTheme);
-    }
-    return null
-}
+  if (savedTheme) {
+    return JSON.parse(savedTheme) as SavedTheme;
+  }
+  return null;
+};
 
 export async function getPromptTxt(): Promise<string> {
-      const fileUrl = 'https://bucket.grills.dev/prompt.txt';
-      
-      try {
-        const response = await fetch(fileUrl);
-        if (!response.ok) {
-          return ""
-        }
-        const textContent = await response.text();
-        return JSON.stringify(textContent)
+  const fileUrl = "https://bucket.grills.dev/prompt.txt";
 
-        // For JSON:
-        // const jsonData = await response.json();
-        // return new Response(JSON.stringify(jsonData));
-      } catch (error) {
-        console.log(error)
-        return ""
-      }
+  try {
+    const response = await fetch(fileUrl);
+    if (!response.ok) {
+      return "";
     }
+    const textContent = await response.text();
+    return JSON.stringify(textContent);
+
+    // For JSON:
+    // const jsonData = await response.json();
+    // return new Response(JSON.stringify(jsonData));
+  } catch (error) {
+    console.log(error);
+    return "";
+  }
+}
+
+
+export const getPackageLockFile = (): string | null => {
+  const savedFile = localStorage.getItem("lockFile");
+  if (savedFile) {
+    return savedFile;
+  }
+  return null;
+
+}
+
+export const savePackageLockFile = (file:string) => {
+  localStorage.setItem("lockFile", file)
+}
