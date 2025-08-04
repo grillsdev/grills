@@ -33,8 +33,7 @@ const getIndexCss = () => {
 };
 
 const CodeRenderer = () => {
-  const { wcInstance, wcInstanceStatus } = useWebcontainer();
-  const [previewUrl, setPreviewUrl] = useState<string | undefined>(undefined);
+  const { wcInstance, wcInstanceStatus, wcURL, terminalOutput, updateTerminalOutput } = useWebcontainer();
   const [isLoading, setIsLoading] = useState(true);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [error, setError] = useState(false);
@@ -74,78 +73,45 @@ const CodeRenderer = () => {
       },
     };
     await wcInstance.current.mount(componentTSX);
-    // const pkgFile =  await wcInstance.current?.fs.readFile('/package.json')
-    // const decoder = new TextDecoder("utf-8");
-    // const readableString = decoder.decode(pkgFile);
-    // console.log(readableString);
 
-    // //No pkgs just return
-    // if (pkg.length < 1) {
-    //   console.log("❌ No pkgs ❌");
-    //   setIsLoading(false);
-    //   return;
-    // }
-
-    // still setting isLoading(false) while dowlodong the pakages
-
-    // get saved component bcs no need to downlode again once again;
+    /**
+     * we are just downloding the unique components, skipping already added one 
+     */
     const existsFile: string[] = await wcInstance.current.fs.readdir(
       "/src/components/ui"
     );
-    console.log("✅ ui files exists ✅", existsFile);
     const filenames = existsFile.map((file) => file.replace(".tsx", ""));
-    console.log("~~FileName~~", filenames);
     const remainingPkgs: string[] = pkg.filter(
       (item) => !filenames.includes(item)
     );
-    console.log("~~Remaining pkgs ~~~~", remainingPkgs);
 
     if (remainingPkgs.length > 0) {
-      const configProcess = await wcInstance.current.spawn("npm", ["config", "set", "yes", "true"]);
-      await configProcess.exit;
       const installArgs = ["shadcn@latest", "add", ...(remainingPkgs || [])];
       const installDep = await wcInstance.current.spawn("npx", installArgs);
-
-      console.log("⬇️ yet to downlode dowloding pkgs ⬇️", installArgs);
-
       installDep.output.pipeTo(
         new WritableStream({
           write(data) {
-            console.log(data);
-            console.log("⬇️ 📦 downloading pkgs 📦 ⬇️");
+            updateTerminalOutput(`${data} 📦 downloading Shadcn pkgs 📦  `)
           },
         })
       );
       // Wait for installation to complete
       await installDep.exit;
-
-      const dir = await wcInstance.current.fs.readdir("/src/components/ui");
-      console.log("✅ ui files added ✅", dir);
     }
 
-    // console.log("~~Side bar~~~")
-    // const pkgFile =  await wcInstance.current?.fs.readFile('/src/components/ui/sidebar.tsx')
-    // const decoder = new TextDecoder("utf-8");
-    // const readableString = decoder.decode(pkgFile);
-    // console.log(readableString);
-
-    await wcInstance.current.spawn("npm", ["run", "dev"]);
-    wcInstance.current.on("server-ready", (port, url) => {
-      setPreviewUrl(url);
-      setIsLoading(false);
-    });
+    // const pkgFile =  await wcInstance.current?.fs.readFile('/package-lock.json', "utf-8")
+    // console.log(pkgFile);
+    setIsLoading(false)
   };
 
   if (wcInstanceStatus !== "passed" || isLoading) {
     return (
-      <div className="flex items-center justify-center h-[27.5rem] w-full text-green-500 animate-in">
+      <div className="flex items-center justify-center h-[27.5rem] w-full text-green-400">
         <div className="flex flex-col items-center justify-between gap-3">
           <Loader2 width={29} className="animate-[spin_0.4s_linear_infinite]" />
-          {wcInstanceStatus !== "passed" && (
             <span className="text-xs bottom-0 relative animate-pulse font-medium">
-              Installing dependencies sometimes takes time.
+              {terminalOutput}
             </span>
-          )}
         </div>
       </div>
     );
@@ -154,18 +120,15 @@ const CodeRenderer = () => {
   return (
     <div className="h-full">
       <iframe
-        key={previewUrl}
+        key={wcURL}
         width="100%"
         height="100%"
-        src={previewUrl}
+        src={wcURL}
         sandbox="allow-scripts allow-modals allow-same-origin allow-forms allow-popups"
         className="bg-accent flex-1 min-h-0 border-0"
         style={{
           overflow: "auto",
           WebkitOverflowScrolling: "touch", // Better scrolling on mobile
-        }}
-        onLoad={() => {
-          console.log("Iframe loaded:", previewUrl);
         }}
         onError={(e) => {
           console.error("Iframe load error:", e);
