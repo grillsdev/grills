@@ -1,6 +1,76 @@
-User-agent: *
-Disallow: /lp
-Disallow: /feedback
-Disallow: /langtest
+# Allow major search engines - only /home page
+User-agent: Googlebot
+Disallow: /
+Allow: /home
 
-Sitemap: https://www.crawlstop.com/sitemap.xml
+User-agent: Bingbot
+Disallow: /
+Allow: /home
+
+# Allow Perplexity crawler - only /home page
+User-agent: PerplexityBot
+Disallow: /
+Allow: /home
+
+# Allow Claude/Anthropic crawler - only /home page
+User-agent: Claude-Web
+Disallow: /
+Allow: /home
+
+User-agent: ClaudeBot
+Disallow: /
+Allow: /home
+
+# Allow OpenAI crawlers - only /home page
+User-agent: GPTBot
+Disallow: /
+Allow: /home
+
+User-agent: ChatGPT-User
+Disallow: /
+Allow: /home
+
+User-agent: CCBot
+Disallow: /
+Allow: /home
+
+# Allow other major AI crawlers - only /home page
+User-agent: Google-Extended
+Disallow: /
+Allow: /home
+
+User-agent: FacebookBot
+Disallow: /
+Allow: /home
+
+User-agent: Applebot
+Disallow: /
+Allow: /home
+
+User-agent: Bytespider
+Disallow: /
+Allow: /home
+
+User-agent: Diffbot
+Disallow: /
+Allow: /home
+
+User-agent: ImagesiftBot
+Disallow: /
+Allow: /home
+
+# Allow academic/research crawlers - only /home page
+User-agent: ia_archiver
+Disallow: /
+Allow: /home
+
+User-agent: archive.org_bot
+Disallow: /
+Allow: /home
+
+# Default rule for all other bots - block everything
+User-agent: *
+Disallow: /
+
+# Sitemap location (optional - replace with your actual sitemap URL)
+Sitemap: https://yourwebsite.com/sitemap.xml
