@@ -63,7 +63,7 @@ export default function CodeViewer() {
   if (!highlighter || !html) {
     return (
       <div className="flex items-center justify-center h-full">
-        <div className="animate-pulse">Loading code...</div>
+        <div className="animate-pulse font-medium text-green-500 text-xs">Loading...</div>
       </div>
     );
   }

@@ -86,8 +86,7 @@ export function OnboardingDialog(props: OnboardingDialogProps) {
               <li>Chromium browser recommended.</li>
               <li>Bring your own OpenRouter API key to use the app.</li>
               <li>You can generate and save custom themes for your project.</li>
-              <li>Initial UI rendering may be slow as it uses system resources.</li>
-              <li>We use StackBlitz WebContainers to render the UI.</li>
+              <li>Initial UI rendering may be slow due to limitations</li>
               <li>If you encounter issues, reach out on Twitter.</li>
             </ul>
           </section>
