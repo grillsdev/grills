@@ -35,11 +35,11 @@ export const StartProjectDialog = ({openWindow, windowState}: {openWindow: boole
 
   return (
     <Dialog open={openWindow} onOpenChange={windowState}>
-      <DialogContent className="sm:max-w-md" tabIndex={-1}>
+      <DialogContent className="sm:max-w-md bg-accent text-accent-foreground" tabIndex={-1}>
         
         
-        <DialogHeader className="space-y-2">
-          <DialogTitle className="text-xl font-normal">
+        <DialogHeader className="text-left">
+          <DialogTitle className="">
             Create Your Project
           </DialogTitle>
           <DialogDescription>
