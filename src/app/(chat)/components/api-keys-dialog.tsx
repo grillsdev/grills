@@ -90,19 +90,17 @@ export const APIKeysDialog = ({
 
   return (
     <Dialog open={openWindow} onOpenChange={windowState}>
-      <DialogContent className="sm:max-w-md" tabIndex={-1}>
-
-       
+      <DialogContent className="sm:max-w-md bg-accent" tabIndex={-1}>
         <DialogHeader>
           <DialogTitle className="text-left">
             Enter Your API Keys
           </DialogTitle>
           <DialogDescription className="text-left">
-            API keys will be saved in your browser. <span className="text-xs text-primary">OpenAI, Gemini, Open Router, TogetherAI and Groq</span>
+            API keys will be saved in your browser. <span className="text-xs text-primary">Open Router</span>
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-5 mt-3 max-h-[23.5rem] overflow-y-auto no-scrollbar">
+        <div className="space-y-5  max-h-[23.5rem] overflow-y-auto no-scrollbar">
           {llms.map((model) => (
             <ApiInput llmTitle={model.title} llmName={model.name} key={model.id} />
           ))}
