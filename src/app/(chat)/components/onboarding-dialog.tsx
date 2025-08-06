@@ -82,11 +82,11 @@ export function OnboardingDialog(props: OnboardingDialogProps) {
           <section className="space-y-2">
             <h3 className="font-medium">Requirements</h3>
             <ul className="list-disc pl-5 space-y-1">
-              <li>Tested on Chrome on macOS (M1)</li>
+              <li>Tested on Chrome on macOS (M1).</li>
               <li>Chromium browser recommended.</li>
               <li>Bring your own OpenRouter API key to use the app.</li>
               <li>You can generate and save custom themes for your project.</li>
-              <li>Initial UI rendering may be slow due to limitations</li>
+              <li>Initial UI rendering may be slow due to limitations.</li>
               <li>If you encounter issues, reach out on Twitter.</li>
             </ul>
           </section>
