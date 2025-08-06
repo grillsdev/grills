@@ -2,9 +2,6 @@ name = "grills"
 main = "src/worker.ts"
 compatibility_date = "2024-07-24"
 
-[limits]
-cpu_ms = 300000
-
 # For local development
 [dev]
 port = 8787
