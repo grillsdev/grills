@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useCompletion } from "@ai-sdk/react";
+import { useChat } from "@ai-sdk/react";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
 
@@ -10,12 +10,7 @@ import { UserInput } from "../../components/user-input";
 import { ChatMessage } from "../../components/message";
 import { getSelectedModel, getApiKey } from "@/lib/utils";
 
-import useSWRSubscription from "swr/subscription";
-import { SSEChatCompletion } from "@/lib/types";
-import { type Message } from "@ai-sdk/react";
-
 import { useSidebar } from "@/components/ui/sidebar";
-import { v4 as uuid } from "uuid";
 
 import {
   ResizablePanelGroup,
@@ -25,47 +20,47 @@ import {
 import { useIsMobile } from "@/hooks/use-mobile";
 
 import Sandbox from "../../components/sandbox";
-import useSWRMutation from "swr/mutation";
+import useSWR from "swr";
 import { getChats } from "@/lib/fetchers";
 import { ChatSkeletonLoader } from "../../components/chat-loader-skeleton";
 
 export default function Chat() {
   const selectedM = getSelectedModel();
   const apiKey = getApiKey(selectedM?.llm || "");
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [isEventStreaming, setIsEventStreaming] = useState(false);
+  // const [messageHistory, setMessageHistory] = useState<Message[]>([]);
+  // const [isEventStreaming, setIsEventStreaming] = useState(false);
   const { id: chatId } = useParams<{ id: string }>();
   const { setOpen: setSidebar } = useSidebar();
   const [sandboxWindow, setSandboxWindow] = useState(false);
   const isMobile = useIsMobile();
-  const { trigger, isMutating: isChatLoadiong } = useSWRMutation(
+  const { data: messageHistory, isLoading: isChatLoading, error } = useSWR(
     `/api/completion/user/chat?chatId=${chatId}`,
     getChats
   );
 
-  const { input, handleInputChange, handleSubmit, isLoading, setInput } =
-    useCompletion({
+  const { messages, input, handleInputChange, handleSubmit, setInput, status, setMessages} =
+    useChat({
       streamProtocol: "data",
-      api: "https://vishvakarma-3d5dw.sevalla.app/completion",
-      credentials: "include",
+      api: "/api/completion",
       body: {
-        messages: messages,
+        includeIds: true,
         chatId: chatId,
         model: selectedM?.model,
         llm: selectedM?.llm,
         apiKey: apiKey,
       },
-      onError: (err: Error) => {
-        toast.error(err.message, {
-          position: "bottom-right",
-        });
-        setIsEventStreaming(false);
-      },
+      generateId: () => crypto.randomUUID(),
       onFinish: () => {
         const isMsgStored = localStorage.getItem("llm-query-state");
         if (isMsgStored) {
           localStorage.removeItem("llm-query-state");
         }
+      },
+      onError: (err: Error) => {
+        toast.error(err.message, {
+          position: "bottom-right",
+        });
+        // setIsEventStreaming(false);
       },
     });
 
@@ -82,81 +77,46 @@ export default function Chat() {
 
   useEffect(() => {
     async function getUserChats() {
-      const chats = await trigger();
-      setMessages(chats);
+      if(!isChatLoading && !error && messageHistory){
+        setMessages(messageHistory)
+      }
     }
     getUserChats();
-  }, [trigger]);
+  }, [isChatLoading, messageHistory, error, setMessages]);
 
-  const { error } = useSWRSubscription(
-    `/api/completion?chatId=${chatId}`,
-    (
-      key: string,
-      {
-        next,
-      }: { next: (error: Error | null, data?: SSEChatCompletion) => void }
-    ) => {
-      const es = new EventSource(key);
-      es.addEventListener("message", ({ data }) => {
-        const newData: SSEChatCompletion = JSON.parse(data);
-        if (newData.role === "user" || newData.role === "assistant") {
-          if(!isEventStreaming){
-            setIsEventStreaming(true);
-          }
-          setMessages((prevMsg) => {
-            const existingMsgIndex = prevMsg.findIndex(
-              (message) => message.id === newData.id
-            );
-            if (existingMsgIndex !== -1) {
-              // Update existing message
-              const updatedMessages = [...prevMsg];
-              updatedMessages[existingMsgIndex] = {
-                ...updatedMessages[existingMsgIndex], // Keep existing data
-                content: newData.content,
-              };
-              return updatedMessages;
-            } else {
-              // Add new message
-              return [
-                ...prevMsg,
-                {
-                  id: newData.id,
-                  role: newData.role,
-                  content: newData.content,
-                  createdAt: newData.createdAt,
-                },
-              ];
-            }
-          });
-        }
-        if (newData.role === "assistant" && newData.type === "chat_completed") {
-          setIsEventStreaming(false);
-        }
-        next(null, data);
-      });
-      es.addEventListener("error", () => next(new Error("Fetch Error")));
-      return () => es.close();
-    }
-  );
 
-  const handleSubmitAndAppendUserMesg = () => {
-    const userMsgId = `usr-${uuid()}`;
-    const newMessage = messages
-    messages.push({
-        id: userMsgId,
-        role: "user",
-        content: input,
-        createdAt: new Date(),
-    })
-    setMessages(newMessage);
-    handleSubmit()
-    setInput("")
-  };
+  // const handleSubmitAndAppendUserMesg = () => {
+  //     const userMsgId = `usr-${uuid()}`;
+  //     const newMessage = messages
+  //     newMessage.push({
+  //         id: userMsgId,
+  //         role: "user",
+  //         content: input,
+  //         createdAt: new Date(),
+  //     })
+  //     setMessageHistory(newMessage);
+  //     handleSubmit()
+  //     setInput("")
+  //   };
 
   // HAe to remove this 
-  if (error) return window.location.reload();
+  // if (error) return window.location.reload();
 
-  if (isChatLoadiong) return <ChatSkeletonLoader />;
+  if (isChatLoading) return <ChatSkeletonLoader />;
+  if (error && error.status === 404) {
+  return (
+    <main
+      role="main"
+      aria-labelledby="not-found-title"
+      className="flex items-center justify-center p-4 h-[40rem]"
+    >
+      <section className="flex w-full max-w-xl flex-col items-center text-center gap-4 md:gap-6">
+        <h1 className="text-3xl font-medium">404 Not Found</h1>
+      </section>
+    </main>
+  );
+}
+
   return (
     <div className="h-[calc(100vh-76px)] flex flex-col">
       <div className="flex-1 min-h-0 flex flex-col">
@@ -174,11 +134,11 @@ export default function Chat() {
                   <div className="p-4">
                     {messages?.map((message) => (
                       <ChatMessage
-                        key={message.id}
-                        id={message.id}
+                        key={message.id || crypto.randomUUID()}
+                        id={message.id || crypto.randomUUID()}
                         message={message}
                         isStreaming={
-                          isLoading &&
+                          status==="streaming" &&
                           messages[messages.length - 1]?.id === message.id
                         }
                         changeWindowStateTo={setSandboxWindow}
@@ -193,8 +153,8 @@ export default function Chat() {
               <div className="py-2 px-3 absolute bottom-0 w-full flex justify-center">
                 <div className="w-full max-w-xl ">
                   <UserInput
-                    disable={isLoading}
-                    handleChatSubmit={handleSubmitAndAppendUserMesg}
+                    disable={status==="streaming" || status==="submitted"}
+                    handleChatSubmit={handleSubmit}
                     handleChatInputChange={handleInputChange}
                     chatInput={input}
                   />
