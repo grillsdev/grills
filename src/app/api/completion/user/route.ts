@@ -18,30 +18,10 @@ export async function GET(request: Request) {
     const result = await db
       .select()
       .from(aiChat)
-      .where(eq(aiChat.user, userId))
+      .where(eq(aiChat.admin, userId))
       .orderBy(desc(aiChat.createdAt))
       .limit(20);
     return Response.json({ projects: result }, { status: 200 });
-  } catch {
-    return Response.json(
-      { error: "Failed to process request" },
-      { status: 500 }
-    );
-  }
-}
-
-// for vishvakarma engine auth
-export async function POST(request: Request) {
-  const session = await auth.api.getSession({
-    headers: request.headers,
-  });
-
-  if (!session) {
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
-  }
-  try {
-    const user = session.user;
-    return Response.json({ user: user }, { status: 200 });
   } catch {
     return Response.json(
       { error: "Failed to process request" },
