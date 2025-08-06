@@ -5,7 +5,6 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 import { Toaster } from "sonner";
 import { authClient } from "@/lib/auth-client";
-import AccessRequestNotification from "./components/chat-access-request-notification-toast";
 
 import { WcProvider } from "@/contexts/webcontainer-provider";
 import FireIcon from "./components/fire-icon";
@@ -40,7 +39,6 @@ export default function Layout({
                   expand
                   theme="light"
                 />
-                <AccessRequestNotification/>
               </div>
             </div>
           </div>
