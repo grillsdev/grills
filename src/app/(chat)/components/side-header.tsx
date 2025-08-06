@@ -1,7 +1,8 @@
 import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 
 import { StartProjectDialogBtn } from "./start-project";
-import { Invitation } from "./invitation";
+
+
 export function SideHeader() {
   const {setOpen, state} = useSidebar()
 
@@ -16,7 +17,6 @@ export function SideHeader() {
         <div className="ml-auto flex items-center gap-3">
           <div className="flex flex-row items-center gap-3 ">
             <StartProjectDialogBtn />
-            <Invitation />
           </div>
         </div>
       </div>
