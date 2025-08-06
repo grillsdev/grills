@@ -7,6 +7,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { TerminalLoader } from "@/components/ui/loader";
 
 import type { GeneratedCodeContent, MessageProps } from "@/lib/types";
 
@@ -60,7 +61,6 @@ const MemoizedMarkdown = memo(({ children }: { children: string }) => (
 ));
 
 import { parse } from 'best-effort-json-parser'
-import FireIcon from "./fire-icon";
 
 
 const AssistantMessage = memo(({
@@ -79,7 +79,6 @@ const AssistantMessage = memo(({
   const sb = $sanboxObj.get();
   const parsedContent:GeneratedCodeContent = parse(content) 
   
-
   useEffect(() => {
     if (isStreaming) {
       if (sb.id !== id) {
@@ -109,7 +108,6 @@ const AssistantMessage = memo(({
             <Button
               size="sm"
               variant={"outline"}
-              disabled={isStreaming}
               onClick={() => {
                 if(!windowState){
                   changeWindowState(true);
@@ -128,7 +126,7 @@ const AssistantMessage = memo(({
 
         </div>
         {isStreaming && (
-          <FireIcon height={35} width={35}/>
+         <TerminalLoader size="sm" className="mt-3"/>
         )}
       </div>
     </div>
@@ -144,7 +142,7 @@ export const ChatMessage = memo(({
 }: MessageProps) => {
   return (
     <div className="px-2 sm:px-4" key={id}>
-      <div className="max-w-xs sm:max-w-md md:max-w-2xl mx-auto">
+      <div className="max-w-2xl mx-auto">
         {/* User Message */}
         {message.role === "user" && <UserMessage content={message.content} />}
 
