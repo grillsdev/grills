@@ -64,7 +64,6 @@ export interface SSEChatCompletion {
 export type LLMProvider = "openai" | "gemini" | "openrouter" | "togetherai" | "groq";
 
 export interface CompletionRequest {
-  prompt: string;
   chatId: string;
   messages: Message[];
   llm: LLMProvider;
@@ -116,11 +115,7 @@ export const themeSchema = z.object({
   name: z.string().describe("Name of the theme, max lenght should be 9 Char."),
   color: z.string().describe("Primary color of the theme in hex format"),
   data: z.string().describe("Return the whole theme"),
-  isValid: z.boolean().describe("Is user submited theme is valid or not"),
-  error: z
-    .string()
-    .optional()
-    .describe("Error detail if the the the is not valid"),
+  isValid: z.boolean().describe("Is user submited theme is valid or not")
 });
 
 
