@@ -43,8 +43,7 @@ export async function POST(request: Request) {
   try {
     // 2. Parse and validate request body
     const body: CompletionRequest = await request.json();
-    const { chatId, messages, llm, apiKey, model, prompt } = body;
-    console.log("PROMPT", prompt)
+    const { chatId, messages, llm, apiKey, model} = body;
 
     // 3. Input validation with better error messages
     if (!chatId) {
