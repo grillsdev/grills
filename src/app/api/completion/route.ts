@@ -61,10 +61,8 @@ export async function POST(request: Request) {
     }
 
     // 4. Initialize dependencies
-    const [db, sysPrompt] = await Promise.all([
-      getDb(),
-      getPromptTxt()
-    ]);
+    const db = await getDb()
+    const sysPrompt = await getPromptTxt()
 
     const operator = createOpenAI({ 
       apiKey: apiKey, 
@@ -79,6 +77,7 @@ export async function POST(request: Request) {
       experimental_output: Output.object({
         schema: codeGenerationSchema
       }),
+      temperature: 1, 
       onFinish: async ({ text }) => {
         try {
           const lastUserInput = messages[messages.length-1]
