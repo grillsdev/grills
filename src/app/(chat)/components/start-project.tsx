@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useState} from "react";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 import {
   Dialog,
@@ -19,7 +19,8 @@ import { createProject } from "@/lib/fetchers";
 export const StartProjectDialog = ({openWindow, windowState}: {openWindow: boolean; windowState: (state: boolean) => void;}) => {
   const [projectName, setProjectName] = useState("");
   const [projectType, setProjectType] = useState<"individual" | "team">("team")
-  const {trigger, data, isMutating} = useSWRMutation('/api/project', createProject)
+  const {trigger, data, isMutating, reset} = useSWRMutation('/api/project', createProject)
+  const router = useRouter()
 
   const startCreatingProject = (e:FormEvent) => {
     e.preventDefault()
@@ -28,9 +29,11 @@ export const StartProjectDialog = ({openWindow, windowState}: {openWindow: boole
 
   useEffect(()=>{
     if(data){
-      redirect(`/c/${data.chatId}`)
+      router.push(`/c/${data.chatId}`)
+      reset()
+      windowState(false)
     }
-  },[data])
+  },[data, router, windowState, reset])
 
 
   return (
