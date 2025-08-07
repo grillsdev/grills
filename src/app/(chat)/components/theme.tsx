@@ -37,7 +37,7 @@ import { getSavedTheme } from '@/lib/fetchers';
  * Dialog component for managing saved themes and creating new themes
  * Handles theme selection, creation, and persistence to localStorage
  */
-export function ThemeDialog({ savedThemes, reload}: {savedThemes: SavedTheme[], reload: () => void}) {
+export function ThemeDialog({ savedThemes}: {savedThemes: SavedTheme[]}) {
   // State management for dialog and sheet visibility
   const [open, setOpen] = useState(false); // Controls main dialog open/close state
   const [selectedTheme, setSelectedTheme] = useState<SavedTheme | null>(null); // Tracks currently selected theme
@@ -47,19 +47,17 @@ export function ThemeDialog({ savedThemes, reload}: {savedThemes: SavedTheme[], 
   const { submit, isLoading } = useObject({
     api: '/api/theme',
     schema: themeSchema,
-    onFinish({object, error}){
-      console.log(error)
-      // Handle validation errors from AI response
-      if(!object?.isValid){
-        toast.error(object?.error,{
-          position: "top-center"
-        })
-      }else{
-        // Close sheet and reload themes on successful creation
-        setSheetOpen(false)
-        reload()
+    onFinish({object}){
+      if(!object) return;
+      const newGeneratedTheme: SavedTheme = {
+        id: crypto.randomUUID(),
+        name:object.name,
+        color:object.color,
+        data:object.data,
+        createdAt: new Date()
       }
-      return;
+      savedThemes.unshift(newGeneratedTheme)
+     setSheetOpen(false)
     },
     onError(){
      toast.error("Not enough API credits left.",{
@@ -165,7 +163,7 @@ export function ThemeDialog({ savedThemes, reload}: {savedThemes: SavedTheme[], 
         </div>
         
         {/* Grid layout for displaying available themes */}
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 ">
           {savedThemes.map((theme) => (
             <Button
               key={theme.id}
@@ -255,31 +253,17 @@ export function ThemeDialog({ savedThemes, reload}: {savedThemes: SavedTheme[], 
  */
 function UserTheme() {
   // SWR hook for fetching saved themes with automatic revalidation
-  const {data, mutate} = useSWR<SavedTheme[]>("/api/theme", getSavedTheme)
-
-  /**
-   * Reload function to trigger SWR revalidation
-   * Called after successful theme creation to refresh the theme list
-   */
-
-  //Not woeking properly in the prod rm this 
-  const reload = async () => {
-    await mutate()
-  }
+  const {data} = useSWR<SavedTheme[]>("/api/theme", getSavedTheme)
 
   return (
     <div className="">
       {/* Pass fetched themes and reload function to dialog component */}
-      <ThemeDialog savedThemes={data || []} reload={reload} />
+      <ThemeDialog savedThemes={data || []}/>
     </div>
   )
 }
 
-/**
- * Default CSS theme template with comprehensive color variables
- * Includes both light and dark mode configurations
- * Uses OKLCH color space for better color consistency
- */
+
 const themePlaceholder = `
 :root {
   --base-50: oklch(0.9843 0.0031 253.87);
@@ -388,82 +372,6 @@ const themePlaceholder = `
   --sidebar-border: var(--base-800);
   --sidebar-ring: var(--primary-600);
 }
-
-@theme inline {
-  --color-base-50: var(--base-50);
-  --color-base-100: var(--base-100);
-  --color-base-200: var(--base-200);
-  --color-base-300: var(--base-300);
-  --color-base-400: var(--base-400);
-  --color-base-500: var(--base-500);
-  --color-base-600: var(--base-600);
-  --color-base-700: var(--base-700);
-  --color-base-800: var(--base-800);
-  --color-base-900: var(--base-900);
-  --color-base-950: var(--base-950);
-  --color-base-1000: var(--base-1000);
-
-  --color-primary-50: var(--primary-50);
-  --color-primary-100: var(--primary-100);
-  --color-primary-200: var(--primary-200);
-  --color-primary-300: var(--primary-300);
-  --color-primary-400: var(--primary-400);
-  --color-primary-500: var(--primary-500);
-  --color-primary-600: var(--primary-600);
-  --color-primary-700: var(--primary-700);
-  --color-primary-800: var(--primary-800);
-  --color-primary-900: var(--primary-900);
-  --color-primary-950: var(--primary-950);
-  --color-primary-1000: var(--primary-1000);
-
-  --color-secondary-50: var(--secondary-50);
-  --color-secondary-100: var(--secondary-100);
-  --color-secondary-200: var(--secondary-200);
-  --color-secondary-300: var(--secondary-300);
-  --color-secondary-400: var(--secondary-400);
-  --color-secondary-500: var(--secondary-500);
-  --color-secondary-600: var(--secondary-600);
-  --color-secondary-700: var(--secondary-700);
-  --color-secondary-800: var(--secondary-800);
-  --color-secondary-900: var(--secondary-900);
-  --color-secondary-950: var(--secondary-950);
-  --color-secondary-1000: var(--secondary-1000);
-
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
 }
 `
 
