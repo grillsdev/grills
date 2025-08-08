@@ -23,8 +23,6 @@ database_id = "local"
 [vars]
 NODE_ENV = "development"
 
-compatibility_flags = ["streams_enable_constructors"]
-
 # Add any other environment variables here
 # [vars]
 # MY_VARIABLE = "my-value"
