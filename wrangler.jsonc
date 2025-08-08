@@ -9,7 +9,8 @@
 	"compatibility_date": "2025-03-01",
 	"compatibility_flags": [
 		"nodejs_compat",
-		"global_fetch_strictly_public"
+		"global_fetch_strictly_public",
+		"streams_enable_constructors"
 	],
 	"assets": {
 		"binding": "ASSETS",

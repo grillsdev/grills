@@ -77,7 +77,6 @@ export async function POST(request: Request) {
       experimental_output: Output.object({
         schema: codeGenerationSchema
       }),
-      temperature: 1, 
       onFinish: async ({ text }) => {
         try {
           const lastUserInput = messages[messages.length-1]
