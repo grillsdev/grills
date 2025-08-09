@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-export default function HighlightedComponent({ text = "This is the component", color = "oklch(70.7% 0.165 254.624)" }: {text: string, color?: string}) {
+export default function HighlightedComponent({ text = "", color = "oklch(0.657 0.144 247.45)" }: {text: string, color?: string}) {
   return (
     <div className="relative inline-block space-y-1">
       <div className="relative z-10">{text}</div>

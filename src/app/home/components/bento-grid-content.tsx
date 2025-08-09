@@ -2,6 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Send, Bot, User } from "lucide-react";
 
+import Image from "next/image";
+
 export const BentoCardComponent = () => {
   return (
     <div className="flex flex-col h-full bg-background rounded-lg border border-border p-3 space-y-3">
@@ -90,22 +92,26 @@ export const ThemeSelectorMockup = () => {
 
 export const CodeEditorMockup = () => {
   return (
-    <div className="flex flex-col h-full bg-background rounded-lg border border-border p-3 pb-1.5 space-y-2">
-      <div className="flex items-center gap-2">
-        <div className="w-3 h-3 rounded-full bg-red-500" />
-        <div className="w-3 h-3 rounded-full bg-yellow-500" />
-        <div className="w-3 h-3 rounded-full bg-green-500" />
-        <span className="text-xs text-muted-foreground ml-2">component.tsx</span>
-      </div>
-      <div className="flex-1 bg-muted/30 rounded p-2 font-mono text-xs text-muted-foreground">
-        <div>export default function() {'{'}
+    <div className="flex flex-col bg-background rounded-lg border border-border p-3 pb-1.5 space-y-2 max-h-[280px]">
+      {/* Header with window controls and filename */}
+      <div className="flex items-center gap-2 flex-1">
+        <div className="flex items-center gap-1.5">
+          <div className="w-3 h-3 rounded-full bg-red-500" />
+          <div className="w-3 h-3 rounded-full bg-yellow-500" />
+          <div className="w-3 h-3 rounded-full bg-green-500" />
         </div>
-        <div className="ml-2 text-primary">return (</div>
-        <div className="ml-4">&lt;div className=`card`&gt;</div>
-        <div className="ml-6">Hello World</div>
-        <div className="ml-4">&lt;/div&gt;</div>
-        <div className="ml-2">)</div>
-        <div>{'}'}</div>
+        <span className="text-xs text-muted-foreground ml-2">Component.tsx</span>
+      </div>
+      
+      {/* Scrollable content area */}
+      <div className="bg-muted/30 rounded-lg overflow-y-auto h-28 mb-2">
+          <Image
+            src="/hello-world-ts.svg"
+            width={500}
+            height={500}
+            alt="Generated TypeScript code"
+            className="max-w-full h-auto"
+          />
       </div>
     </div>
   );
@@ -113,9 +119,9 @@ export const CodeEditorMockup = () => {
 
 export const CollaborationMockup = () => {
   const users = [
-    { name: "You", color: "bg-blue-500", active: true },
-    { name: "Alex", color: "bg-green-500", active: true },
-    { name: "Sam", color: "bg-purple-500", active: false }
+    { name: "OpenAI", color: "bg-blue-500", active: true },
+    { name: "Claude", color: "bg-orange-600", active: false },
+    { name: "Open Router", color: "bg-gray-500", active: false }
   ];
 
   return (
@@ -133,7 +139,6 @@ export const CollaborationMockup = () => {
           </div>
         ))}
       </div>
-      <div className="text-xs text-muted-foreground">2 users editing...</div>
     </div>
   );
 };

@@ -4,7 +4,7 @@ import { BentoGrid, BentoGridItem } from "@/components/ui/bento-grid";
 import {
   Code as IconCode,
   Palette as IconPalette,
-  Users as IconUsers,
+  KeyRound,
   MessagesSquare as IconMessages,
   BrainCircuit as IconBrandOpenai
 } from "lucide-react";
@@ -19,14 +19,15 @@ import {
 
 export default function BentoSection() {
   return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-12 space-y-2">
-          <h1 className="text-5xl font-medium ">
-            Features
+    <div className="min-h-screen bg-background z-50">
+      <div className="max-w-5xl mx-auto px-5">
+        <div className="flex flex-col items-center mb-12 space-y-3">
+          <h1 className="text-5xl font-semibold text-center">
+            Build
+            <br/> amazing interface 
           </h1>
-          <p className="text-muted-foreground text-lg">
-            Build production ready components
+          <p className="text-muted-foreground font-medium text-base max-w-xl text-center">
+            From generating <span className="font-semibold">unstyled shadcn</span> components with the smartest LLM to selecting the theme for <br className="block md:hidden"/> your component, your all in one platform for UI development.
           </p>
         </div>
         
@@ -73,9 +74,9 @@ const items = [
     icon: <IconCode className="h-4 w-4 text-primary" />,
   },
   {
-    title: "Live Collaboration",
-    description: "Work together with your team in real time, sharing ideas and building together.",
+    title: "B.Y.O.K",
+    description: "Bring your own API key and choose from a wide range of LLMs across all the top platforms.",
     header: <CollaborationMockup />,
-    icon: <IconUsers className="h-4 w-4 text-primary" />,
+    icon: <KeyRound className="h-4 w-4 text-primary" />,
   }
 ];
