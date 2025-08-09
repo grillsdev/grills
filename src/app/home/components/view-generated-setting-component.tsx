@@ -1,5 +1,9 @@
 'use client'
 
+import dedent from "dedent"
+import CodeViewer from "./syntax-highlighter"
+
+const code = dedent`
 import React, { useMemo, useState } from 'react'
 import { X, ArrowLeft, Bell, BookText, CheckCircle2, ChevronLeft, GitBranch, Hash, HelpCircle, Inbox, Link2, Menu, MessageCircle, Pencil, PlugZap, Search, Shield, Smile, Sparkles, Tags, User, Workflow } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -423,4 +427,14 @@ export default function Page(){
     </SidebarProvider>
   )
 }
+`
+const GeneratedComponentCode = () => {
 
+  return (
+    <>
+    <CodeViewer code={code}/>
+    </>
+  )
+}
+
+export default GeneratedComponentCode

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { FilePenLine, FileCode2, Puzzle } from "lucide-react";
-import GeneratedComponentCode from "./generated-setting-component-svg";
+import GeneratedComponentCode from "./view-generated-setting-component";
 import { Button } from "@/components/ui/button";
 
 import Prompt from "./prompt";
@@ -92,9 +92,7 @@ export function GeneratedComponent({
 
             <TabsContent value="app" className="m-0" asChild>
               <ScrollArea className="h-full w-full">
-                <div className="-mt-4 md:-mt-16 -ml-6 md:-ml-[12rem]">
                   <GeneratedComponentCode />
-                </div>
               </ScrollArea>
             </TabsContent>
 
