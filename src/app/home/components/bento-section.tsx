@@ -19,7 +19,7 @@ import {
 
 export default function BentoSection() {
   return (
-    <div className="min-h-screen bg-background z-50">
+    <div className="min-h-screen bg-background z-40">
       <div className="max-w-5xl mx-auto px-5">
         <div className="flex flex-col items-center mb-12 space-y-3">
           <h1 className="text-5xl font-semibold text-center">
