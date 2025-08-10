@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {  Loader2, Plus } from "lucide-react";
 
+import { useSWRConfig } from "swr"
 import useSWRMutation from 'swr/mutation'
 
 import { createProject } from "@/lib/fetchers";
@@ -20,6 +21,7 @@ export const StartProjectDialog = ({openWindow, windowState}: {openWindow: boole
   const [projectName, setProjectName] = useState("");
   const [projectType, setProjectType] = useState<"individual" | "team">("team")
   const {trigger, data, isMutating, reset} = useSWRMutation('/api/project', createProject)
+ const { mutate } = useSWRConfig()
   const router = useRouter()
 
   const startCreatingProject = (e:FormEvent) => {
@@ -32,8 +34,9 @@ export const StartProjectDialog = ({openWindow, windowState}: {openWindow: boole
       router.push(`/c/${data.chatId}`)
       reset()
       windowState(false)
+      mutate("/api/completion/user")
     }
-  },[data, router, windowState, reset])
+  },[data, router, windowState, reset, mutate])
 
 
   return (
