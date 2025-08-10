@@ -72,7 +72,7 @@ export default function Home() {
         <ExampleComponent />
       </div>
 
-      <div className="mx-auto w-full max-w-5xl space-y-16 md:space-y-20 md:px-3 mt-24 pb-16 flex flex-col items-center">
+      <div className="mx-auto w-full max-w-5xl space-y-16 md:px-3 mt-24 pb-16 flex flex-col items-center">
 
         <BentoSection />
 
