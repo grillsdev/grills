@@ -13,7 +13,9 @@ export default function RootLayout({
       <Script
         src="https://scripts.simpleanalyticscdn.com/latest.js"
         data-collect-dnt="true"
+        crossOrigin="anonymous"
         strategy="afterInteractive"
+        async
       />
     </>
   );
