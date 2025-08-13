@@ -22,7 +22,7 @@ export default function Home() {
 
       {/* Navigation */}
       <nav className="w-full z-50 backdrop-blur-xl  border-b fixed">
-        <div className="mx-auto w-full max-w-5xl px-5 sm:px-5 md:px-6 lg:px-8">
+        <div className="mx-auto w-full px-5 sm:px-5 md:px-6 lg:px-8">
           <div className="flex items-center justify-between h-12">
             {/* Logo with dot pattern */}
             <div className="flex flex-row  justify-center">
@@ -64,11 +64,11 @@ export default function Home() {
         />
 
         {/* Content container - centered with max width */}
-        <div className="w-full max-w-4xl mx-auto relative z-10 pt-20 pb-16 px-5">
+        <div className="w-full max-w-4xl 3xl:max-w-6xl mx-auto relative z-10 pt-20 pb-16 px-5">
           <Hero />
         </div>
       </div>
-      <div className="w-full max-w-4xl z-40 -mt-72 px-4">
+      <div className="w-full max-w-4xl 3xl:max-w-6xl z-40 -mt-72 px-4">
         <ExampleComponent />
       </div>
 
