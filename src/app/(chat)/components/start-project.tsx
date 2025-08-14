@@ -19,7 +19,6 @@ import { createProject } from "@/lib/fetchers";
 
 export const StartProjectDialog = ({openWindow, windowState}: {openWindow: boolean; windowState: (state: boolean) => void;}) => {
   const [projectName, setProjectName] = useState("");
-  const [projectType, setProjectType] = useState<"individual" | "team">("team")
   const {trigger, data, isMutating, reset} = useSWRMutation('/api/project', createProject)
  const { mutate } = useSWRConfig()
   const router = useRouter()
@@ -49,18 +48,14 @@ export const StartProjectDialog = ({openWindow, windowState}: {openWindow: boole
             Create Your Project
           </DialogTitle>
           <DialogDescription>
-            Start a new project, Invite the people you need MAX 4
+            Create a project with an easy to remember name.
           </DialogDescription>
         </DialogHeader>
 
         <form 
         onSubmit={startCreatingProject}
-        className="space-y-5 mt-3">
-          {/* Project Name Input */}
+        className="space-y-5 mt-1">
           <>
-            <label htmlFor="project-name" className="text-sm font-medium px-1">
-              Project Name
-            </label>
             <Input
               id="project-name"
               value={projectName}
@@ -73,12 +68,6 @@ export const StartProjectDialog = ({openWindow, windowState}: {openWindow: boole
             />
           </>
 
-          <div className="flex flex-row items-center gap-3">
-            <Button variant={"outline"} type="button" className={`${projectType==="individual"&&"border-4"}`} onClick={()=>setProjectType("individual")}>Individual</Button>
-            <Button variant={"outline"} type="button" className={`${projectType==="team"&&"border-4"}`} onClick={()=>setProjectType("team")}>Team</Button>
-
-          </div>
-
           {/* Continue Button */}
           <div className="flex flex-col items-center gap-2">
             <Button
@@ -89,8 +78,6 @@ export const StartProjectDialog = ({openWindow, windowState}: {openWindow: boole
             >
              {isMutating&&( <Loader2 className="animate-spin"/>)} Continue
             </Button>
-        <p className="text-[11px] underline italic text-blue-400 flex flex-row gap-1 items-center tracking-wide font-medium"> Permitted user have right to modify the chat at any time</p>
-
           </div>
         </form>
       </DialogContent>
