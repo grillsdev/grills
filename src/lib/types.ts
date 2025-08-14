@@ -1,4 +1,4 @@
-import type { Message } from "@ai-sdk/react";
+import type { UIMessage } from "@ai-sdk/react";
 import { z } from "zod";
 
 export interface Model {
@@ -28,7 +28,8 @@ export interface CurrentModel {
 }
 
 export interface MessageProps {
-  message: Message;
+  role: "system" | "user" | "assistant";
+  messageContent: string;
   isStreaming: boolean;
   id: string;
   changeWindowStateTo: (state: boolean) => void;
@@ -46,7 +47,7 @@ export interface UserProjectOverview {
 }
 
 export type ChatHistory = {
-  chats: Message[];
+  chats: UIMessage[];
 };
 
 export type Streaming = Message & {
@@ -65,7 +66,7 @@ export type LLMProvider = "openai" | "gemini" | "openrouter" | "togetherai" | "g
 
 export interface CompletionRequest {
   chatId: string;
-  messages: Message[];
+  messages: UIMessage[];
   llm: LLMProvider;
   apiKey: string;
   model: string;

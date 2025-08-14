@@ -1,7 +1,7 @@
 import axios from "axios"
 
 import { AvailableModels, ProjectAccessRequest, ProjectDetailRequest, SavedTheme, UserProjectOverview } from "./types";
-import type { Message } from "ai";
+import type { UIMessage } from "ai";
 
 
 export const getModels = async (url: string): Promise<AvailableModels[]> => {
@@ -49,8 +49,8 @@ export const acceptAccessRequest = async(url:string, {arg}: {arg: ProjectAccessR
   return response.status
 }
 
-export const getChats = async(url:string): Promise<Message[]> => {
-  const response = await axios.get<{messages: Message[]}>(url)
+export const getChats = async(url:string): Promise<UIMessage[]> => {
+  const response = await axios.get<{messages: UIMessage[]}>(url)
   return response.data.messages
 }
 
