@@ -1,5 +1,7 @@
 import { auth } from '@/lib/auth';
 import { getDb } from '@/db/index';
+import { desc } from 'drizzle-orm';
+
 import { llm, model } from '@/db/schema/model';
 
 import { createOpenAI } from '@ai-sdk/openai';
@@ -20,7 +22,7 @@ export async function GET(request: Request) {
   const db = await getDb()
   
   const llms = await db.select().from(llm);
-  const models = await db.select().from(model);
+  const models = await db.select().from(model).orderBy(desc(model.createdAt));
   
   const result = llms.map(l => ({
     ...l,
@@ -34,8 +36,6 @@ export async function GET(request: Request) {
 };
 
 
-// verification for each LLM
-// remove the authMiddleare
 export async function POST(request: Request) {
   const session = await auth.api.getSession({
           headers: request.headers,
