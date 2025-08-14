@@ -1,8 +1,9 @@
 # https://developers.cloudflare.com/workers/static-assets/headers
+
 /_next/static/*
   Cache-Control: public,max-age=31536000,immutable
 
-/* Route-specific override: disable cross-origin isolation on /home */
+# Route-specific override: disable cross-origin isolation on /home
 /home
   Cross-Origin-Embedder-Policy: unsafe-none
   Cross-Origin-Opener-Policy: unsafe-none
