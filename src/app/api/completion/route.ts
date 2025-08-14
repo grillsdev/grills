@@ -1,9 +1,6 @@
-export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
-
+import { streamText, Output, convertToModelMessages, createIdGenerator, smoothStream } from "ai";
 import { Redis } from "@upstash/redis";
 
-import { streamText, Output } from "ai";
 import { createOpenAI } from "@ai-sdk/openai";
 import { auth } from "@/lib/auth";
 
@@ -64,7 +61,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // 4. Initialize dependencies
     const db = await getDb();
     const sysPrompt = await getPromptTxt();
 
@@ -73,30 +69,41 @@ export async function POST(request: Request) {
       baseURL: LLMsOpenAICompatibleEndpoint[llm],
     });
 
-    // 6. Stream text with cleaner onFinish handler
     const result = streamText({
       model: operator.chat(model),
-      messages: messages,
+      messages: convertToModelMessages(messages),
       system: sysPrompt,
       experimental_output: Output.object({
-        schema: codeGenerationSchema,
+        schema: codeGenerationSchema
+      }),
+      experimental_transform: smoothStream({
+        delayInMs: 17,
+        chunking: 'word'
       }),
       onFinish: async ({ text }) => {
         try {
+          const generateUserMessageId = createIdGenerator({
+            prefix: "usr",
+            size: 16,
+          })
+          const generateMessageId = createIdGenerator({
+            prefix: "msg",
+            size: 16,
+          })
+
           const lastUserInput = messages[messages.length - 1];
-          if (lastUserInput.role !== "user")
-            throw new Error("Something went wrong!");
+          if (lastUserInput.role !== "user") throw new Error("Something went wrong!");
+
           const userMsgObj = {
-            id: `usr-${crypto.randomUUID()}`,
+            id: generateUserMessageId(),
             role: "user",
-            content: lastUserInput.content,
+            parts: lastUserInput.parts,
             createdAt: new Date(),
           };
-
           const assistantMessage = {
-            id: `msg-${crypto.randomUUID()}`,
+            id: generateMessageId(),
             role: "assistant" as const,
-            content: text,
+            parts: [{type: 'text', text:text}],
             createdAt: new Date(),
           };
 
@@ -121,19 +128,10 @@ export async function POST(request: Request) {
       },
       onError: (err) => {
         console.error("Stream generation error:", err);
-      },
+      }
     });
 
-    return new Response(result.toDataStreamResponse().body, {
-      headers: {
-        "Content-Type": "text/plain; charset=utf-8",
-        "Cache-Control": "no-cache",
-        Connection: "keep-alive",
-        "Access-Control-Allow-Origin": "*", // Adjust as needed
-        "Access-Control-Allow-Methods": "POST",
-        "Access-Control-Allow-Headers": "Content-Type",
-      },
-    });
+    return result.toUIMessageStreamResponse();
   } catch (error) {
     console.error("Completion error:", error);
 
