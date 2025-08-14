@@ -1,6 +1,4 @@
 import { memo, useEffect} from "react";
-import Markdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import {
   Accordion,
   AccordionContent,
@@ -14,6 +12,7 @@ import type { GeneratedCodeContent, MessageProps } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 
+import { parse } from 'best-effort-json-parser'
 import { $sanboxObj } from "@/store/sandbox";
 
 const UserCollapsedInput = ({ content }: { content: string }) => {
@@ -22,7 +21,7 @@ const UserCollapsedInput = ({ content }: { content: string }) => {
   if (!shouldCollapse) {
     return (
       <div className="px-2.5 text-sm font-medium">
-        <Markdown remarkPlugins={[remarkGfm]}>{content}</Markdown>
+        {content}
       </div>
     );
   }
@@ -34,7 +33,7 @@ const UserCollapsedInput = ({ content }: { content: string }) => {
           {content.substring(0, 110)}...
         </AccordionTrigger>
         <AccordionContent>
-          <Markdown remarkPlugins={[remarkGfm]}>{content}</Markdown>
+          {content}
         </AccordionContent>
       </AccordionItem>
     </Accordion>
@@ -53,14 +52,6 @@ const UserMessage = memo(({ content }: { content: string }) => {
     </div>
   )
 })
-
-
-// eslint-disable-next-line react/display-name
-const MemoizedMarkdown = memo(({ children }: { children: string }) => (
-  <Markdown remarkPlugins={[remarkGfm]}>{children}</Markdown>
-));
-
-import { parse } from 'best-effort-json-parser'
 
 
 const AssistantMessage = memo(({
@@ -94,16 +85,14 @@ const AssistantMessage = memo(({
   }, [id, isStreaming, parsedContent.code, parsedContent.pkgs, sb.isStreaming, sb.id]);
 
 
-
-
   return (
     <div className="flex flex-row gap-3 my-7">
       <span className="px-0.5 font-semibold text-xl italic text-white -mt-1.5 ">
         g
       </span>
-      <div className="">
+      <div className="selection:bg-base-900 selection:text-secondary">
         <div className="text-sm flex flex-col gap-1">
-          <MemoizedMarkdown>{parsedContent.pre_code}</MemoizedMarkdown>
+          <p >{parsedContent.pre_code}</p>
           {parsedContent.code && (
             <Button
               size="sm"
@@ -114,7 +103,7 @@ const AssistantMessage = memo(({
                 }
                 $sanboxObj.set({ id, type:"btn", pkg: parsedContent.pkgs,  code: parsedContent.code, isStreaming: false});
               }}
-              className="w-fit py-4 font-light ring ring-accent-foreground my-3 data-[state=open]:ring-rose-400"
+              className="w-fit py-4 font-light ring ring-accent-foreground my-3 data-[state=open]:ring-rose-400 select-none"
             >
               {isStreaming && sb.id === id &&(
                 <Loader2 className="text-green-500 animate-spin" />
@@ -122,7 +111,7 @@ const AssistantMessage = memo(({
               Component
             </Button>
           )}
-          <MemoizedMarkdown>{parsedContent.post_code}</MemoizedMarkdown>
+          <div className="prose">{parsedContent.post_code}</div>
 
         </div>
         {isStreaming && (
@@ -135,7 +124,8 @@ const AssistantMessage = memo(({
 
 export const ChatMessage = memo(({
   id,
-  message,
+  role,
+  messageContent,
   isStreaming,
   changeWindowStateTo,
   windowState
@@ -144,16 +134,16 @@ export const ChatMessage = memo(({
     <div className="px-2 sm:px-4" key={id}>
       <div className="max-w-2xl mx-auto">
         {/* User Message */}
-        {message.role === "user" && <UserMessage content={message.content} />}
+        {role === "user" && <UserMessage content={messageContent} />}
 
         {/* Assistant Message */}
-        {message.role === "assistant" && (
+        {role === "assistant" && (
           <AssistantMessage
-            content={message.content}
+            content={messageContent}
             isStreaming={isStreaming}
             changeWindowState={changeWindowStateTo}
             windowState={windowState}
-            id={message.id}
+            id={id}
           />
         )}
       </div>
