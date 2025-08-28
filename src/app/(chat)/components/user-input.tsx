@@ -18,7 +18,7 @@ import { getSelectedModel, getApiKey } from "@/lib/utils";
 import { ModelSelect } from "./model-select-dialog";
 import { APIKeysDialog } from "./api-keys-dialog";
 import { StartProjectDialog } from "./start-project";
-import UserTheme from "./theme";
+// import UserTheme from "./theme";
 
 
 const UserInput = ({
@@ -100,7 +100,7 @@ const UserInput = ({
           className={`w-full pt-3 pb-20 resize-none rounded-4xl border placeholder:text-base-400 placeholder:text-xs placeholder:px-1 max-h-72 no-scrollbar ${
             !isHomePage && "backdrop-blur-3xl"
           }  ${disable && "!cursor-not-allowed"}`}
-          placeholder="What is meaning is meaning of life...."
+          placeholder="Build me a dashboard for student attendance management...."
           required={true}
           onChange={
             isHomePage ? handleHomePageInputChange : handleChatInputChange
@@ -118,7 +118,7 @@ const UserInput = ({
           className="flex flex-row items-center absolute left-3 bottom-1.5"
           >
             <ModelSelectBtn/>
-            <UserTheme/>
+            {/* <UserTheme/> */}
           </div>
           <button
             type="submit"
