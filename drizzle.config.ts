@@ -1,11 +1,23 @@
-import 'dotenv/config';
-import { defineConfig } from 'drizzle-kit';
+/**
+ * Modify this file according to your needs
+ * ssl, no ssl url etc..
+ * Hperdrive from cloudflare only support ssl/tsl connections
+*/
+const prod = false;
+
+
+import "dotenv/config";
+import { defineConfig } from "drizzle-kit";
+import { prodConfig } from "./drizzle.db.config";
+
+
+const localConfig = {
+  url: process.env.LOCAL_DB_URL!
+};
 
 export default defineConfig({
-  out: './src/db/migration',
-  schema: './src/db/schema',
-  dialect: 'postgresql',
-  dbCredentials: {
-    url: "postgres://junglefowl:tM4-tL2_yW3_iR6=jQ7-@asia-south2-001.proxy.kinsta.app:30778/great-turquoise-cobra"
-  },
+  out: "./src/db/migration",
+  schema: "./src/db/schema",
+  dialect: "postgresql",
+  dbCredentials: prod ? prodConfig : localConfig,
 });

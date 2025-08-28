@@ -22,8 +22,8 @@
 	"hyperdrive": [
 		{
 		"binding": "HYPERDRIVE",
-        "id": "dfb225070b9141a9893cd0929c4b7828",
-		"localConnectionString": "postgres://junglefowl:tM4-tL2_yW3_iR6=jQ7-@asia-south2-001.proxy.kinsta.app:30778/great-turquoise-cobra"
+        "id": "38770883636d4d7cb3bc279b8c1498e1",
+		"localConnectionString": "postgresql://grilluser:grills@localhost:5433/grills"
 		}
 	]
 	/**
