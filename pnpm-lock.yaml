@@ -26,6 +26,9 @@ importers:
       '@opennextjs/cloudflare':
         specifier: 1.3.0
         version: 1.3.0(wrangler@4.28.1)
+      '@openrouter/ai-sdk-provider':
+        specifier: ^1.1.2
+        version: 1.1.2(ai@5.0.10(zod@3.25.67))(zod@3.25.67)
       '@radix-ui/react-accordion':
         specifier: ^1.2.11
         version: 1.2.11(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -1535,6 +1538,13 @@ packages:
     hasBin: true
     peerDependencies:
       wrangler: ^4.19.1
+
+  '@openrouter/ai-sdk-provider@1.1.2':
+    resolution: {integrity: sha512-cfiKVpNygGFaJojBHFvtTf7UiF458Xh9yPcTg4FXF7bGYN5V33Rxx9dXNE12fjv6lHeC5C7jwQHDrzUIFol1iQ==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      ai: ^5.0.0
+      zod: ^3.24.1 || ^v4
 
   '@opentelemetry/api@1.9.0':
     resolution: {integrity: sha512-3giAOQvZiH5F9bMlMiv8+GSPMeqg0dbaeo58/0SlA9sxSqZhnUtxzX9/2FzyhS9sWQf5S0GJE0AKBrFqjpeYcg==}
@@ -7074,6 +7084,11 @@ snapshots:
     transitivePeerDependencies:
       - aws-crt
       - supports-color
+
+  '@openrouter/ai-sdk-provider@1.1.2(ai@5.0.10(zod@3.25.67))(zod@3.25.67)':
+    dependencies:
+      ai: 5.0.10(zod@3.25.67)
+      zod: 3.25.67
 
   '@opentelemetry/api@1.9.0': {}
 

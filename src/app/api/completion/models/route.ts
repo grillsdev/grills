@@ -8,9 +8,10 @@ import { createOpenAI } from '@ai-sdk/openai';
 import { generateText } from 'ai';
 
 import { LLMProvider } from '@/lib/types';
-import { LLMsOpenAICompatibleEndpoint } from '@/lib/utils';
+import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 
 
+// Get the models with llm
 export async function GET(request: Request) {
   try{
      const session = await auth.api.getSession({
@@ -35,7 +36,7 @@ export async function GET(request: Request) {
   }
 };
 
-
+// verify the api token before sacing that 
 export async function POST(request: Request) {
   const session = await auth.api.getSession({
           headers: request.headers,
@@ -45,34 +46,28 @@ export async function POST(request: Request) {
     }
     const body = await request.json()
     const { prompt: apiKey, llm } = body as { llm: LLMProvider; prompt: string }
-    console.log(llm)
     try{
+      let llmRouter = null
       let model;
       switch(llm){
-        case "gemini":
-          model = "gemini-2.0-flash"
-          break
         case "openrouter":
-          model = "mistralai/ministral-3b";
-          break
-        case "togetherai":
-          model = "Qwen/Qwen3-235B-A22B-Instruct-2507-tput";
-          break
-        case "groq":
-          model = "qwen/qwen3-32b";
-          break
+          llmRouter = createOpenRouter({
+            apiKey:apiKey
+          })
+          model = "google/gemini-2.5-flash-lite";
+          break;
         default:
+          llmRouter = createOpenAI({
+            apiKey:apiKey,
+          })
           model = "gpt-3.5-turbo"
       }
-      const openai = createOpenAI({
-      apiKey:apiKey,
-      baseURL: LLMsOpenAICompatibleEndpoint[llm]
-     })
      const {text} = await generateText({
-      model: openai(model),
-      prompt: "just return me with what is the 1+1 in words thats is nothing more or nothing less "
+      model: llmRouter(model),
+      prompt: "just return me with what is the 1+1 ? "
     })
-    return Response.json({text})
+    console.log(text)
+    return Response.json({message: "ok"}, {status:200})
     }catch(error){
       console.log(error)
       return Response.json({error: "Invalid api key"}, {status: 500})
