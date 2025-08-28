@@ -1,13 +1,12 @@
-//remove example. from the file extention and use it
-
 export const prodConfig = {
   user: "",
   password: "",
   host: "",
-  port: 90333,
-  database: "bd name",
+  port: 3000,
+  database: "db name",
   ssl: {
     rejectUnauthorized: true,
-    ca: `CERTIFICATE`,
+    ca: `Paste the CERTIFICATE here`,
   },
 };
+

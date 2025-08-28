@@ -45,4 +45,3 @@ next-env.d.ts
 .wrangler
 .dev.vars*
 .env
-drizzle.db.config.ts
