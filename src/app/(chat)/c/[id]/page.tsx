@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { useParams } from "next/navigation";
@@ -33,6 +33,10 @@ export default function Chat() {
   const [sandboxWindow, setSandboxWindow] = useState(false);
   const [input, setInput] = useState("");
   const isMobile = useIsMobile();
+
+  // Ref to track the newest (last) message in the list
+  // We will align this element to the top of the scrollable viewport on updates
+  const lastMessageRef = useRef<HTMLDivElement | null>(null);
   const {
     data: messageHistory,
     isLoading: isChatLoading,
@@ -85,6 +89,25 @@ export default function Chat() {
     getUserChats();
   }, [isChatLoading, messageHistory, error, setMessages]);
 
+  // Keep the most recent message aligned to the top as messages stream in
+  // Works with Radix ScrollArea by targeting its internal viewport element
+  useEffect(() => {
+    if (!lastMessageRef.current) return;
+
+    // Radix ScrollArea renders an internal viewport that actually scrolls
+    const viewport = document.querySelector(
+      "[data-radix-scroll-area-viewport]"
+    ) as HTMLElement | null;
+
+    if (viewport) {
+      const top = (lastMessageRef.current as HTMLElement).offsetTop;
+      viewport.scrollTo({ top, behavior: "smooth" });
+    } else {
+      // Fallback for non-Radix environments
+      lastMessageRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [messages, status]);
+
   const handleSubmit = () => {
     if (input.trim()) {
       sendMessage({ text: input });
@@ -121,9 +144,13 @@ export default function Chat() {
             <div className="flex-1 min-h-0 flex flex-col relative">
               <div className="flex-1 overflow-hidden">
                 <ScrollArea className="h-full w-full">
-                  <div className="px-4">
-                    {messages.map((message) => (
-                      <div key={message.id}>
+                  <div className="py-2 px-4">
+                    {messages.map((message, idx) => (
+                      <div
+                        key={message.id}
+                        // Attach the ref only on the last (newest) message container
+                        ref={idx === messages.length - 1 ? lastMessageRef : undefined}
+                      >
                         {message.parts.map((part, i) => {
                           switch (part.type) {
                             case "text":
@@ -148,8 +175,7 @@ export default function Chat() {
                         })}
                       </div>
                     ))}
-                    {/* <ThemeDialogSection/> */}
-                    <div className="h-32"></div>
+                    <div className="h-40"></div>
                   </div>
                 </ScrollArea>
               </div>
