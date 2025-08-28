@@ -95,8 +95,8 @@ export const APIKeysDialog = ({
           <DialogTitle className="text-left">
             Enter Your API Keys
           </DialogTitle>
-          <DialogDescription className="text-left">
-            API keys will be saved in your browser. <span className="text-xs text-primary">Open Router</span>
+          <DialogDescription className="text-left text-xs font-medium">
+            API keys will be saved in your browser. <span className="text-xs text-primary">OpenRouter</span>
           </DialogDescription>
         </DialogHeader>
 

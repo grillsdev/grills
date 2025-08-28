@@ -29,7 +29,7 @@ export default function Home() {
               <span className="text-xl tracking-wider italic font-medium text-white">
                 grills{" "}
                 <span className="text-xs text-primary tracking-tighter italic-none">
-                  beta
+                  alpha
                 </span>
               </span>
             </div>

@@ -218,7 +218,7 @@ dist
         <head>
             <meta charset="UTF-8" />
             <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-            <title>React + TS + Vite (in WebContainer)</title>
+            <title>Grill Project</title>
         </head>
         <body>
             <div id="root"></div>

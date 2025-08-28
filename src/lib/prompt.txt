@@ -481,7 +481,7 @@ import {
 
 ---
 
-## 16. Context Menu : Displays a menu to the user — such as a set of actions or functions — triggered by a button.
+## 16. Context Menu : Displays a menu to the user â€” such as a set of actions or functions â€” triggered by a button.
 **Import**  
 ```ts
 import {
@@ -522,15 +522,15 @@ import {
       <ContextMenuContent className="w-52">
         <ContextMenuItem inset>
           Back
-          <ContextMenuShortcut>⌘[</ContextMenuShortcut>
+          <ContextMenuShortcut>âŒ˜[</ContextMenuShortcut>
         </ContextMenuItem>
         <ContextMenuItem inset disabled>
           Forward
-          <ContextMenuShortcut>⌘]</ContextMenuShortcut>
+          <ContextMenuShortcut>âŒ˜]</ContextMenuShortcut>
         </ContextMenuItem>
         <ContextMenuItem inset>
           Reload
-          <ContextMenuShortcut>⌘R</ContextMenuShortcut>
+          <ContextMenuShortcut>âŒ˜R</ContextMenuShortcut>
         </ContextMenuItem>
         <ContextMenuSub>
           <ContextMenuSubTrigger inset>More Tools</ContextMenuSubTrigger>
@@ -638,7 +638,7 @@ import {
 (Use `DrawerClose` or `DrawerFooter` only when needed)
 ---
 
-## 19. Dropdown Menu : Displays a menu to the user — such as a set of actions or functions — triggered by a button.
+## 19. Dropdown Menu : Displays a menu to the user â€” such as a set of actions or functions â€” triggered by a button.
 **Import**  
 ```ts
 import {
@@ -906,7 +906,7 @@ import { Progress } from "@/components/ui/progress"
 ```
 ---
 
-## 30. Radio Group : A set of checkable buttons—known as radio buttons—where no more than one of the buttons can be checked at a time.
+## 30. Radio Group : A set of checkable buttonsâ€”known as radio buttonsâ€”where no more than one of the buttons can be checked at a time.
 **Import**  
 ```ts
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
@@ -968,7 +968,7 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 ```
 ---
 
-## 33. Select : Displays a list of options for the user to pick from—triggered by a button.
+## 33. Select : Displays a list of options for the user to pick fromâ€”triggered by a button.
 **Import**  
 ```ts
 import {
@@ -1362,14 +1362,14 @@ The pkgs array MUST contain ALL ShadCN components used in your code. Never use a
 
 <examples>
 <correct>
-Code uses Button + Dialog + Radio Group → pkgs: ["button", "dialog", "radio-grorup"]
-Code uses Form → pkgs: ["form"]
-Code uses Card + Avatar + Badge → pkgs: ["card", "avatar", "badge"]
+Code uses Button + Dialog + Radio Group â†’ pkgs: ["button", "dialog", "radio-grorup"]
+Code uses Form â†’ pkgs: ["form"]
+Code uses Card + Avatar + Badge â†’ pkgs: ["card", "avatar", "badge"]
 </correct>
 
 <incorrect>
-Code uses Button but pkgs: [] ❌
-Code uses multiple components but only lists one ❌
+Code uses Button but pkgs: [] âŒ
+Code uses multiple components but only lists one âŒ
 </incorrect>
 </examples>
 </dependency_management>
@@ -1466,16 +1466,16 @@ The "code" field must contain properly formatted multi-line TypeScript code with
 
 <validation_checklist>
 Before responding, verify:
-1. ✅ Valid JSON format (no markdown wrapping)
-2. ✅ All ShadCN components name from imports included in pkgs array
-3. ✅ Proper string escaping throughout
-4. ✅ TypeScript interfaces and types complete
-5. ✅ Both named and default exports present
-6. ✅ Mobile-first responsive design
-7. ✅ Accessibility considerations addressed
-8. ✅ Only layout styling applied (unless colors requested)
-9. ✅ Complete, production-ready implementation
-10. ✅ All required JSON fields present
+1. âœ… Valid JSON format (no markdown wrapping)
+2. âœ… All ShadCN components name from imports included in pkgs array
+3. âœ… Proper string escaping throughout
+4. âœ… TypeScript interfaces and types complete
+5. âœ… Both named and default exports present
+6. âœ… Mobile-first responsive design
+7. âœ… Accessibility considerations addressed
+8. âœ… Only layout styling applied (unless colors requested)
+9. âœ… Complete, production-ready implementation
+10. âœ… All required JSON fields present
 </validation_checklist>
 
 <final_note>

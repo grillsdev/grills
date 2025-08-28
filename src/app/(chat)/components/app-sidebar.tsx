@@ -34,28 +34,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              className="data-[slot=sidebar-menu-button]:!p-1.5"
-            >
-              <Link href="/">
-                {/* <IconInnerShadowTop className="!size-5" /> */}
-                <span className="text-base font-semibold">Grills</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+       
         <SidebarMenu>
           <SidebarMenuItem className="">
             <Link href={"/"}>
             <SidebarMenuButton
               tooltip="Quick Create"
-              className="bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground min-w-8 duration-200 ease-linear cursor-pointer z-50 flex justify-between"
+              className="border bg-black/25 min-w-8 duration-200 ease-linear cursor-pointer z-50 flex justify-between hover:bg-black/40 active:bg-black/40 group"
             >
-              <span>New Chat</span>
-              <CirclePlus className="font-semibold"/>
+              <span className="font-lg tracking-wider">Grills</span>
+              <CirclePlus className="font-semibold text-foreground"/>
             </SidebarMenuButton>
             </Link>
           </SidebarMenuItem>

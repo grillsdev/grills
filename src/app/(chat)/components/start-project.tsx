@@ -47,7 +47,7 @@ export const StartProjectDialog = ({openWindow, windowState}: {openWindow: boole
           <DialogTitle className="">
             Create Your Project
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="font-medium">
             Create a project with an easy to remember name.
           </DialogDescription>
         </DialogHeader>
