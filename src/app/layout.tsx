@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -12,54 +13,75 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+
+const siteConfig = {
+  name: "Grills",
+  title: "Open Source alternative for Lovable Bolt & V0.",
+  description:
+    "Open Source alternative for Lovable Bolt & V0. Just generate, copy and paste into your production codebase — no overhead, works with your favorite LLM (BYOK).",
+  url: "https://grills.dev",
+  author: "Aditya Pushkar",
+  image: "/site-image.png",
+};
+
 export const metadata: Metadata = {
-  title: "Grills",
-  description: "Your frontend dev - Build functional shadcn components with your favorite LLM. Generate production ready shadcn/ui components instantly and maintain consistent design & layout across your projects.",
-  keywords: ["frontend", "dev", "shadcn", "components", "LLM", "AI", "shadcn/ui", "production ready", "design", "layout", "UI components", "UI component generator", "web development", "react"],
-  authors: [{ name: "Aditya Pushkar" }],
-  creator: "Grills",
-  publisher: "Grills",
-  
-  // Basic meta tags
-  metadataBase: new URL('https://grills.dev'),
-  
-  // Icons
+  title: siteConfig.name,
+  description: siteConfig.description,
+  keywords: [
+    "frontend",
+    "dev",
+    "shadcn",
+    "components",
+    "LLM",
+    "AI",
+    "shadcn/ui ai",
+    "production ready",
+    "design",
+    "layout",
+    "UI components ai",
+    "UI component generator",
+    "web development ai",
+    "react ai",
+  ],
+  authors: [{ name: siteConfig.author }],
+  creator: siteConfig.name,
+  publisher: siteConfig.name,
+  metadataBase: new URL(siteConfig.url),
+
   icons: {
-    icon: '/favicon.svg',
-    apple: '/apple-touch-icon.png',
+    icon: "/favicon.svg",
+    apple: "/apple-touch-icon.png",
   },
-  
-  // Open Graph (Facebook, LinkedIn, Reddit, Discord, WhatsApp, etc.)
+
   openGraph: {
-    type: 'website',
-    locale: 'en_US',
-    url: 'https://grills.dev',
-    title: 'Grills - Your Frontend Dev',
-    description: 'Your frontend dev - Build functional shadcn components with your favorite LLM. Generate production ready shadcn/ui components instantly and maintain consistent design & layout across your projects.',
-    siteName: 'Grills',
+    type: "website",
+    locale: "en_US",
+    url: siteConfig.url,
+    title: `${siteConfig.name} - Your Frontend Dev`,
+    description: siteConfig.description,
+    siteName: siteConfig.name,
     images: [
       {
-        url: '/site-image.png',
+        url: siteConfig.image,
         width: 1200,
         height: 630,
-        alt: 'Grills - Your Frontend Dev',
-        type: 'image/png',
+        alt: `${siteConfig.name} - Your Frontend Dev`,
+        type: "image/png",
       },
     ],
   },
-  
-  // Twitter/X Card
+
   twitter: {
-    card: 'summary_large_image',
-    title: 'Grills - Your Frontend Dev',
-    description: 'Your frontend dev - Build functional shadcn components with your favorite LLM. Generate production ready shadcn/ui components instantly and maintain consistent design & layout across your projects.',
-    images: ['/site-image.png'],
+    card: "summary_large_image",
+    title: `${siteConfig.name} - Your Frontend Dev`,
+    description: siteConfig.description,
+    images: [siteConfig.image],
   },
-  
-  // Additional tags
-  category: 'technology',
-  classification: 'Business',
+
+  category: "technology",
+  classification: "Business",
 };
+
 
 export default function RootLayout({
   children,
@@ -70,7 +92,7 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased dark`}
-        suppressHydrationWarning={true}
+        suppressHydrationWarning
       >
         {children}
       </body>
