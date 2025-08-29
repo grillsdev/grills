@@ -1,18 +1,22 @@
-<div align="center">
+<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; background: #0f172a; color: #e2e8f0; border-radius: 16px; max-width: 900px; margin: auto;">
 
-<img src="public/apple-icon.png" alt="Grills Logo" width="100" align="left" />
+  <img src="public/apple-icon.png" alt="Grills Logo" width="80" style="margin-bottom: 20px;" />
 
-# Grills
+  <h1 style="font-size: 2.5rem; font-weight: 700; margin: 0; width: 100%">
+    Grills
+  </h1>
 
-**A free, open source alternative to Lovable, Bolt and v0.**
-
+  <p style="font-size: 1.5rem; margin-top: 16px">
+    A free, open source alternative to <span style="font-weight: 700;">Lovable, Bolt and v0.</span>
+  </p>
 </div>
+
 
 ## Purpose
 
-* **Too pricey to use** – Most AI UI builders are super expensive, which makes them tough to afford for indie devs and small teams.
-* **Doesn’t play nice with your code** – The UIs they generate usually don’t fit smoothly into existing projects, so you end up spending extra time fixing things.
-* **Annoying subscriptions** – A lot of platforms lock you into subscriptions and charge even if you’re not really using them.
+- **Too pricey to use** – Most AI UI builders are super expensive, which makes them tough to afford for indie devs and small teams.
+- **Doesn’t play nice with your code** – The UIs they generate usually don’t fit smoothly into existing projects, so you end up spending extra time fixing things.
+- **Annoying subscriptions** – A lot of platforms lock you into subscriptions and charge even if you’re not really using them.
 
 ## Feature
 
@@ -26,7 +30,7 @@
 
 > This project is in a very early stage. We are actively adding and removing features, which may introduce breaking changes. Use with caution in production.
 
-## Local Setup 
+## Local Setup
 
 ### 1) Clone and install
 
@@ -65,6 +69,7 @@ UPSTASH_REDIS_REST_TOKEN=
 ```
 
 Notes:
+
 - `drizzle.config.ts` is already set to use `LOCAL_DB_URL` when `prod` is `false`. If you change that behavior, update it accordingly.
 - Make sure the DB is reachable at the URL above (or change both URLs to your local Postgres).
 
@@ -92,6 +97,7 @@ pnpm db:studio
 ```
 
 Then add LLMs and Models:
+
 - Follow the format shown in `example.llms.ts` (Note `title` in LLM Table Field and `name` in Model Table Fields)
 - In the LLM table: use the same `title` as in the example
 - In the Model table: use the same `name` is the model slug (e.g., `openai/gpt-5-mini`), `title` is the public-facing name
@@ -105,10 +111,34 @@ export const llms = [
 ];
 
 export const models = [
-  { id: "default", title: "Kimi K2", name: "moonshotai/kimi-k2", llm_id: "openrouter-primarykey", created_at: "Select now" },
-  { id: "default", title: "Qwen3 Coder", name: "qwen/qwen3-coder", llm_id: "openrouter-primarykey", created_at: "Select now" },
-  { id: "default", title: "GPT 5 Mini", name: "openai/gpt-5-mini", llm_id: "openrouter-primarykey", created_at: "Select now" },
-  { id: "default", title: "G 2.5 flash lite", name: "google/gemini-2.5-flash-lite", llm_id: "openrouter-primarykey", created_at: "Select now" },
+  {
+    id: "default",
+    title: "Kimi K2",
+    name: "moonshotai/kimi-k2",
+    llm_id: "openrouter-primarykey",
+    created_at: "Select now",
+  },
+  {
+    id: "default",
+    title: "Qwen3 Coder",
+    name: "qwen/qwen3-coder",
+    llm_id: "openrouter-primarykey",
+    created_at: "Select now",
+  },
+  {
+    id: "default",
+    title: "GPT 5 Mini",
+    name: "openai/gpt-5-mini",
+    llm_id: "openrouter-primarykey",
+    created_at: "Select now",
+  },
+  {
+    id: "default",
+    title: "G 2.5 flash lite",
+    name: "google/gemini-2.5-flash-lite",
+    llm_id: "openrouter-primarykey",
+    created_at: "Select now",
+  },
 ];
 ```
 
