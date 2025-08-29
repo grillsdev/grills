@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 
 const siteConfig = {
   name: "Grills",
-  title: "Open Source alternative for Lovable Bolt & V0.",
+  title: "Open Source alternative for Lovable, Bolt & V0.",
   description:
     "Open Source alternative for Lovable Bolt & V0. Just generate, copy and paste into your production codebase — no overhead, works with your favorite LLM (BYOK).",
   url: "https://grills.dev",
@@ -57,7 +57,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: siteConfig.url,
-    title: `${siteConfig.name} - Your Frontend Dev`,
+    title: `${siteConfig.title} Your Frontend Dev`,
     description: siteConfig.description,
     siteName: siteConfig.name,
     images: [
@@ -73,7 +73,7 @@ export const metadata: Metadata = {
 
   twitter: {
     card: "summary_large_image",
-    title: `${siteConfig.name} - Your Frontend Dev`,
+    title: `${siteConfig.title} Your Frontend Dev`,
     description: siteConfig.description,
     images: [siteConfig.image],
   },
