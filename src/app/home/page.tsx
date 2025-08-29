@@ -4,7 +4,8 @@ import GoToTwitter from "./components/go-to-twitter";
 import ExampleComponent from "./components/demo-window-component";
 import Hero from "./components/hero";
 import InfoCard from "./components/info-card";
-import SupportedLLMsSection from "./components/supported-llms";
+import { Github } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
   return (
@@ -28,17 +29,18 @@ export default function Home() {
             <div className="flex flex-row  justify-center">
               <span className="text-xl tracking-wider italic font-medium text-white">
                 grills{" "}
-                <span className="text-xs text-primary tracking-tighter italic-none">
-                  alpha
+                <span className="text-xs text-primary tracking-tighter">
+                  beta
                 </span>
               </span>
             </div>
 
             {/* Navigation Links */}
-            <div className="flex items-center ">
-              <div className="">
+            <div className="flex items-center gap-3 ">
+              <a href="https://github.com/grillsdev/grills" target="_blank">
+              <Button variant={"outline"} size={"icon"}><Github/></Button>
+              </a>
                 <LoginBtn variant="outline" text="Login" size="default" />
-              </div>
             </div>
           </div>
         </div>
@@ -76,9 +78,8 @@ export default function Home() {
 
         <BentoSection />
 
-        <div className="w-full max-w-[60.5rem] px-4  md:px-0 flex flex-col gap-16 md:gap-20">
-          <SupportedLLMsSection />
-        <InfoCard className="h-[20rem] lg:h-[23rem] rounded-[3rem]" />
+        <div className="w-full max-w-[60.5rem] px-4  md:px-0 mt-12 md:mt-16">
+        <InfoCard className="h-[20rem] lg:h-[23rem] rounded-[1rem]" />
         </div>
       </div>
 
