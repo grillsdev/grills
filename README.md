@@ -12,10 +12,7 @@
   
 </div>
 
-<div align="center" >
-<img src="https://bucket.grills.dev/grills-giff.gif" alt="Grills demo fallback" width="70%">
-</div>
-
+![Grills demo fallback](https://bucket.grills.dev/grills-giff.gif)
 <div align="center">
 UI built on grills platform
 </div>
