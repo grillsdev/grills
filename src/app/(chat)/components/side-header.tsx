@@ -1,6 +1,7 @@
 import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 
 import { StartProjectDialogBtn } from "./start-project";
+import { Button } from "@/components/ui/button";
 
 
 export function SideHeader() {
@@ -16,6 +17,9 @@ export function SideHeader() {
         <SidebarTrigger className="-ml-1" onClick={handleSidebarState} />
         <div className="ml-auto flex items-center gap-3">
           <div className="flex flex-row items-center gap-3 ">
+            <Button size={"sm"} variant={"link"} className="o">
+              <a href="https://grills.featurebase.app" target="_blank">Feedback</a>
+            </Button>
             <StartProjectDialogBtn />
           </div>
         </div>
