@@ -53,6 +53,7 @@ export const LLMProviderIcons: Record<string, string> = {
   openrouter: "/openrouter.jpeg",
   togetherai: "/togetherai.png",
   groq: "/groq.png",
+  grok: "/grok.svg"
 };
 
 export const LLMsOpenAICompatibleEndpoint: Record<LLMProvider, string> = {
