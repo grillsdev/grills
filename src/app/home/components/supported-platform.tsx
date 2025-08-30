@@ -84,7 +84,7 @@ export function SupportedLLMPlatforms({ models = DEFAULT_MODELS, columns = 3, cl
                     >
                       {doubled.map((m, i) => (
                         <li key={colIdx + '-' + i} className={'flex items-center gap-3 font-medium tracking-tight'}>
-                          <Avatar className={'h-12 w-12 md:h-14 md:w-14 rounded-[23px] md:rounded-[30px]'}>
+                          <Avatar className={'h-12 w-12 md:h-14 md:w-14 rounded-[20px] md:rounded-[30px]'}>
                             <AvatarImage src={m.icon || '/favicon.svg'} alt={m.name + ' logo'} />
                             <AvatarFallback>{m.name.split(' ').map(w => w[0]).slice(0,2).join('')}</AvatarFallback>
                           </Avatar>
