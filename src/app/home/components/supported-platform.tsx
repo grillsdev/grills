@@ -59,21 +59,18 @@ export function SupportedLLMPlatforms({ models = DEFAULT_MODELS, columns = 3, cl
             <h2 className={'text-[34px] leading-tight sm:text-5xl lg:text-6xl xl:text-7xl font-semibold tracking-tight'}>
               {'Choose from various '}<span className={'italic font-serif'}>{'LLM provider platforms.'}</span>
             </h2>
-            <p className={'mt-4 text-white/60 font-medium'}>{'A curated set of providers that help you to scale UI building from prototype to production.'}</p>
+            <p className={'mt-4 text-white/60 font-medium'}>{'A curated set of providers that help you to scale frontend development.'}</p>
           </div>
 
           <div className={'relative'}>
-            <div className={'grid grid-cols-2 md:grid-cols-3 gap-6'}>
+            <div className={'grid grid-cols-3 gap-6'}>
               {cols.map(colIdx => {
                 const isDown = colIdx % 2 === 0
                 const duration = 16 + colIdx * 2
                 const delay = colIdx * 2
 
-                // Hide extra columns on small screens (mobile-first)
-                const hideOnSmall = colIdx >= 2 ? 'hidden md:block' : ''
-
                 return (
-                  <div key={colIdx} className={'relative h-80 sm:h-[22rem] overflow-hidden ' + hideOnSmall}>
+                  <div key={colIdx} className={'relative h-80 sm:h-[22rem] overflow-hidden'}>
                     <ul
                       role={'list'}
                       className={'flex flex-col gap-5 items-center'}

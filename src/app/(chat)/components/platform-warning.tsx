@@ -28,7 +28,7 @@ export function PlatformWarning() {
       role="alert"
       aria-live="assertive"
     >
-      <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 max-w-xl shadow-lg">
+      <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 w-screen md:max-w-xl shadow-lg">
         <div className="flex items-start gap-3">
           <div className="flex-shrink-0">
             <AlertTriangle className="h-5 w-5 text-amber-600" aria-hidden="true" />
@@ -37,7 +37,7 @@ export function PlatformWarning() {
             <h3 className="text-sm font-semibold text-amber-800">
               Platform Warning
             </h3>
-            <p className="text-sm text-amber-700 mt-1">
+            <p className="tesxt-xs md:text-sm text-amber-700 mt-1">
              Currently, live preview only works on Desktop Chrome.
              It may not work on your current platform.
             </p>
