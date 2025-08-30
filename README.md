@@ -12,11 +12,6 @@
   
 </div>
 
-![Grills demo fallback](https://bucket.grills.dev/grills-giff.gif)
-<div align="center">
-UI built on grills platform
-</div>
-
 
 ## Purpose
 
