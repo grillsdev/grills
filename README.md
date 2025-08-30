@@ -13,10 +13,7 @@
 </div>
 
 <div align="center" >
-  <video width="70%" controls autoplay muted>
-    <source src="https://bucket.grills.dev/gpt-5-mini.mp4" type="video/mp4">
-    <img src="https://bucket.grills.dev/Screenshot%202025-08-30%20at%202.14.42%E2%80%AFPM.png" alt="Grills demo fallback">
-  </video>
+<img src="https://bucket.grills.dev/grills-giff.gif" alt="Grills demo fallback" width="70%">
 </div>
 
 <div align="center">
