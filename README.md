@@ -1,14 +1,26 @@
-<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; background: #0f172a; color: #e2e8f0; border-radius: 16px; max-width: 900px; margin: auto;">
+<div align="center">
+  
+  <img src="public/apple-icon.png" alt="Grills Logo" width="80" />
+  
+  <br>
+  
+  # Grills
+  
+  ### A free, open source alternative to **Lovable, Bolt and v0.**
+  
+  <br>
+  
+</div>
 
-  <img src="public/apple-icon.png" alt="Grills Logo" width="80" style="margin-bottom: 20px;" />
+<div align="center" >
+  <video width="70%" controls autoplay muted>
+    <source src="https://bucket.grills.dev/gpt-5-mini.mp4" type="video/mp4">
+    <img src="https://bucket.grills.dev/Screenshot%202025-08-30%20at%202.14.42%E2%80%AFPM.png" alt="Grills demo fallback">
+  </video>
+</div>
 
-  <h1 style="font-size: 2.5rem; font-weight: 700; margin: 0; width: 100%">
-    Grills
-  </h1>
-
-  <p style="font-size: 1.5rem; margin-top: 16px">
-    A free, open source alternative to <span style="font-weight: 700;">Lovable, Bolt and v0.</span>
-  </p>
+<div align="center">
+UI built on grills platform
 </div>
 
 
