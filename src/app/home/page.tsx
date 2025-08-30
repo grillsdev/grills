@@ -6,6 +6,7 @@ import Hero from "./components/hero";
 import InfoCard from "./components/info-card";
 import { Github } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import SupportedLLMPlatforms from "./components/supported-platform";
 
 export default function Home() {
   return (
@@ -74,12 +75,16 @@ export default function Home() {
         <ExampleComponent />
       </div>
 
-      <div className="mx-auto w-full max-w-5xl space-y-16 md:px-3 mt-24 pb-16 flex flex-col items-center">
+      <div className="mx-auto w-full max-w-5xl space-y-14 md:space-y-16 md:px-3 mt-24 flex flex-col items-center">
 
         <BentoSection />
 
-        <div className="w-full max-w-[60.5rem] px-4  md:px-0 mt-12 md:mt-16">
-        <InfoCard className="h-[20rem] lg:h-[23rem] rounded-[1rem]" />
+        <div className="flex flex-col w-full  px-4 md:px-0 gap-20 items-center">
+          <div className="max-w-[61rem]">
+          <SupportedLLMPlatforms/>
+
+          </div>
+        <InfoCard className="h-[20rem] lg:h-[23rem]  flex-none w-screen" />
         </div>
       </div>
 
