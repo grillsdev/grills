@@ -42,7 +42,7 @@ const UserCollapsedInput = ({ content }: { content: string }) => {
 
 const UserMessage = memo(({ content }: { content: string }) => {
   return (
-    <div className="flex flex-row">
+    <div className="flex flex-row selection:bg-base-900 selection:text-secondary">
       <div className="block h-5 w-5 rounded-[13px] bg-gradient-to-b from-secondary to-accent-foreground" />
       <div className="flex flex-col gap-4 flex-1 min-w-0">
           <div className="w-full text-sm text-gray-200 shadow-sm">
