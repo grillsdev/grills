@@ -16,9 +16,9 @@ const geistMono = Geist_Mono({
 
 const siteConfig = {
   name: "Grills",
-  title: "Open Source alternative for Lovable, Bolt & V0.",
+  title: "Grills - Open Source alternative for Lovable, Bolt & V0.",
   description:
-    "Open Source alternative for Lovable Bolt & V0. Just generate, copy and paste into your production codebase — no overhead, works with your favorite LLM (BYOK).",
+    "Your AI platform. Open Source alternative for Lovable Bolt & V0. Just generate, copy and paste into your production codebase — no overhead, works with your favorite LLM (BYOK).",
   url: "https://grills.dev",
   author: "Aditya Pushkar",
   image: "/site-image.png",
@@ -72,10 +72,10 @@ export const metadata: Metadata = {
   },
 
   twitter: {
-    card: "summary_large_image",
-    title: siteConfig.title,
-    description: siteConfig.description,
-    images: [siteConfig.image],
+    card: 'summary_large_image',
+    title: 'Grills - Open Source alternative for Lovable, Bolt & V0',
+    description: 'Your AI platform. Open Source alternative for Lovable Bolt & V0. Just generate, copy and paste into your production codebase — no overhead, works with your favorite LLM (BYOK)',
+    images: ['/site-image.png'],
   },
 
   category: "technology",
