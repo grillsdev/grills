@@ -73,7 +73,7 @@ export const metadata: Metadata = {
 
   twitter: {
     card: "summary_large_image",
-    title: `${siteConfig.title} Your Frontend Dev`,
+    title: siteConfig.title,
     description: siteConfig.description,
     images: [siteConfig.image],
   },
