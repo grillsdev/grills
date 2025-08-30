@@ -59,7 +59,7 @@ export function SupportedLLMPlatforms({ models = DEFAULT_MODELS, columns = 3, cl
             <h2 className={'text-[34px] leading-tight sm:text-5xl lg:text-6xl xl:text-7xl font-semibold tracking-tight'}>
               {'Choose from various '}<span className={'italic font-serif'}>{'LLM provider platforms.'}</span>
             </h2>
-            <p className={'mt-4 text-white/60 font-medium'}>{'A curated set of providers that scale from prototype to production.'}</p>
+            <p className={'mt-4 text-white/60 font-medium'}>{'A curated set of providers that help you to scale UI building from prototype to production.'}</p>
           </div>
 
           <div className={'relative'}>
