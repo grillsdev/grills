@@ -7,6 +7,7 @@
 export const llms = [
     {id:"default", title:"openai", name: "Open AI"},
     {id:"default", title:"openrouter", name: "Open Router"},
+    {id:"default", title:"anthropic", name: "Anthropic"},
 ]
 
 export const models = [
@@ -15,6 +16,8 @@ export const models = [
     {id:"default", title: "GPT 5 Mini", name: "openai/gpt-5-mini", llm_id: "openrouter-primarykey", created_at: "Select now"},
     {id:"default", title: "G 2.5 flash lite", name: "google/gemini-2.5-flash-lite", llm_id: "openrouter-primarykey", created_at: "Select now"},
     {id:"default", title: "Grok Code Fast 1", name: "x-ai/grok-code-fast-1", llm_id: "openrouter-primarykey", created_at: "Select now"},
+    {id:"default", title: "Claude Sonnet 4", name: "anthropic/claude-sonnet-4", llm_id: "openrouter-primarykey", created_at: "Select now"},
+
     {id:"default", title: "GPT-5 Mini", name: "gpt-5-mini-2025-08-07", llm_id: "openai-primarykey", created_at: "Select now"},
     {id:"default", title: "GPT-5 Nano", name: "gpt-5-nano-2025-08-07", llm_id: "openai-primarykey", created_at: "Select now"},
     {id:"default", title: "GPT-4.1", name: "gpt-4.1", llm_id: "openai-primarykey", created_at: "Select now"},
@@ -22,4 +25,6 @@ export const models = [
     {id:"default", title: "GPT 4o", name: "gpt-4o", llm_id: "openai-primarykey", created_at: "Select now"},
     {id:"default", title: "GPT o4 Mini", name: "o4-mini", llm_id: "openai-primarykey", created_at: "Select now"},
     {id:"default", title: "GPT o3 Mini ", name: "o3-mini", llm_id: "openai-primarykey", created_at: "Select now"},
+
+    {id:"default", title: "Claude Sonnet 4", name: "claude-sonnet-4-20250514", llm_id: "anthropic-primarykey", created_at: "Select now"},
 ]
