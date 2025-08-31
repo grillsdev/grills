@@ -1,7 +1,15 @@
-import { streamText, Output, convertToModelMessages, createIdGenerator, smoothStream } from "ai";
+import {
+  streamText,
+  Output,
+  convertToModelMessages,
+  createIdGenerator,
+  smoothStream,
+} from "ai";
 import { Redis } from "@upstash/redis";
 
 import { createOpenAI } from "@ai-sdk/openai";
+import { createOpenRouter } from "@openrouter/ai-sdk-provider";
+import { createAnthropic } from "@ai-sdk/anthropic";
 import { auth } from "@/lib/auth";
 
 import { getDb } from "@/db";
@@ -9,7 +17,7 @@ import { eq, and } from "drizzle-orm";
 
 import { aiChat } from "@/db/schema/ai-chat";
 import { CompletionRequest } from "@/lib/types";
-import { getPromptTxt, LLMsOpenAICompatibleEndpoint } from "@/lib/utils";
+import { getPromptTxt } from "@/lib/utils";
 import { z } from "zod";
 
 // Initialize Redis
@@ -64,35 +72,49 @@ export async function POST(request: Request) {
     const db = await getDb();
     const sysPrompt = await getPromptTxt();
 
-    const operator = createOpenAI({
-      apiKey: apiKey,
-      baseURL: LLMsOpenAICompatibleEndpoint[llm],
-    });
+    let operator = null;
+    switch (llm) {
+      case "openrouter":
+        operator = createOpenRouter({
+          apiKey: apiKey,
+        });
+        break;
+      case "anthropic":
+        operator = createAnthropic({
+          apiKey: apiKey,
+        });
+        break;
+      default:
+        operator = createOpenAI({
+          apiKey: apiKey,
+        });
+    }
 
     const result = streamText({
       model: operator.chat(model),
       messages: convertToModelMessages(messages),
       system: sysPrompt,
       experimental_output: Output.object({
-        schema: codeGenerationSchema
+        schema: codeGenerationSchema,
       }),
       experimental_transform: smoothStream({
         delayInMs: 17,
-        chunking: 'word'
+        chunking: "word",
       }),
       onFinish: async ({ text }) => {
         try {
           const generateUserMessageId = createIdGenerator({
             prefix: "usr",
             size: 16,
-          })
+          });
           const generateMessageId = createIdGenerator({
             prefix: "msg",
             size: 16,
-          })
+          });
 
           const lastUserInput = messages[messages.length - 1];
-          if (lastUserInput.role !== "user") throw new Error("Something went wrong!");
+          if (lastUserInput.role !== "user")
+            throw new Error("Something went wrong!");
 
           const userMsgObj = {
             id: generateUserMessageId(),
@@ -103,7 +125,7 @@ export async function POST(request: Request) {
           const assistantMessage = {
             id: generateMessageId(),
             role: "assistant" as const,
-            parts: [{type: 'text', text:text}],
+            parts: [{ type: "text", text: text }],
             createdAt: new Date(),
           };
 
@@ -128,7 +150,7 @@ export async function POST(request: Request) {
       },
       onError: (err) => {
         console.error("Stream generation error:", err);
-      }
+      },
     });
 
     return result.toUIMessageStreamResponse();

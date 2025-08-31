@@ -9,6 +9,9 @@ import { generateText } from 'ai';
 
 import { LLMProvider } from '@/lib/types';
 import { createOpenRouter } from '@openrouter/ai-sdk-provider';
+import { createAnthropic } from '@ai-sdk/anthropic';
+
+
 
 
 // Get the models with llm
@@ -47,23 +50,29 @@ export async function POST(request: Request) {
     const body = await request.json()
     const { prompt: apiKey, llm } = body as { llm: LLMProvider; prompt: string }
     try{
-      let llmRouter = null
+      let operator = null
       let model;
       switch(llm){
         case "openrouter":
-          llmRouter = createOpenRouter({
+          operator = createOpenRouter({
             apiKey:apiKey
           })
           model = "google/gemini-2.5-flash-lite";
           break;
+        case "anthropic":
+          operator = createAnthropic({
+            apiKey:apiKey
+          })
+          model = "claude-sonnet-4"
+          break;
         default:
-          llmRouter = createOpenAI({
+          operator = createOpenAI({
             apiKey:apiKey,
           })
           model = "gpt-3.5-turbo"
       }
      const {text} = await generateText({
-      model: llmRouter(model),
+      model: operator(model),
       prompt: "just return me with what is the 1+1 ? "
     })
     console.log(text)
