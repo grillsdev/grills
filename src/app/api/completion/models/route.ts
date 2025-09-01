@@ -63,7 +63,7 @@ export async function POST(request: Request) {
           operator = createAnthropic({
             apiKey:apiKey
           })
-          model = "claude-sonnet-4"
+          model = "claude-sonnet-4-20250514"
           break;
         default:
           operator = createOpenAI({
