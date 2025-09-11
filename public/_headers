@@ -2,16 +2,3 @@
 
 /_next/static/*
   Cache-Control: public,max-age=31536000,immutable
-
-# Route-specific override: disable cross-origin isolation on /home
-/home
-  Cross-Origin-Embedder-Policy: unsafe-none
-  Cross-Origin-Opener-Policy: unsafe-none
-
-/home/*
-  Cross-Origin-Embedder-Policy: unsafe-none
-  Cross-Origin-Opener-Policy: unsafe-none
-
-/*
-  Cross-Origin-Embedder-Policy: require-corp
-  Cross-Origin-Opener-Policy: same-origin
