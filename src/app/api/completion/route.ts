@@ -18,7 +18,7 @@ import { eq, and } from "drizzle-orm";
 import { aiChat } from "@/db/schema/ai-chat";
 import { CompletionRequest } from "@/lib/types";
 import { getPromptTxt } from "@/lib/utils";
-import { z } from "zod";
+import { codeGenerationSchema } from "@/lib/types";
 
 // Initialize Redis
 const redis = new Redis({
@@ -27,18 +27,7 @@ const redis = new Redis({
   keepAlive: true,
 });
 
-const codeGenerationSchema = z.object({
-  pre_code: z
-    .string()
-    .describe(
-      "What is gonna be generated, some detail, proccess and key point"
-    ),
-  code: z.string().describe("Code geenration for UI component"),
-  post_code: z.string().describe("Detail about code generation"),
-  pkgs: z
-    .array(z.string())
-    .describe("npm pakages to be needed for this UI component"),
-});
+
 
 export async function POST(request: Request) {
   // 1. Early authentication check
