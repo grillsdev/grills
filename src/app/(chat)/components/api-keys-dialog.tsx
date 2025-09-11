@@ -7,8 +7,8 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader as Loader } from "lucide-react";
@@ -21,6 +21,73 @@ import { saveKeys, getApiKey } from "@/lib/utils";
 import { LLMProviderIcons } from "@/lib/utils";
 
 import Image from 'next/image'
+
+
+const Sandbox = () => {
+  const [e2bValue, setE2bValue] = useState("");
+  const [isSaved, setIsSaved] = useState(false);
+
+  // Load saved value on component mount
+  useEffect(() => {
+    const savedValue = localStorage.getItem("grills:e2b");
+    if (savedValue) {
+      setE2bValue(savedValue);
+    }
+  }, []);
+
+  // Save on button click with confirmation
+  const handleSave = () => {
+    try {
+      localStorage.setItem("grills:e2b", e2bValue);
+      setIsSaved(true);
+      setTimeout(() => setIsSaved(false), 1500);
+    } catch (err) {
+      console.error("Failed to save key", err);
+    }
+  };
+
+  return (
+    <div className="px-1">
+      <div className="flex items-center py-2">
+        <div className="h-7 w-7 flex items-center justify-center mr-3">
+          <Image 
+            src="/e2b.png" 
+            alt="E2B logo" 
+            width={40} 
+            height={40} 
+            className="rounded-[16px]" 
+          />
+        </div>
+        <div className="flex gap-3 items-center">
+          <span className="text-sm">E2B</span>
+        </div>
+      </div>
+      
+      <div className="flex gap-3">
+        <Input
+          onChange={(e) => setE2bValue(e.target.value)}
+          value={e2bValue}
+          autoComplete="off"
+          placeholder="Enter E2B API key..."
+        />
+        <Button type="button" onClick={handleSave}>
+          {isSaved ? "Saved!" : "Save"}
+        </Button>
+      </div>
+
+      <div className="py-12 flex">
+        {/* Yellow vertical line */}
+        <div className="w-1 bg-orange-400 mr-6 flex-shrink-0"></div>
+        
+        {/* Content */}
+        <div className="flex-1">
+          <h2 className="text-lg font-semibold mb-2">IMPORTANT</h2>
+          <p className="text-sm md:text-base mb-1.5 font-medium">Make sure the API key is correct and have credits.</p>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 
 // input API KEY, llm is llm model
@@ -49,13 +116,13 @@ const ApiInput = ({ llmTitle, llmName}: { llmTitle:string, llmName: string }) =>
   }, [llmName, setInput])
 
   return (
-    <div>
+    <div className="px-1">
       <div className="flex items-center py-2">
         <div className="h-7 w-7 flex items-center justify-center mr-3">
           <Image src={LLMProviderIcons[llmName]} alt={LLMProviderIcons[llmName] + "-" + "logo"} width={35} height={35} className="rounded-[16px]" />
         </div>
         <div className="flex gap-3 items-center">
-          <span className="text-sm">{llmTitle}</span>
+          <span className="text-sm font-medium">{llmTitle}</span>
         </div>
       </div>
       <form onSubmit={handleSubmit} className="flex gap-3">
@@ -80,9 +147,11 @@ const ApiInput = ({ llmTitle, llmName}: { llmTitle:string, llmName: string }) =>
 export const APIKeysDialog = ({
   openWindow,
   windowState,
+  defaultTab = "api"
 }: {
   openWindow: boolean;
   windowState: (state: boolean) => void;
+  defaultTab?: "api" | "sandbox";
 }) => {
   const { data: llms} = useSWR<AvailableModels[]>("/api/completion/models", getModels)
 
@@ -90,32 +159,63 @@ export const APIKeysDialog = ({
 
   return (
     <Dialog open={openWindow} onOpenChange={windowState}>
-      <DialogContent className="sm:max-w-md bg-accent" tabIndex={-1}>
-        <DialogHeader>
-          <DialogTitle className="text-left">
+      <DialogContent className=" max-h-[80vh] overflow-y-auto" tabIndex={-1}>
+        <DialogHeader className="space-y-3 hidden">
+          <DialogTitle className="text-xl font-normal">
             Enter Your API Keys
           </DialogTitle>
-          <DialogDescription className="text-left text-xs font-medium">
-            API keys will be saved in your browser. <span className="text-xs text-primary">OpenRouter</span>
-          </DialogDescription>
         </DialogHeader>
+        <div className="mt-6">
+          <Tabs defaultValue={defaultTab === "sandbox" ? "sandbox" : "api-keys"} className="w-full">
+            <TabsList className="w-full mb-2 overflow-x-auto">
+              <TabsTrigger
+                value="api-keys"
+                className="text-xs px-2 py-1 truncate"
+              >
+                API Keys
+              </TabsTrigger>
+              <TabsTrigger
+                value="sandbox"
+                className="text-xs px-2 py-1 truncate"
+                autoFocus={false}
+              >
+                Sandbox
+              </TabsTrigger>
+            </TabsList>
 
-        <div className="space-y-5  max-h-[23.5rem] overflow-y-auto no-scrollbar">
-          {llms.map((model) => (
-            <ApiInput llmTitle={model.title} llmName={model.name} key={model.id} />
-          ))}
+            <div className="h-[400px]">
+              <TabsContent value="api-keys" className="h-[21rem] overflow-auto">
+                {/* <div className="space-y-2 mb-3">
+                  <p className="text-xs font-medium">
+                    API keys will be saved in your browser.
+                  </p>
+                </div> */}
+                <div className="space-y-5">
+                  {llms.map((model) => (
+                    <ApiInput llmTitle={model.title} llmName={model.name} key={model.id} />
+                  ))}
+                </div>
+              </TabsContent>
+              
+              <TabsContent value="sandbox" className="h-[21rem] overflow-auto">
+                <Sandbox/>
+              </TabsContent>
+            </div>
+          </Tabs>
         </div>
       </DialogContent>
     </Dialog>
   );
 };
 
-export const ApiKeysDialogBtn = ({ children }: { children: ReactNode }) => {
+export const ApiKeysDialogBtn = ({ children, defaultTab }: { children: ReactNode; defaultTab?: "api" | "sandbox" }) => {
   const [openDialogWondow, setOpenDialogWindow] = useState(false);
 
   const handleDialogWindowState = (state: boolean) => {
     setOpenDialogWindow(state);
   };
+
+  console.log(defaultTab)
 
   return (
     <>
@@ -125,6 +225,7 @@ export const ApiKeysDialogBtn = ({ children }: { children: ReactNode }) => {
       <APIKeysDialog
         openWindow={openDialogWondow}
         windowState={handleDialogWindowState}
+        defaultTab={defaultTab}
       />
     </>
   );

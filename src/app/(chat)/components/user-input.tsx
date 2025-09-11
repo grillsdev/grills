@@ -38,6 +38,7 @@ const UserInput = ({
   const [modelDShouldOpen, setModelDShouldOpen] = useState<boolean>(false)
   const [apiDShouldOpen, setApiDShouldOpen] = useState<boolean>(false)
   const [startProjectDShouldOpen, setStartProjectDShouldOpen] = useState(false)
+  const [e2bDShouldOpen, setE2bDShouldOpen] = useState(false)
 
   const pathname = usePathname();
 
@@ -58,12 +59,23 @@ const UserInput = ({
       return;
     }
 
+    //Api key added of there model Provider
     const isApiKey = getApiKey(isModelSelected.llm)
     if(!isApiKey){
-      toast.warning(`Please add your ${isModelSelected.llm.toUpperCase()} API key`,{
+      toast.warning(`Please add your ${isModelSelected.llm} API key`,{
         position:"top-center"
       })
       setApiDShouldOpen(true)
+      return;
+    }
+
+    // if E2b API is not present popup with the ?e2b
+    const isE2b = localStorage.getItem("grills:e2b");
+    if(!isE2b){
+      toast.warning(`Please add your E2B API key`,{
+        position:"top-center"
+      })
+      setE2bDShouldOpen(true)
       return;
     }
 
@@ -130,6 +142,7 @@ const UserInput = ({
       </form>
       <ModelSelect openWindow={modelDShouldOpen} handleOpenWindow={()=>setModelDShouldOpen(false)}/>
       <APIKeysDialog openWindow={apiDShouldOpen} windowState={setApiDShouldOpen}/>
+      <APIKeysDialog openWindow={e2bDShouldOpen} windowState={setE2bDShouldOpen} defaultTab="sandbox"/>
       <StartProjectDialog openWindow={startProjectDShouldOpen} windowState={setStartProjectDShouldOpen}/>
     </>
   );
