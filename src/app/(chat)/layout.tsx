@@ -6,9 +6,7 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Toaster } from "sonner";
 import { authClient } from "@/lib/auth-client";
 
-import { WcProvider } from "@/contexts/webcontainer-provider";
 import FireIcon from "./components/fire-icon";
-import PlatformWarning from "./components/platform-warning";
 
 export default function Layout({
   children,
@@ -24,8 +22,8 @@ export default function Layout({
   )
 
   return (
-    <WcProvider>
-      <SidebarProvider>
+    <>
+    <SidebarProvider>
         <AppSidebar variant="inset" />
         <SidebarInset>
           <SideHeader/>
@@ -45,7 +43,6 @@ export default function Layout({
           </div>
         </SidebarInset>
       </SidebarProvider>
-      <PlatformWarning/>
-    </WcProvider>
+    </>
   );
 }
