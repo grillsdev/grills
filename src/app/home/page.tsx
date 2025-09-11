@@ -71,7 +71,7 @@ export default function Home() {
           <Hero />
         </div>
       </div>
-      <div className="w-full max-w-4xl 3xl:max-w-6xl z-40 -mt-72 md:-mt-80 lg:-mt-[21rem] px-4">
+      <div className="w-full max-w-4xl 3xl:max-w-6xl z-40 -mt-80 lg:-mt-[21rem] px-4">
         <ExampleComponent />
       </div>
 
