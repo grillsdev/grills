@@ -74,7 +74,7 @@ export function OnboardingDialog(props: OnboardingDialogProps) {
       <DialogContent aria-describedby={descriptionId} className="sm:max-w-lg bg-accent text-accent-foreground">
         <DialogHeader className='text-left'>
           <DialogTitle>Early Beta</DialogTitle>
-          <DialogDescription id={descriptionId}>
+          <DialogDescription id={descriptionId} className='font-medium'>
             This app is currently a proof of concept. So you may notice frequent updates and changes as we continue to improve the experience.
           </DialogDescription>
         </DialogHeader>
@@ -82,11 +82,9 @@ export function OnboardingDialog(props: OnboardingDialogProps) {
           <section className="space-y-2">
             <h3 className="font-medium">Requirements</h3>
             <ul className="list-disc pl-5 space-y-1">
-              <li>Tested on Chrome on macOS (M1).</li>
-              <li>Chromium browser recommended.</li>
-              <li>Bring your own OpenRouter API key to use the app.</li>
-              <li>You can generate and save custom themes for your project.</li>
-              <li>Initial UI rendering may be slow due to limitations.</li>
+              <li>You have to (BYOAK).</li>
+              <li>Supported platforms: OpenAI, OpenRouter and Anthropic </li>
+              <li>Supported Sandbox: E2B</li>
               <li>If you encounter issues, reach out on Twitter.</li>
             </ul>
           </section>
