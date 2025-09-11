@@ -80,7 +80,6 @@ const AssistantMessage = memo(({
       }
     } else if (!isStreaming && sb.id === id && sb.isStreaming === true) {
       $sanboxObj.setKey("isStreaming", false);
-      $sanboxObj.setKey("id", '');
     }
   }, [id, isStreaming, parsedContent.code, parsedContent.pkgs, sb.isStreaming, sb.id]);
 
