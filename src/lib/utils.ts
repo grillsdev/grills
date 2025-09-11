@@ -30,7 +30,7 @@ export const getApiKeys = (): Record<string, string> | null => {
 
 export const getApiKey = (llm: string): string | null => {
   const keys = getApiKeys();
-  return keys ? keys[llm] || null : null;
+  return keys ? keys[llm] : null;
 };
 
 export const getSelectedModel = (): CurrentModel | null => {
@@ -93,7 +93,6 @@ export async function getPromptTxt(): Promise<string> {
   }
 }
 
-
 export const getPackageLockFile = (): string | null => {
   const savedFile = localStorage.getItem("lockFile");
   if (savedFile) {
@@ -105,4 +104,18 @@ export const getPackageLockFile = (): string | null => {
 
 export const savePackageLockFile = (file:string) => {
   localStorage.setItem("lockFile", file)
+}
+
+export function getSandboxURL(): string {
+  if (typeof window !== "undefined") {
+    const isLocalhost =
+      window.location.hostname === "localhost" ||
+      window.location.hostname === "127.0.0.1";
+
+    if (isLocalhost) {
+      return "http://localhost:8080/api/v1/sandbox/create";
+    }
+  }
+
+  return "https://grills-sandbox-28op1.sevalla.app/api/v1/sandbox/create";
 }
