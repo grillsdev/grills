@@ -156,7 +156,7 @@ pnpm dev
 - [x] OpenAI
 - [x] OpenRouter
 - [ ] Gemini
-- [ ] Claude
+- [x] Claude
 - [ ] Grok
 - [ ] Groq
 - [ ] TogetherAI
@@ -164,8 +164,10 @@ pnpm dev
 ### Other
 
 - [ ] Multiple file support
-- [ ] E2B support
+- [] Daytona support
+- [x] E2B support
 - [ ] Reasoning Support
 - [ ] Image Support
 - [ ] Publish UI
 - [ ] Share whole chat
+- [ ] Context 7
