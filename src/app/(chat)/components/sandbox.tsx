@@ -28,18 +28,19 @@ const Sandbox = ({
   changeWindowStateTo: (state: boolean) => void;
 }) => {
   const [activeTab, setActiveTab] = useState<'code' | 'render'>('code');
-  const [previewKey, setPreviewKey] = useState(1);
   const [isCodeStreaming, setIsCodeStreaming] = useState(false)
   const newSandboxObj = useStore($sanboxObj)
   const handle = useFullScreenHandle();
 
 
+  const sb = $sanboxObj.get();
+  const sandboxId = sb.id;
+
  const handleTabChange = useCallback((value: 'code' | 'render') => {
     setActiveTab(value);
-    if (value === 'render') {
-      setPreviewKey(prev => prev + 1);
-    }
   }, []);
+
+  //get the latest code and id from the sandbox state add the key in order to prevent the render 
 
   /**
    * if the previously there is a streaming but now there is not streeming and while streaming tab 'code' me  change hojata h
@@ -139,7 +140,7 @@ const Sandbox = ({
               </Suspense>
             </div>
           ) : (
-            <div key={`preview-${previewKey}`} className="h-full">
+            <div key={sandboxId} className="h-full">
               <Suspense fallback={
                   <div className="flex items-center justify-center h-full">
                     <div className="animate-pulse">Loading renderer...</div>
