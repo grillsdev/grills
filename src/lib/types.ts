@@ -133,3 +133,17 @@ export interface SavedTheme {
   data:string,
   createdAt:Date
 }
+
+
+export const codeGenerationSchema = z.object({
+  pre_code: z
+    .string()
+    .describe(
+      "What is gonna be generated, some detail, proccess and key point"
+    ),
+  code: z.string().describe("Code geenration for UI component"),
+  post_code: z.string().describe("Detail about code generation"),
+  pkgs: z
+    .array(z.string())
+    .describe("npm pakages to be needed for this UI component"),
+});
