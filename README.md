@@ -164,7 +164,7 @@ pnpm dev
 ### Other
 
 - [ ] Multiple file support
-- [] Daytona support
+- [ ] Daytona support
 - [x] E2B support
 - [ ] Reasoning Support
 - [ ] Image Support
