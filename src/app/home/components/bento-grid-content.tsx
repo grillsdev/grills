@@ -1,30 +1,56 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Send, Bot, User } from "lucide-react";
+import { Send, Bot, User, Eye, Sparkles} from "lucide-react";
 
 import Image from "next/image";
 
+export const LoaderWave = () => {
+  return (
+    <div className="flex items-center gap-1">
+      <div 
+        className="w-1.5 h-1.5 bg-base-500 rounded-full animate-pulse"
+        style={{
+          animationDelay: '0ms',
+          animationDuration: '1400ms'
+        }}
+      />
+      <div 
+        className="w-1.5 h-1.5 bg-base-600 rounded-full animate-pulse"
+        style={{
+          animationDelay: '200ms',
+          animationDuration: '1400ms'
+        }}
+      />
+      <div 
+        className="w-1.5 h-1.5 bg-base-700 rounded-full animate-pulse"
+        style={{
+          animationDelay: '400ms',
+          animationDuration: '1400ms'
+        }}
+      />
+    </div>
+  );
+};
+
 export const BentoCardComponent = () => {
   return (
-    <div className="flex flex-col h-full bg-background rounded-lg border border-border p-3 space-y-3">
+    <div className="flex flex-col  bg-background rounded-lg border border-border p-3 space-y-3">
       {/* Chat Messages */}
       <div className="flex-1 space-y-2 overflow-hidden">
-        <div className="flex items-start gap-2">
-          <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
-            <Bot className="w-3 h-3 text-primary-foreground" />
+         <div className="flex items-start gap-2 justify-end">
+          <div className="bg-primary text-primary-foreground text-xs rounded-lg px-3 py-2 md:py-1 max-w-[80%]">
+            Build me a error toast.
           </div>
-          <div className="bg-muted text-muted-foreground text-xs rounded-lg px-3 py-2 max-w-[80%]">
-            How can I help you today?
-          </div>
-        </div>
-        
-        <div className="flex items-start gap-2 justify-end">
-          <div className="bg-primary text-primary-foreground text-xs rounded-lg px-3 py-2 max-w-[80%]">
-            Build me a error toast
-          </div>
-          <div className="w-6 h-6 rounded-full bg-secondary flex items-center justify-center flex-shrink-0">
+          <div className="w-5 h-5 rounded-full bg-secondary flex items-center justify-center flex-shrink-0">
             <User className="w-3 h-3 text-secondary-foreground" />
           </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
+            <Bot className="w-3 h-3 text-primary-foreground" />
+          </div>
+          <LoaderWave/>
+          
         </div>
       </div>
 
@@ -92,7 +118,7 @@ export const ThemeSelectorMockup = () => {
 
 export const CodeEditorMockup = () => {
   return (
-    <div className="flex flex-col bg-background rounded-lg border border-border p-3 pb-1.5 space-y-2 max-h-[280px]">
+    <div className="flex flex-col bg-background rounded-lg border border-border p-3 pb-1.5 space-y-2 max-h-[190px]">
       {/* Header with window controls and filename */}
       <div className="flex items-center gap-2 flex-1">
         <div className="flex items-center gap-1.5">
@@ -138,6 +164,36 @@ export const CollaborationMockup = () => {
             }`} />
           </div>
         ))}
+      </div>
+    </div>
+  );
+};
+
+export const LivePreviewMockup = () => {
+  return (
+    <div className="flex flex-col bg-background rounded-lg border border-border p-3 space-y-3">
+      {/* Header with live indicator */}
+      <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2">
+        <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center">
+          <Sparkles className="w-3 h-3 text-primary-foreground" />
+        </div>
+      </div>
+        <span className="text-sm font-medium text-foreground">Live Preview</span>
+          <Eye className="w-3.5 h-3.5 text-muted-foreground ml-auto" />
+
+      </div>
+      
+      {/* Mini preview window */}
+      <div className="bg-muted/30 rounded-lg p-2 border border-muted mt-0.5">
+        <div className="flex items-center gap-1 mb-2">
+          <div className="w-2 h-2 rounded-full bg-red-400" />
+          <div className="w-2 h-2 rounded-full bg-yellow-400" />
+          <div className="w-2 h-2 rounded-full bg-green-400" />
+        </div>
+        <div className="h-10 mt-4 bg-background rounded-lg border flex items-center justify-center">
+          <span className="text-xs text-muted-foreground">Real time preview</span>
+        </div>
       </div>
     </div>
   );

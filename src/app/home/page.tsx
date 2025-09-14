@@ -3,92 +3,108 @@ import BentoSection from "./components/bento-section";
 import GoToTwitter from "./components/go-to-twitter";
 import ExampleComponent from "./components/demo-window-component";
 import Hero from "./components/hero";
-import InfoCard from "./components/info-card";
 import { Github } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import SupportedLLMPlatforms from "./components/supported-platform";
+import SupportedPlatform from "./components/supported-platforms";
 
 export default function Home() {
   return (
-    <div className="flex flex-col items-center min-h-screen  overflow-hidden">
-      {/* Subtle Grid Pattern Background */}
-      <div className="absolute inset-0 opacity-[0.02]">
+    <div className="min-h-screen overflow-hidden relative">
+      {/* Page border */}
+      <div className="absolute inset-0 border-x border-base-900 pointer-events-none z-[51] max-w-4xl mx-auto"></div>
+
+      {/* Grid Pattern Background */}
+      <div className="fixed inset-0 opacity-[0.02]">
         <div
           className="absolute inset-0"
           style={{
             backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.3) 1px, transparent 0)`,
             backgroundSize: "50px 50px",
           }}
-        ></div>
+        />
       </div>
 
-      {/* Navigation */}
-      <nav className="w-full z-50 backdrop-blur-xl  border-b fixed">
-        <div className="mx-auto w-full px-5 sm:px-5 md:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-12">
-            {/* Logo with dot pattern */}
-            <div className="flex flex-row  justify-center">
-              <span className="text-xl tracking-wider italic font-medium text-white">
-                grills{" "}
-                <span className="text-xs text-primary tracking-tighter">
-                  beta
-                </span>
+      {/* Fixed Navbar */}
+      <nav
+        className="z-[51] bg-black/35 backdrop-blur-lg fixed top-6 md:top-8 left-1/2 transform -translate-x-1/2 border shadow shadow-base-900  rounded-[1rem]"
+        style={{ width: "calc(100% - 2rem)", maxWidth: "calc(64rem - 15rem)" }}
+      >
+        <div className="px-4 sm:px-6">
+          <div className="flex items-center justify-between h-[3.2rem]">
+            <span className="text-xl text-white font-semibold font-serif">
+              grills{" "}
+              <span className="text-xs text-primary tracking-tighter font-mono">
+                beta
               </span>
-            </div>
-
-            {/* Navigation Links */}
-            <div className="flex items-center gap-3 ">
-              <a href="https://github.com/grillsdev/grills" target="_blank">
-              <Button variant={"outline"} size={"icon"}><Github/></Button>
+            </span>
+            <div className="flex items-center gap-3">
+              <a
+                href="https://github.com/grillsdev/grills"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Button variant="outline" size="icon">
+                  <Github />
+                </Button>
               </a>
-                <LoginBtn variant="outline" text="Login" size="default" />
+              <LoginBtn variant="outline" text="Login" size="default" />
             </div>
           </div>
         </div>
       </nav>
 
-      {/* Hero Section */}
-      {/* Full width background container */}
-      <div className="min-h-[45rem] w-full relative">
-        {/* Diagonal Fade Grid Background - Full Width */}
-        <div
-          className="absolute inset-0 z-0"
-          style={{
-            backgroundImage: `
-        linear-gradient(to right, oklch(0.5536 0.0082 202.85) 1px, transparent 1px),
-        linear-gradient(to bottom, oklch(0.5536 0.0082 202.85) 1px, transparent 1px)
-      `,
-            backgroundSize: "32px 32px",
-            WebkitMaskImage:
-              "radial-gradient(ellipse 80% 80% at 100% 0%, #000 50%, transparent 90%)",
-            maskImage:
-              "radial-gradient(ellipse 80% 80% at 100% 0%, #000 50%, transparent 90%)",
-          }}
-        />
 
-        {/* Content container - centered with max width */}
-        <div className="w-full max-w-4xl 3xl:max-w-6xl mx-auto relative z-10 pt-20 pb-16 px-5">
-          <Hero />
-        </div>
-      </div>
-      <div className="w-full max-w-4xl 3xl:max-w-6xl z-40 -mt-80 lg:-mt-[21rem] px-4">
-        <ExampleComponent />
-      </div>
+      <section className="w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+        <div className="min-h-[50rem] w-full relative ml-4 md:ml-0 lg:ml-24">
+          {/* Diagonal Grid Background */}
+          <div
+            className="absolute inset-0 -z-10"
+            style={{
+              backgroundImage: `linear-gradient(to right, oklch(0.2759 0.0063 203.54) 1px, transparent 1px), linear-gradient(to bottom, oklch(0.2759 0.0063 203.54) 1px, transparent 1px)`,
+              backgroundSize: "32px 32px",
+              WebkitMaskImage:
+                "radial-gradient(ellipse 100% 100% at 100% 0%, #000 70%, transparent 100%)",
+              maskImage:
+                "radial-gradient(ellipse 100% 100% at 100% 0%, #000 70%, transparent 100%)",
+            }}
+          />
 
-      <div className="mx-auto w-full max-w-5xl space-y-14 md:space-y-16 md:px-3 mt-24 flex flex-col items-center">
-
-        <BentoSection />
-
-        <div className="flex flex-col w-full  px-4 md:px-0 gap-20 items-center">
-          <div className="max-w-[61rem]">
-          <SupportedLLMPlatforms/>
-
+          {/* Hero Content with proper spacing for fixed navbar */}
+          <div className="relative z-10 pt-[7.5rem] md:pt-36  lg:pt-[9.5rem] -ml-4 md:ml-0 lg:-ml-24">
+            <Hero />
           </div>
-        <InfoCard className="h-[20rem] lg:h-[23rem]  flex-none w-screen" />
         </div>
-      </div>
 
-      <GoToTwitter />
+        {/* Demo Component with proper spacing */}
+        <div className="relative z-10 -mt-96 md:-mt-72 lg:-mt-[22.5rem]">
+          <ExampleComponent />
+        </div>
+
+        {/* Main Content Sections with improved spacing */}
+        <div className="relative z-10 mt-28 md:mt-32 sm:mt-40">
+          <div className="space-y-24 sm:space-y-32">
+            <BentoSection />
+            <SupportedPlatform />
+          </div>
+        </div>
+      </section>
+
+      <div className="flex flex-col items-center justify-center w-screen pt-20 md:pt-36">
+        <footer className="w-full max-w-4xl p-4 text-center rounded-2xl shadow border-t py-8 lg:py-6 ">
+          <p>
+            Need help? Contact us at{" "}
+            <a
+              href="mailto:support@grills.dev"
+              className="text-primary hover:underline"
+            >
+              support@grills.dev
+            </a>
+          </p>
+        </footer>
+      </div>
+        <GoToTwitter />
+
     </div>
   );
 }
+

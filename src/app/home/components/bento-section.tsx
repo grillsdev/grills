@@ -12,22 +12,22 @@ import {
 import { 
   BentoCardComponent, 
   ModelSelectorMockup, 
-  ThemeSelectorMockup, 
   CodeEditorMockup,
-  CollaborationMockup 
+  CollaborationMockup,
+  LivePreviewMockup
 } from "./bento-grid-content";
 
 export default function BentoSection() {
   return (
     <div className="min-h-screen bg-background z-40">
-      <div className="max-w-5xl mx-auto px-5">
+      <div className="">
         <div className="flex flex-col items-center mb-12 space-y-3">
-          <h1 className="text-5xl font-semibold text-center">
+          <h1 className="text-4xl md:text-5xl font-semibold text-center">
             Build
             <br/> amazing interface 
           </h1>
-          <p className="text-muted-foreground font-medium text-base max-w-xl text-center">
-            From generating <span className="font-semibold">unstyled shadcn</span> components with the smartest LLM to selecting the theme for <br className="block md:hidden"/> your component, your all in one platform for UI development.
+          <p className="text-muted-foreground font-semibold text-base text-center max-w-sm">
+            From generating <span className="text-base-300">unstyled shadcn</span> components with the smartest LLM<br className="block md:hidden"/> to spinning up your own preview.
           </p>
         </div>
         
@@ -51,7 +51,7 @@ export default function BentoSection() {
 const items = [
   {
     title: "Intelligent Chat Interface",
-    description: "Communicate with AI models to build and iterate on your components with consistent design and layout.",
+    description: "Communicate with AI models to build and iterate.",
     header: <BentoCardComponent />,
     icon: <IconMessages className="h-4 w-4 text-primary" />,
   },
@@ -62,21 +62,21 @@ const items = [
     icon: <IconBrandOpenai className="h-4 w-4 text-primary" />,
   },
   {
-    title: "Dynamic Theme Engine",
-    description: "Instantly customize your application's appearance with custome theming.",
-    header: <ThemeSelectorMockup />,
-    icon: <IconPalette className="h-4 w-4 text-primary" />,
+    title: "Platforms",
+    description: "Bring your own API key and choose from a wide range of LLMs across all the top platforms.",
+    header: <CollaborationMockup/>,
+    icon: <KeyRound className="h-4 w-4 text-primary" />,
   },
   {
-    title: "Real time Code Generation and Rendering",
-    description: "Watch as AI generates clean, production ready UI with consistent design and layout",
+    title: "Code Generation and Real Time Rendering",
+    description: "Watch as AI generates clean, production ready UI with consistent design and layout with live rendering using AI Sandbox(BYOK)",
     header: <CodeEditorMockup />,
     icon: <IconCode className="h-4 w-4 text-primary" />,
   },
   {
-    title: "B.Y.O.K",
-    description: "Bring your own API key and choose from a wide range of LLMs across all the top platforms.",
-    header: <CollaborationMockup />,
-    icon: <KeyRound className="h-4 w-4 text-primary" />,
+    title: "Live Preview",
+    description: "Live preview is supported using AI Sandboxs with (B.Y.O.K)",
+    header: <LivePreviewMockup/>,
+    icon: <IconPalette className="h-4 w-4 text-primary" />,
   }
 ];
