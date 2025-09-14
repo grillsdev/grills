@@ -3,6 +3,11 @@ User-agent: Googlebot
 Disallow: /
 Allow: /home
 
+User-agent: Twitterbot
+Disallow: /
+Allow: /home
+
+
 User-agent: Bingbot
 Disallow: /
 Allow: /home
