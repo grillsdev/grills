@@ -71,7 +71,7 @@ export default function SupportedPlatform() {
             <br/> Platforms
           </h1>
             <p className="text-muted-foreground font-semibold text-base max-w-[18rem] md:max-w-sm text-center">
-              Your platform, your rule. Dive in and choose from the smartest LLMs to AI sandboxes. We’ve got you covered after all, it’s your AI platform.
+              Your platform, your rule. Dive in and choose from the smartest LLMs to AI sandboxes. We’ve got you covered after all it’s your AI platform.
             </p>
         </div>
         
