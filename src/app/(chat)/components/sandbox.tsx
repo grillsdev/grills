@@ -1,60 +1,54 @@
-import { useState, Suspense, useEffect, useCallback} from 'react';
+import { useState, Suspense, useEffect, useCallback } from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { FileCode2, X, AppWindowMac, Loader2, Maximize} from 'lucide-react';
-import CopyToClipboard from './copy-to-clipboard';
-import { Button } from '@/components/ui/button';
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { FileCode2, X, AppWindowMac, Loader2, Maximize } from "lucide-react";
+import CopyToClipboard from "./copy-to-clipboard";
+import { Button } from "@/components/ui/button";
 
 import dynamic from "next/dynamic";
-import { $sanboxObj } from '@/store/sandbox';
-import {useStore} from "@nanostores/react"
-
+import { $sanboxObj } from "@/store/sandbox";
+import { useStore } from "@nanostores/react";
 
 const CodeRunner = dynamic(() => import("./code-renderer"), {
   ssr: false,
 });
 
-const SyntaxHighlighter = dynamic(
-  () => import("./code-viewer"),
-  {
-    ssr: false,
-  },
-);
+const SyntaxHighlighter = dynamic(() => import("./code-viewer"), {
+  ssr: false,
+});
 
 const Sandbox = ({
   changeWindowStateTo,
 }: {
   changeWindowStateTo: (state: boolean) => void;
 }) => {
-  const [activeTab, setActiveTab] = useState<'code' | 'render'>('code');
-  const [isCodeStreaming, setIsCodeStreaming] = useState(false)
-  const newSandboxObj = useStore($sanboxObj)
+  const [activeTab, setActiveTab] = useState<"code" | "render">("code");
+  const [isCodeStreaming, setIsCodeStreaming] = useState(false);
+  const newSandboxObj = useStore($sanboxObj);
   const handle = useFullScreenHandle();
-
 
   const sb = $sanboxObj.get();
   const sandboxId = sb.id;
 
- const handleTabChange = useCallback((value: 'code' | 'render') => {
+  const handleTabChange = useCallback((value: "code" | "render") => {
     setActiveTab(value);
   }, []);
 
-  //get the latest code and id from the sandbox state add the key in order to prevent the render 
 
   /**
    * if the previously there is a streaming but now there is not streeming and while streaming tab 'code' me  change hojata h
-   * to hame wapis code to render m lana h after getting stream for that tracking we have to use the currentSandbox and oldSandbox 
+   * to hame wapis code to render m lana h after getting stream for that tracking we have to use the currentSandbox and oldSandbox
    * bot tha params(current, oldinstance) it provied by nanostore itself
    */
   useEffect(() => {
     const unsubscribe = $sanboxObj.listen((sandbox, oldSandbox) => {
       if (!sandbox) return;
 
-      if (sandbox['isStreaming'] && oldSandbox['isStreaming']) {
-        setIsCodeStreaming(prev => {
+      if (sandbox["isStreaming"] && oldSandbox["isStreaming"]) {
+        setIsCodeStreaming((prev) => {
           if (!prev) {
-            handleTabChange('code');
+            handleTabChange("code");
             return true;
           }
           return prev;
@@ -62,9 +56,9 @@ const Sandbox = ({
         return;
       }
 
-      if (!sandbox['isStreaming'] && oldSandbox['isStreaming']) {
+      if (!sandbox["isStreaming"] && oldSandbox["isStreaming"]) {
         setIsCodeStreaming(false);
-        handleTabChange('render');
+        handleTabChange("render");
         return;
       }
     });
@@ -72,89 +66,99 @@ const Sandbox = ({
     return unsubscribe;
   }, [handleTabChange, newSandboxObj.code, newSandboxObj.pkg]);
 
-
   return (
-      <div className="flex h-screen w-full flex-col">
-        {/* Header */}
-        <div className="flex items-center justify-between border-b px-4 py-2">
-          <Tabs
-            value={activeTab}
-            onValueChange={(value) =>
-              handleTabChange(value as 'code' | 'render')
-            }
-            className="w-auto"
-          >
-            <TabsList className="h-8 p-0 veteran bg-transparent">
-              <TabsTrigger
-                value="code"
-                className="flex items-center gap-2 rounded-[15.5px] text-xs data-[state=active]:border data-[state=active]:border-blue-200 data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700"
-              >
-                <FileCode2 size={16} />
-                Code
-              </TabsTrigger>
-              <TabsTrigger
-                value="render"
-                disabled={isCodeStreaming}
-                className="flex items-center gap-1.5 rounded-[15.5px] text-xs data-[state=active]:border data-[state=active]:border-blue-200 data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700"
-              >
-                <AppWindowMac size={16} />
-                Render
-                {isCodeStreaming&&(<Loader2 className='text-green-500 animate-spin'/>)}
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
-          <div className="flex items-center space-x-2">
-             {activeTab==="render"&&(
-              <Button
-             onClick={handle.enter}
+    <div className="flex h-screen w-full flex-col">
+      {/* Header */}
+      <div className="flex items-center justify-between border-b px-4 py-2">
+        <Tabs
+          value={activeTab}
+          onValueChange={(value) => handleTabChange(value as "code" | "render")}
+          className="w-auto"
+        >
+          <TabsList className="h-8 p-0 veteran bg-transparent">
+            <TabsTrigger
+              value="code"
+              className="flex items-center gap-2 rounded-[15.5px] text-xs data-[state=active]:border data-[state=active]:border-blue-200 data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700"
+            >
+              <FileCode2 size={16} />
+              Code
+            </TabsTrigger>
+            <TabsTrigger
+              value="render"
+              disabled={isCodeStreaming}
+              className="flex items-center gap-1.5 rounded-[15.5px] text-xs data-[state=active]:border data-[state=active]:border-blue-200 data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700"
+            >
+              <AppWindowMac size={16} />
+              Render
+              {isCodeStreaming && (
+                <Loader2 className="text-green-500 animate-spin" />
+              )}
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+        <div className="flex items-center space-x-2">
+          {activeTab === "render" && (
+            <Button
+              onClick={handle.enter}
               variant="ghost"
               size="icon"
               className="text-xs text-base-100"
             >
               <Maximize size={16} />
             </Button>
-             )}
-            <CopyToClipboard text={newSandboxObj.code} />
-            <Button
-              onClick={() => changeWindowStateTo(false)}
-              variant="ghost"
-              size="icon"
-              className="text-xs text-base-100"
-            >
-              <X size={16} />
-            </Button>
-          </div>
-        </div>
-
-        {/* Content Area */}
-        
-        <div className="flex-1 min-h-0 ">
-          {activeTab === 'code' ? (
-            <div className="h-full overflow-x-auto">
-              <Suspense fallback={
-                <div className="flex items-center justify-center h-[27.5rem]">
-                  <div className="animate-pulse font-medium text-green-500">Loading...</div>
-                </div>
-              }>
-                <SyntaxHighlighter/>
-              </Suspense>
-            </div>
-          ) : (
-            <div key={sandboxId} className="h-full">
-              <Suspense fallback={
-                  <div className="flex items-center justify-center h-full">
-                    <div className="animate-pulse">Loading renderer...</div>
-                  </div>
-                }>
-                  <FullScreen handle={handle} className='h-full'>
-                  <CodeRunner/>
-                  </FullScreen>
-                </Suspense>
-            </div>
           )}
+          <CopyToClipboard text={newSandboxObj.code} />
+          <Button
+            onClick={() => changeWindowStateTo(false)}
+            variant="ghost"
+            size="icon"
+            className="text-xs text-base-100"
+          >
+            <X size={16} />
+          </Button>
         </div>
       </div>
+
+      {/* Content Area */}
+      <div className="flex-1 min-h-0">
+        {/* Always render both, but hide with CSS */}
+        <div
+          className={`h-full overflow-x-auto ${
+            activeTab === "code" ? "block" : "hidden"
+          }`}
+        >
+          <Suspense
+            fallback={
+              <div className="flex items-center justify-center h-[27.5rem]">
+                <div className="animate-pulse font-medium text-green-500">
+                  Loading...
+                </div>
+              </div>
+            }
+          >
+            <SyntaxHighlighter />
+          </Suspense>
+        </div>
+
+        <div
+          key={sandboxId}
+          className={`h-full ${activeTab === "render" ? "block" : "hidden"}`}
+        >
+          <Suspense
+            fallback={
+              <div className="flex items-center justify-center h-full">
+                <div className="animate-pulse">Loading renderer...</div>
+              </div>
+            }
+          >
+            <FullScreen handle={handle} className="h-full">
+              <CodeRunner />
+            </FullScreen>
+          </Suspense>
+        </div>
+      </div>
+    </div>
   );
 };
 
-export default Sandbox
+export default Sandbox;
