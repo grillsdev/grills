@@ -42,8 +42,8 @@ const CodeRenderer = () => {
         sandboxAPI: e2b,
         css: indexCSS
     })
-    .then((data)=>{
-      console.log(data)
+    .then(()=>{
+      // console.log(data)
     })
     .catch((error)=>{
       return toast.warning(error.message)
