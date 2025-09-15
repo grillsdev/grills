@@ -1,12 +1,16 @@
-'use client'
+"use client";
 import { useState, useEffect } from "react";
 import useSWR from "swr";
 
-import {  ChevronDown } from "lucide-react";
-import { Dialog, DialogContent, DialogTitle, DialogHeader} from "@/components/ui/dialog";
+import { ChevronDown } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogHeader,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
 
 import { getModels } from "@/lib/fetchers";
 
@@ -15,15 +19,14 @@ import { getSelectedModel } from "@/lib/utils";
 import { LLMProviderIcons } from "@/lib/utils";
 import Image from "next/image";
 
-
 export const ModelSelect = ({
   openWindow,
   handleOpenWindow,
-  setCurrentSelectedModel //psss the state to the btn for live btn, bcs btn is independent
+  setCurrentSelectedModel, //psss the state to the btn for live btn, bcs btn is independent
 }: {
   openWindow: boolean;
   handleOpenWindow: (state: boolean) => void;
-  setCurrentSelectedModel?: (model:CurrentModel) => void
+  setCurrentSelectedModel?: (model: CurrentModel) => void;
 }) => {
   const [currentModel, setCurrentModel] = useState<CurrentModel | null>(null);
   const { data: models } = useSWR<AvailableModels[]>(
@@ -43,11 +46,10 @@ export const ModelSelect = ({
     const selectedModel = JSON.stringify(model);
     localStorage.setItem("selected-model", selectedModel);
     setCurrentModel(model);
-    if(setCurrentSelectedModel){
-      setCurrentSelectedModel(model)
+    if (setCurrentSelectedModel) {
+      setCurrentSelectedModel(model);
     }
   };
-
 
   if (!models) return null;
 
@@ -75,36 +77,55 @@ export const ModelSelect = ({
 
             <div className="h-[400px]">
               {models.map((llm) => (
-                <TabsContent key={llm.id} value={llm.name} className="h-[21rem] overflow-auto">
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 space-y-3 pb-2 overflow-y-visible">
-                    {llm.models.map((model) => (
-                      <div
-                        key={`${model.id}`}
-                        role="button"
-                        onClick={() => {
-                          updateCurrentModel({
-                            llm: llm.name,
-                            model: model.name,
-                            modelTitle: model.title,
-                          });
-                          handleOpenWindow(false);
-                        }}
-                        className={`flex flex-col gap-2 sm:gap-3 items-center py-3 sm:py-5 cursor-pointer text-sm w-24 h-24 sm:w-30 sm:h-30 border rounded-4xl  ${
-                          currentModel?.model === model.name
-                            ? "border-primary"
-                            : ""
-                        }`}
+                <TabsContent
+                  key={llm.id}
+                  value={llm.name}
+                  className="h-[21rem] overflow-auto"
+                >
+                  <div className="h-[400px] relative">
+                    {models.map((llm) => (
+                      <TabsContent
+                        key={llm.id}
+                        value={llm.name}
+                        className="h-[21rem] overflow-auto relative"
                       >
-                        <Image
-                          src={LLMProviderIcons[llm.name] as ""}
-                          className="rounded-[18px] flex-shrink-0"
-                          width={45} height={45}
-                          alt={`${llm.title} icon`}
-                        />
-                        <h3 className="px-1 sm:px-2 text-center text-xs leading-tight line-clamp-2 overflow-hidden">
-                          {model.title}
-                        </h3>
-                      </div>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 space-y-3 pb-8 relative">
+                          {llm.models.map((model) => (
+                            <div
+                              key={`${model.id}`}
+                              role="button"
+                              onClick={() => {
+                                updateCurrentModel({
+                                  llm: llm.name,
+                                  model: model.name,
+                                  modelTitle: model.title,
+                                });
+                                handleOpenWindow(false);
+                              }}
+                              className={`relative flex flex-col items-center justify-center gap-2 cursor-pointer text-sm w-24 h-28 sm:w-30  border rounded-4xl p-2 ${
+                                currentModel?.model === model.name
+                                  ? "border-primary"
+                                  : ""
+                              }`}
+                            >
+                              <div className="relative">
+                                <Image
+                                  src={LLMProviderIcons[llm.name] as ""}
+                                  className="rounded-[18px] flex-shrink-0"
+                                  width={45}
+                                  height={45}
+                                  alt={`${llm.title} icon`}
+                                />
+                              </div>
+                              <div className="relative w-full px-1">
+                                <h3 className="text-center text-xs leading-tight line-clamp-2 break-words">
+                                  {model.title}
+                                </h3>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </TabsContent>
                     ))}
                   </div>
                 </TabsContent>
@@ -123,7 +144,8 @@ export const ModelSelectBtn = ({
   children?: React.ReactNode;
 }) => {
   const [openWindow, setOpenWindow] = useState(false);
-  const [currentSelectedModel, setCurrentSelectedModel] = useState<CurrentModel | null>(null);
+  const [currentSelectedModel, setCurrentSelectedModel] =
+    useState<CurrentModel | null>(null);
 
   useEffect(() => {
     setCurrentSelectedModel(getSelectedModel());
@@ -143,8 +165,10 @@ export const ModelSelectBtn = ({
             size="sm"
             className="text-xs font-light"
           >
-            {currentSelectedModel ? currentSelectedModel.modelTitle : "Select model"}
-            <ChevronDown/>
+            {currentSelectedModel
+              ? currentSelectedModel.modelTitle
+              : "Select model"}
+            <ChevronDown />
           </Button>
         ) : (
           children
