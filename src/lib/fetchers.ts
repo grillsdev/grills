@@ -9,13 +9,6 @@ export const getModels = async (url: string): Promise<AvailableModels[]> => {
   return response.data;
 };
 
-// arg is the title here
-export const createProject = async (url: string, { arg }: { arg: string }): Promise<{ chatId: string }> => {
-  const response = await axios.post<{ chatId: string }>(url, {
-    title: arg
-  })
-  return response.data
-}
 
 export const getUserProjects = async (url: string): Promise<UserProjectOverview[]> => {
   const response = await axios.get<{ projects: UserProjectOverview[] }>(url)

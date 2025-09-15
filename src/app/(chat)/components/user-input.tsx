@@ -1,10 +1,11 @@
 import {
   useState,
+  useEffect,
   type KeyboardEvent,
   type ChangeEvent,
   type FormEvent,
 } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 import { Send } from "lucide-react";
 
@@ -17,8 +18,9 @@ import { getSelectedModel, getApiKey } from "@/lib/utils";
 
 import { ModelSelect } from "./model-select-dialog";
 import { APIKeysDialog } from "./api-keys-dialog";
-import { StartProjectDialog } from "./start-project";
 // import UserTheme from "./theme";
+
+import { v4 as uuid } from "uuid";
 
 
 const UserInput = ({
@@ -37,10 +39,20 @@ const UserInput = ({
   const [homePageInput, setHomePageInput] = useState<string>("");
   const [modelDShouldOpen, setModelDShouldOpen] = useState<boolean>(false)
   const [apiDShouldOpen, setApiDShouldOpen] = useState<boolean>(false)
-  const [startProjectDShouldOpen, setStartProjectDShouldOpen] = useState(false)
   const [e2bDShouldOpen, setE2bDShouldOpen] = useState(false)
 
   const pathname = usePathname();
+  const route = useRouter()
+
+  useEffect(() => {
+    const isMsgStored = localStorage.getItem("llm-query-state");
+    if (isMsgStored) {
+      const msg = JSON.parse(isMsgStored) as { message: string };
+      if (msg.message.trim() === "") return;
+      setHomePageInput(msg.message)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const isHomePage = pathname === "/";
 
@@ -81,9 +93,10 @@ const UserInput = ({
 
 
     if (isHomePage) {
-      // save the current user query in local storage
+      // save the current user query in local storage and redirect to the chat page with newly created id
      localStorage.setItem('llm-query-state', JSON.stringify({message:homePageInput}));
-     setStartProjectDShouldOpen(true)
+     const newChatId = `cht-${uuid()}`
+     route.push(`/c/${newChatId}`)
     }
     //if not home page submit the chat 
     handleChatSubmit?.();
@@ -143,7 +156,6 @@ const UserInput = ({
       <ModelSelect openWindow={modelDShouldOpen} handleOpenWindow={()=>setModelDShouldOpen(false)}/>
       <APIKeysDialog openWindow={apiDShouldOpen} windowState={setApiDShouldOpen}/>
       <APIKeysDialog openWindow={e2bDShouldOpen} windowState={setE2bDShouldOpen} defaultTab="sandbox"/>
-      <StartProjectDialog openWindow={startProjectDShouldOpen} windowState={setStartProjectDShouldOpen}/>
     </>
   );
 };

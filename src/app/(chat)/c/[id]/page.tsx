@@ -21,37 +21,45 @@ import {
 import { useIsMobile } from "@/hooks/use-mobile";
 
 import Sandbox from "../../components/sandbox";
-import useSWR from "swr";
+import useSWR, { useSWRConfig } from "swr";
 import { getChats } from "@/lib/fetchers";
 import { ChatSkeletonLoader } from "../../components/chat-loader-skeleton";
+import { useStore } from "@nanostores/react";
+import { $sanboxObj } from "@/store/sandbox";
 
 export default function Chat() {
-  const selectedM = getSelectedModel();
-  const apiKey = getApiKey(selectedM?.llm || "");
   const { id: chatId } = useParams<{ id: string }>();
-  const { setOpen: setSidebar } = useSidebar();
+
   const [sandboxWindow, setSandboxWindow] = useState(false);
   const [input, setInput] = useState("");
-  const isMobile = useIsMobile();
 
-  // Ref to track the newest (last) message in the list
-  // We will align this element to the top of the scrollable viewport on updates
-  const lastMessageRef = useRef<HTMLDivElement | null>(null);
+  const lastMessageRef = useRef<HTMLDivElement | null>(null); // We will align this element to the top of the scrollable viewport on updates
+
+  const { setOpen: setSidebar } = useSidebar();
+  const { mutate } = useSWRConfig()
+  const isMobile = useIsMobile();
+  const sb = useStore($sanboxObj)
+
+  const selectedM = getSelectedModel();
+  const apiKey = getApiKey(selectedM?.llm || "");
+
   const {
     data: messageHistory,
     isLoading: isChatLoading,
-    error,
-  } = useSWR(`/api/completion/user/chat?chatId=${chatId}`, getChats);
+    error
+  } = useSWR(`/api/completion/user/chat?chatId=${chatId}`, getChats, {
+    errorRetryCount:0
+  })
 
   const { messages, setMessages, sendMessage, status } = useChat({
     transport: new DefaultChatTransport({
       api: "/api/completion",
       body: {
         includeIds: true,
-        chatId: chatId,
         model: selectedM?.model,
         llm: selectedM?.llm,
-        apiKey: apiKey,
+        chatId,
+        apiKey
       },
     }),
     messages: messageHistory ? messageHistory : [],
@@ -69,16 +77,32 @@ export default function Chat() {
     },
   });
 
+  useEffect(()=>{
+      // if the message araay is eqwual or less then 2 thats mens title is generated in backend and we have to pull it , bcs its new msg
+    if(messages.length===2 && !sb.isStreaming){
+      mutate("/api/completion/user")
+  }
+  },[sb.isStreaming, messages, mutate])
+
+
   useEffect(() => {
     setSidebar(false);
     const isMsgStored = localStorage.getItem("llm-query-state");
+    
     if (isMsgStored) {
       const msg = JSON.parse(isMsgStored) as { message: string };
-      if (msg.message.trim() === "") return;
+      // add a timeout before sending the message// bcs it is itersepting the message array bcs MessageHistory is empty some time but message not 
+    const timeout = setTimeout(() => {
       setInput(msg.message);
+      sendMessage({ text: msg.message });
+      setInput("");
+      localStorage.removeItem("llm-query-state");
+    }, 1000);
+
+    return () => clearTimeout(timeout);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isChatLoading]);
 
   useEffect(() => {
     async function getUserChats() {
@@ -108,6 +132,7 @@ export default function Chat() {
     }
   }, [messages, status]);
 
+
   const handleSubmit = () => {
     if (input.trim()) {
       sendMessage({ text: input });
@@ -115,23 +140,12 @@ export default function Chat() {
     }
   };
 
-  if (isChatLoading) return <ChatSkeletonLoader />;
-  if (error && error.status === 404) {
-    return (
-      <main
-        role="main"
-        aria-labelledby="not-found-title"
-        className="flex items-center justify-center p-4 h-[40rem]"
-      >
-        <section className="flex w-full max-w-xl flex-col items-center text-center gap-4 md:gap-6">
-          <h1 className="text-3xl font-medium">404 Not Found</h1>
-        </section>
-      </main>
-    );
-  }
+
+  if (isChatLoading && messages.length===0) return <ChatSkeletonLoader />;
 
   return (
-    <div className="h-[calc(100vh-76px)] flex flex-col">
+    <div 
+    className="h-[calc(100vh-76px)] flex flex-col">
       <div className="flex-1 min-h-0 flex flex-col">
         <ResizablePanelGroup direction="horizontal" className="w-full h-full">
           <ResizablePanel

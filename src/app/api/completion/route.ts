@@ -4,6 +4,7 @@ import {
   convertToModelMessages,
   createIdGenerator,
   smoothStream,
+  generateText,
 } from "ai";
 import { Redis } from "@upstash/redis";
 
@@ -28,6 +29,8 @@ const redis = new Redis({
 });
 
 
+
+//iz the chat id doesnot exist create one with title obv fro the user first input 
 
 export async function POST(request: Request) {
   // 1. Early authentication check
@@ -126,12 +129,33 @@ export async function POST(request: Request) {
           );
           await pipeline.exec();
 
-          await db
+          // if its frst user msg thats means the title is not created so create now esle just updte the field wuth updated at
+          if(messages.length===1){
+            const firstUserMsg = messages[0]
+            if(firstUserMsg.parts[0].type==="text"){
+              const userInput = firstUserMsg.parts[0].text || "Generate the component"
+              const { text } = await generateText({
+                model: operator.chat(model),
+                prompt: `You just need to create a title based on the user’s input—essentially what they want us to create, generate, or improve in the component. The title should be small. *USER INPUT*: ${userInput}`
+              })
+              await db
+              .update(aiChat)
+              .set({ title: text, updatedAt: new Date() })
+              .where(
+                and(eq(aiChat.admin, session.user.id), eq(aiChat.chatId, chatId))
+              );
+            }
+          }else{
+            await db
             .update(aiChat)
             .set({ updatedAt: new Date() })
             .where(
               and(eq(aiChat.admin, session.user.id), eq(aiChat.chatId, chatId))
             );
+          }
+
+
+          // update the title
         } catch (saveError) {
           console.error("Error saving messages:", saveError);
           // Consider how you want to handle save errors
