@@ -1,5 +1,5 @@
 /**
- * Get the Chat history
+ * Get the Chat history if not present create it and return the empty history 
  */
 
 
@@ -33,7 +33,12 @@ export async function GET(request:NextRequest){
     );
     const db = await getDb();
     const chatAdmin = await db.select().from(aiChat).where(and(eq(aiChat.chatId, chatId), eq(aiChat.admin, session.user.id)))
-    if(!chatAdmin[0]) return Response.json({error: "Not found"}, {status: 404})
+
+    // means chat are nir presenst so we will create it 
+    if(!chatAdmin[0]) {
+      await db.insert(aiChat).values({chatId:chatId, admin: session.user.id, type: "admin", createdAt: new Date(), updatedAt: new Date()})
+      return Response.json({error: "Not found & Created"}, {status: 404})
+    }
     const setKey = `chat:${chatId}:messages`
     const getUserChats = await redis.lrange(setKey, 0, -1)
     // got newst to oldest message but we want olders to newest for chat ui
