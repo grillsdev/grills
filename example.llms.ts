@@ -17,6 +17,7 @@ export const models = [
     {id:"default", title: "G 2.5 flash lite", name: "google/gemini-2.5-flash-lite", llm_id: "openrouter-primarykey", created_at: "Select now"},
     {id:"default", title: "Grok Code Fast 1", name: "x-ai/grok-code-fast-1", llm_id: "openrouter-primarykey", created_at: "Select now"},
     {id:"default", title: "Claude Sonnet 4", name: "anthropic/claude-sonnet-4", llm_id: "openrouter-primarykey", created_at: "Select now"},
+    {id:"default", title: "Sonoma sky alpha", name: "openrouter/sonoma-sky-alpha", llm_id: "openrouter-primarykey", created_at: "Select now"},
 
     {id:"default", title: "GPT-5 Mini", name: "gpt-5-mini-2025-08-07", llm_id: "openai-primarykey", created_at: "Select now"},
     {id:"default", title: "GPT-5 Nano", name: "gpt-5-nano-2025-08-07", llm_id: "openai-primarykey", created_at: "Select now"},
