@@ -1,4 +1,4 @@
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, isNotNull, and } from "drizzle-orm";
 import { auth } from "@/lib/auth";
 import { getDb } from "@/db";
 import { aiChat } from "@/db/schema/ai-chat";
@@ -18,7 +18,7 @@ export async function GET(request: Request) {
     const result = await db
       .select()
       .from(aiChat)
-      .where(eq(aiChat.admin, userId))
+      .where(and(eq(aiChat.admin, userId), isNotNull(aiChat.title)))
       .orderBy(desc(aiChat.createdAt))
       .limit(20);
     return Response.json({ projects: result }, { status: 200 });
