@@ -1,7 +1,8 @@
 import { useEffect, useRef } from "react";
+import useSWRMutation from "swr/mutation";
+import { useStore } from "@nanostores/react";
 
 import { Loader2 } from "lucide-react";
-import useSWRMutation from "swr/mutation";
 import { executeSandboxCode } from "@/lib/fetchers";
 import { $sanboxObj } from "@/store/sandbox";
 import { toast } from "sonner";
@@ -13,7 +14,7 @@ const CodeRenderer = () => {
   const iframeSrc = useRef<string |undefined>(undefined)
 
   //always get the last code/selected
-  const sb = $sanboxObj.get();
+  const sb = useStore($sanboxObj)
   const code = sb.code;
   const isStreaming = sb.isStreaming;
 
@@ -49,7 +50,7 @@ const CodeRenderer = () => {
       return toast.warning(error.message)
     })
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[code, sb.id, isStreaming])
+  },[sb.id, isStreaming])
 
 
   if (isExecuting && !iframeSrc.current) {
