@@ -77,7 +77,7 @@ const AssistantMessage = memo(({
       } else {
         $sanboxObj.setKey("code", parsedContent.code || "");
         $sanboxObj.setKey("pkg", parsedContent.pkgs)
-      }
+      }  
     } else if (!isStreaming && sb.id === id && sb.isStreaming === true) {
       $sanboxObj.setKey("isStreaming", false);
     }
@@ -96,6 +96,7 @@ const AssistantMessage = memo(({
             <Button
               size="sm"
               variant={"outline"}
+              disabled={isStreaming}
               onClick={() => {
                 if(!windowState){
                   changeWindowState(true);
