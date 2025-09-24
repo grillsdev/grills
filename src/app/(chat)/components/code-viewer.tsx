@@ -1,6 +1,9 @@
 import { $sanboxObj } from "@/store/sandbox";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+
 import { createHighlighter, type Highlighter } from "shiki/bundle/web";
+import { useDebouncedCallback } from "use-debounce";
+
 import CodeViewerSidebar from "./code-viewer-sidebar";
 
 const highlighterPromise = createHighlighter({
@@ -37,33 +40,33 @@ const highlighterPromise = createHighlighter({
 export default function CodeViewer() {
   const [html, setHtml] = useState("");
   const [highlighter, setHighlighter] = useState<Highlighter | null>(null);
-  const debounceRef = useRef<NodeJS.Timeout | null>(null);
   const sandbox = $sanboxObj.get();
 
   // Load highlighter once
   useEffect(() => {
     highlighterPromise.then(setHighlighter);
   }, []);
+
+
   // Debounce code highlighting
+  const debouncedCode = useDebouncedCallback((codeString) => {
+    if (!highlighter) return;
+    setHtml(
+      highlighter.codeToHtml(codeString, {
+        lang: "tsx",
+        theme: "vitesse-black",
+      })
+      );
+  }, 50);
+
+  // while streaming make the last element/file the current one
+  // if not streaming make the page.tsx code default
   useEffect(() => {
     if (!highlighter) return;
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => {
-      const codeValues = Object.values(sandbox.code);
-      const lastCode =
-      codeValues[codeValues.length - 1] || "Generating components..."
-
-      setHtml(
-        highlighter.codeToHtml(lastCode, {
-          lang: "tsx",
-          theme: "vitesse-black",
-        })
-      );
-    }, 50);
-    return () => {
-      if (debounceRef.current) clearTimeout(debounceRef.current);
-    };
-  }, [sandbox.code, highlighter]);
+    const codeValues = Object.values(sandbox.code);
+    const lastCode = sandbox.isStreaming ? (codeValues[codeValues.length - 1] || "Generating components...") : sandbox.code['page.tsx']
+    debouncedCode(lastCode)
+  }, [sandbox, highlighter, debouncedCode]);
 
 
   const navigateToCode = async (codeString: string) => {
