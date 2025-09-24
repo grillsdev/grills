@@ -1,73 +1,49 @@
 import { useState, useEffect, ReactNode } from "react"
-import { ChevronDown, FileJson2, PanelLeftOpen, PanelRightOpen } from "lucide-react"
+import { FileJson2, PanelLeftOpen, PanelRightOpen } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import CopyToClipboard from "./copy-to-clipboard"
 
 interface CodeViewerSidebarProps {
   children: ReactNode
   code: Record<string, string>
-  navigateToCode: (codeString:string) => void
+  navigateToCode: (codeString: string) => void
   isStreaming: boolean
 }
 
-export default function CodeViewerSidebar({ children, code, navigateToCode, isStreaming}: CodeViewerSidebarProps) {
+export default function CodeViewerSidebar({ children, code, navigateToCode, isStreaming }: CodeViewerSidebarProps) {
   const [isOpen, setIsOpen] = useState(false)
-  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set(["app", "components"]))
+  const [activeItem, setActiveItem] = useState<string>("page.tsx")
 
-  const keyValues = Object.keys(code);
+  const keyValues = Object.keys(code)
   const lastKey = keyValues[keyValues.length - 1]
 
-  const [activeItem, setActiveItem] = useState<string>("page-tsx")
-
-  // it is nessassary to change active collar on changing file for btter user experience 
-  useEffect(()=>{
-    if(!isStreaming) return;
-    if(!lastKey) return;
-    if(lastKey!==activeItem){
-      setActiveItem(lastKey.replace('.', '-'))
+  // Update active item when streaming new file
+  useEffect(() => {
+    if (!isStreaming || !lastKey) return
+    if (lastKey !== activeItem) {
+      setActiveItem(lastKey)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[isStreaming, lastKey])
+  }, [isStreaming, lastKey, activeItem])
 
-  // Generate sidebar navigation from code object
-  const generateSidebarNav = (code: Record<string, string>) => {
-    const appChildren: string[] = []
-    const componentChildren: string[] = []
-
-    Object.keys(code).forEach((filename) => {
-      if (filename === 'page.tsx') {
-        appChildren.push(filename)
-      } else {
-        componentChildren.push(filename)
-      }
-    })
-
-    return { appChildren, componentChildren }
-  }
-
-  const { appChildren, componentChildren } = generateSidebarNav(code)
-
-  const toggleGroup = (groupId: string) => {
-    setExpandedGroups(prev => {
-      const newSet = new Set(prev)
-      if (newSet.has(groupId)) {
-        newSet.delete(groupId)
-      } else {
-        newSet.add(groupId)
-      }
-      return newSet
-    })
-  }
+  // Default to page.tsx
+  useEffect(() => {
+    setActiveItem('page.tsx')
+  }, [])
 
   const toggleSidebar = () => setIsOpen(!isOpen)
 
-  // Always default to page.tsx
-  useEffect(() => {
-    setActiveItem('page-tsx')
-  }, [])
+  const handleFileClick = (filename: string) => {
+    setActiveItem(filename)
+    navigateToCode(code[filename])
+  }
+
+  // Separate files into app and components
+  const appFiles = Object.keys(code).filter(filename => filename === 'page.tsx')
+  const componentFiles = Object.keys(code).filter(filename => filename !== 'page.tsx')
 
   return (
     <div className="relative h-full w-full flex">
-      {/* Sidebar scoped to this container */}
+      {/* Sidebar */}
       <aside
         className={`h-full bg-card border-r border-border transition-all duration-300 ease-in-out flex-shrink-0 overflow-x-hidden overflow-y-auto ${
           isOpen ? "w-52 translate-x-0" : "w-0 -translate-x-64"
@@ -76,86 +52,58 @@ export default function CodeViewerSidebar({ children, code, navigateToCode, isSt
       >
         <div className="flex flex-col h-full">
           <div className="flex-1 p-4">
-            <nav className="space-y-1">
+            <nav className="space-y-4">
               {/* App section */}
-              {appChildren.length > 0 && (
-                <div className="space-y-1">
-                  <button
-                    onClick={() => toggleGroup("app")}
-                    className="flex items-center justify-between w-full px-2 py-1 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/50 rounded-md transition-colors cursor-pointer"
-                  >
-                    <span>app</span>
-                    <ChevronDown
-                      className={`h-4 w-4 transition-transform duration-200 ${
-                        expandedGroups.has("app") ? "rotate-180" : ""
-                      }`}
-                    />
-                  </button>
-
-                  {expandedGroups.has("app") && (
-                    <div className="ml-4 mt-1 space-y-1">
-                      {appChildren.map((filename) => (
-                        <button
-                          key={filename}
-                          onClick={() => {
-                            setActiveItem(filename.replace('.', '-'))
-                            navigateToCode(code[filename])
-                          }}
-                          className={`flex items-center gap-2 w-full px-2 py-1.5 text-sm rounded-md transition-colors ${
-                            activeItem === filename.replace('.', '-')
-                              ? "bg-accent text-accent-foreground"
-                              : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
-                          }`}
-                        >
-                          <FileJson2 className="h-4 w-4 flex-shrink-0" />
-                          <span className="truncate max-w-[120px]" title={filename}>
-                            {filename}
-                          </span>
-                        </button>
-                      ))}
-                    </div>
-                  )}
+              {appFiles.length > 0 && (
+                <div className="space-y-2">
+                  <div className="px-2 py-1 text-sm font-medium text-muted-foreground">
+                    app
+                  </div>
+                  <div className="ml-4 space-y-1">
+                    {appFiles.map((filename) => (
+                      <button
+                        key={filename}
+                        onClick={() => handleFileClick(filename)}
+                        className={`flex items-center gap-2 w-full px-2 py-1.5 text-sm rounded-md transition-colors ${
+                          activeItem === filename
+                            ? "bg-accent text-accent-foreground"
+                            : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                        }`}
+                      >
+                        <FileJson2 className="h-4 w-4 flex-shrink-0" />
+                        <span className="truncate max-w-[120px]" title={filename}>
+                          {filename}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
                 </div>
               )}
 
               {/* Components section */}
-              {componentChildren.length > 0 && (
-                <div className="space-y-1">
-                  <button
-                    onClick={() => toggleGroup("components")}
-                    className="flex items-center justify-between w-full px-2 py-1 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/50 rounded-md transition-colors cursor-pointer"
-                  >
-                    <span>components</span>
-                    <ChevronDown
-                      className={`h-4 w-4 transition-transform duration-200 ${
-                        expandedGroups.has("components") ? "rotate-180" : ""
-                      }`}
-                    />
-                  </button>
-
-                  {expandedGroups.has("components") && (
-                    <div className="ml-4 mt-1 space-y-1">
-                      {componentChildren.map((filename) => (
-                        <button
-                          key={filename}
-                          onClick={() => {
-                            setActiveItem(filename.replace('.', '-'))
-                            navigateToCode(code[filename])
-                          }}
-                          className={`flex items-center gap-2 w-full px-2 py-1.5 text-sm rounded-md transition-colors ${
-                            activeItem === filename.replace('.', '-')
-                              ? "bg-accent text-accent-foreground"
-                              : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
-                          }`}
-                        >
-                          <FileJson2 className="h-4 w-4 flex-shrink-0" />
-                          <span className="truncate max-w-[120px]" title={filename}>
-                            {filename}
-                          </span>
-                        </button>
-                      ))}
-                    </div>
-                  )}
+              {componentFiles.length > 0 && (
+                <div className="space-y-2">
+                  <div className="px-2 py-1 text-sm font-medium text-muted-foreground">
+                    components
+                  </div>
+                  <div className="ml-4 space-y-1">
+                    {componentFiles.map((filename) => (
+                      <button
+                        key={filename}
+                        onClick={() => handleFileClick(filename)}
+                        className={`flex items-center gap-2 w-full px-2 py-1.5 text-sm rounded-md transition-colors ${
+                          activeItem === filename
+                            ? "bg-accent text-accent-foreground"
+                            : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                        }`}
+                      >
+                        <FileJson2 className="h-4 w-4 flex-shrink-0" />
+                        <span className="truncate max-w-[120px]" title={filename}>
+                          {filename}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
                 </div>
               )}
             </nav>
@@ -163,7 +111,7 @@ export default function CodeViewerSidebar({ children, code, navigateToCode, isSt
         </div>
       </aside>
 
-      {/* Toggle button scoped to this container (always visible) */}
+      {/* Toggle button */}
       <Button
         onClick={toggleSidebar}
         variant={"outline"}
@@ -179,7 +127,10 @@ export default function CodeViewerSidebar({ children, code, navigateToCode, isSt
       </Button>
 
       {/* Main content area */}
-      <main className="flex-1 min-w-0 h-full overflow-hidden relative z-0">
+      <main className="flex-1 min-w-0 h-full overflow-hidden relative z-0 w-full">
+        <div className="flex flex-row justify-end px-7 py-3 bg-black  justify-self-end absolute">
+          <CopyToClipboard text={code[activeItem.replace("-",".")]}/>
+        </div>
         {children}
       </main>
     </div>
