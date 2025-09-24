@@ -15,7 +15,8 @@ const CodeRenderer = () => {
 
   //always get the last code/selected
   const sb = useStore($sanboxObj)
-  const code = sb.code;
+  const code = sb.code!;
+  if(!code) toast.warning("No code for exicution, may throw an error.")
   const isStreaming = sb.isStreaming;
 
   const {

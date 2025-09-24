@@ -1,6 +1,7 @@
 import { $sanboxObj } from "@/store/sandbox";
 import { useEffect, useRef, useState } from "react";
 import { createHighlighter, type Highlighter } from "shiki/bundle/web";
+import CodeViewerSidebar from "./code-viewer-sidebar";
 
 const highlighterPromise = createHighlighter({
   langs: [
@@ -29,7 +30,7 @@ const highlighterPromise = createHighlighter({
 });
 
 /**
- * 
+ *
  * the client is creating multiple Highligter instance for eact code update wich is causing the freezing of the client
  * so we have to implement the timeout with bach update ratheer then passing each new chunks coming in the stream
  */
@@ -37,7 +38,7 @@ export default function CodeViewer() {
   const [html, setHtml] = useState("");
   const [highlighter, setHighlighter] = useState<Highlighter | null>(null);
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
-  const sandbox = $sanboxObj.get()
+  const sandbox = $sanboxObj.get();
 
   // Load highlighter once
   useEffect(() => {
@@ -48,17 +49,33 @@ export default function CodeViewer() {
     if (!highlighter) return;
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
+      const codeValues = Object.values(sandbox.code);
+      const lastCode =
+      codeValues[codeValues.length - 1] || "Generating components..."
+
       setHtml(
-        highlighter.codeToHtml(sandbox.code, {
+        highlighter.codeToHtml(lastCode, {
           lang: "tsx",
           theme: "vitesse-black",
         })
       );
-    }, 50); // in. millisecond
+    }, 50);
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
   }, [sandbox.code, highlighter]);
+
+
+  const navigateToCode = async (codeString: string) => {
+    if (sandbox.isStreaming) return;
+    if (!highlighter) return;
+    setHtml(
+      highlighter.codeToHtml(codeString, {
+        lang: "tsx",
+        theme: "vitesse-black",
+      })
+    );
+  };
 
   if (!highlighter || !html) {
     return (
@@ -69,6 +86,11 @@ export default function CodeViewer() {
   }
 
   return (
-    <div className="text-[13px] p-4 bg-black h-full overflow-x-auto max-w-full pb-28" dangerouslySetInnerHTML={{ __html: html }} />
+    <CodeViewerSidebar code={sandbox.code} navigateToCode={navigateToCode} isStreaming={sandbox.isStreaming}>
+      <div
+        className="text-[13px] p-2 bg-black h-full overflow-x-auto max-w-full pb-28"
+        dangerouslySetInnerHTML={{ __html: html }}
+      />
+    </CodeViewerSidebar>
   );
 }

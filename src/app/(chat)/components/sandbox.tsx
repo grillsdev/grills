@@ -3,7 +3,6 @@ import { FullScreen, useFullScreenHandle } from "react-full-screen";
 
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FileCode2, X, AppWindowMac, Loader2, Maximize } from "lucide-react";
-import CopyToClipboard from "./copy-to-clipboard";
 import { Button } from "@/components/ui/button";
 
 import dynamic from "next/dynamic";
@@ -107,7 +106,7 @@ const Sandbox = ({
               <Maximize size={16} />
             </Button>
           )}
-          <CopyToClipboard text={newSandboxObj.code} />
+          {/* <CopyToClipboard text={newSandboxObj.code} /> */} 
           <Button
             onClick={() => changeWindowStateTo(false)}
             variant="ghost"
@@ -129,7 +128,7 @@ const Sandbox = ({
         >
           <Suspense
             fallback={
-              <div className="flex items-center justify-center h-[27.5rem]">
+              <div className="w-fit flex items-center justify-center h-[27.5rem]">
                 <div className="animate-pulse font-medium text-green-500">
                   Loading...
                 </div>

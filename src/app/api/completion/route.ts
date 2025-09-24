@@ -28,8 +28,6 @@ const redis = new Redis({
   keepAlive: true,
 });
 
-
-
 //iz the chat id doesnot exist create one with title obv fro the user first input 
 
 export async function POST(request: Request) {
@@ -63,6 +61,24 @@ export async function POST(request: Request) {
 
     const db = await getDb();
     const sysPrompt = await getPromptTxt();
+
+    // const sysPrompt: string = (() => {
+    //   let fs: typeof import('fs'), path: typeof import('path');
+
+    //   try {
+    //     // Fallback to require for synchronous operation
+    //     fs = eval('require')('fs');
+    //     path = eval('require')('path');
+
+    //     const promptPath = path.resolve(__dirname, '/Users/aditya/Desktop/utils/grills/development/grills/src/lib/prompt.txt');
+    //     const promptText = fs.readFileSync(promptPath, 'utf-8');
+    //     return promptText.trim();
+    //   } catch (error) {
+    //     console.error('Error reading prompt file:', error);
+    //     return ''; // Return empty string as fallback
+    //   }
+    // })();
+
 
     let operator = null;
     switch (llm) {
@@ -130,28 +146,28 @@ export async function POST(request: Request) {
           await pipeline.exec();
 
           // if its frst user msg thats means the title is not created so create now esle just updte the field wuth updated at
-          if(messages.length===1){
+          if (messages.length === 1) {
             const firstUserMsg = messages[0]
-            if(firstUserMsg.parts[0].type==="text"){
+            if (firstUserMsg.parts[0].type === "text") {
               const userInput = firstUserMsg.parts[0].text || "Generate the component"
               const { text } = await generateText({
                 model: operator.chat(model),
                 prompt: `You just need to create a title based on the user’s input—essentially what they want us to create, generate, or improve in the component. The title should be small. *USER INPUT*: ${userInput}`
               })
               await db
+                .update(aiChat)
+                .set({ title: text, updatedAt: new Date() })
+                .where(
+                  and(eq(aiChat.admin, session.user.id), eq(aiChat.chatId, chatId))
+                );
+            }
+          } else {
+            await db
               .update(aiChat)
-              .set({ title: text, updatedAt: new Date() })
+              .set({ updatedAt: new Date() })
               .where(
                 and(eq(aiChat.admin, session.user.id), eq(aiChat.chatId, chatId))
               );
-            }
-          }else{
-            await db
-            .update(aiChat)
-            .set({ updatedAt: new Date() })
-            .where(
-              and(eq(aiChat.admin, session.user.id), eq(aiChat.chatId, chatId))
-            );
           }
 
 

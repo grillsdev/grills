@@ -59,7 +59,7 @@ export const saveDaytonaAPIKey = async (url: string, arg: { arg: string }): Prom
 
 export const executeSandboxCode = async (
   url: string,
-  { arg }: { arg: { sandboxAPI: string; msgId: string; code: string, css:string } }
+  { arg }: { arg: { sandboxAPI: string; msgId: string; code: Record<string, string>, css:string } }
 ): Promise<{ previewUrl: string }> => {
   try {
     const response = await axios.post<{ previewUrl: string }>(url, arg);

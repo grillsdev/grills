@@ -99,7 +99,7 @@ export interface ProjectAccessRequest {
 
 export interface SandboxStoreInterface {
   id: string; //perticular message id
-  code: string;
+  code: Record<string, string>;
   isStreaming: boolean;
   pkg?: string[];
   type?: "btn";
@@ -107,7 +107,7 @@ export interface SandboxStoreInterface {
 
 export interface GeneratedCodeContent {
   pre_code: string;
-  code: string;
+  code: Record<string, string>; //always constain `page.tsx` Key
   post_code: string;
   pkgs: string[];
 }
@@ -138,12 +138,15 @@ export interface SavedTheme {
 export const codeGenerationSchema = z.object({
   pre_code: z
     .string()
-    .describe(
-      "What is gonna be generated, some detail, proccess and key point"
-    ),
-  code: z.string().describe("Code geenration for UI component"),
-  post_code: z.string().describe("Detail about code generation"),
+    .describe("What is gonna be generated, some detail, process and key point and should be short"),
+
+  code: z
+    .record(z.string(), z.string())
+    .describe("Object mapping of filename -> full file contents; must include a 'page.tsx' key"),
+
+  post_code: z.string().describe("Detail about code generation and it should be short."),
+
   pkgs: z
     .array(z.string())
-    .describe("npm pakages to be needed for this UI component"),
+    .describe("npm packages to be needed for this UI component"),
 });
