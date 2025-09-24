@@ -36,9 +36,9 @@ export default function Chat() {
   const lastMessageRef = useRef<HTMLDivElement | null>(null); // We will align this element to the top of the scrollable viewport on updates
 
   const { setOpen: setSidebar } = useSidebar();
-  const { mutate } = useSWRConfig()
+  const { mutate } = useSWRConfig();
   const isMobile = useIsMobile();
-  const sb = useStore($sanboxObj)
+  const sb = useStore($sanboxObj);
 
   const selectedM = getSelectedModel();
   const apiKey = getApiKey(selectedM?.llm || "");
@@ -46,10 +46,26 @@ export default function Chat() {
   const {
     data: messageHistory,
     isLoading: isChatLoading,
-    error
+    error,
   } = useSWR(`/api/completion/user/chat?chatId=${chatId}`, getChats, {
-    errorRetryCount:0
-  })
+    errorRetryCount: 0,
+    onError(err) {
+      if (err.status === 404) {
+        // on error mean there is not hostory so most probaly the chat is new and user added gthat chat in homepage and came here after redirecting so automatically send the chat t abckend
+        const isMsgStored = localStorage.getItem("llm-query-state");
+        if (isMsgStored) {
+          const msg = JSON.parse(isMsgStored) as { message: string };
+          // add a timeout before sending the message// bcs it is itersepting the message array bcs MessageHistory is empty some time but message not
+          setInput(msg.message);
+          sendMessage({ text: msg.message });
+          setInput("");
+          localStorage.removeItem("llm-query-state");
+        }
+      }else{
+      return toast.error("Something went wrong, please try again later.");
+      }
+    },
+  });
 
   const { messages, setMessages, sendMessage, status } = useChat({
     transport: new DefaultChatTransport({
@@ -59,7 +75,7 @@ export default function Chat() {
         model: selectedM?.model,
         llm: selectedM?.llm,
         chatId,
-        apiKey
+        apiKey,
       },
     }),
     messages: messageHistory ? messageHistory : [],
@@ -77,32 +93,17 @@ export default function Chat() {
     },
   });
 
-  useEffect(()=>{
-      // if the message araay is eqwual or less then 2 thats mens title is generated in backend and we have to pull it , bcs its new msg
-    if(messages.length===2 && !sb.isStreaming){
-      mutate("/api/completion/user")
-  }
-  },[sb.isStreaming, messages, mutate])
-
+  useEffect(() => {
+    // if the message araay is eqwual or less then 2 thats mens title is generated in backend and we have to pull it , bcs its new msg
+    if (messages.length === 2 && !sb.isStreaming) {
+      mutate("/api/completion/user");
+    }
+  }, [sb.isStreaming, messages, mutate]);
 
   useEffect(() => {
     setSidebar(false);
-    const isMsgStored = localStorage.getItem("llm-query-state");
-    
-    if (isMsgStored) {
-      const msg = JSON.parse(isMsgStored) as { message: string };
-      // add a timeout before sending the message// bcs it is itersepting the message array bcs MessageHistory is empty some time but message not 
-    const timeout = setTimeout(() => {
-      setInput(msg.message);
-      sendMessage({ text: msg.message });
-      setInput("");
-      localStorage.removeItem("llm-query-state");
-    }, 1000);
-
-    return () => clearTimeout(timeout);
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isChatLoading]);
+  }, []);
 
   useEffect(() => {
     async function getUserChats() {
@@ -128,10 +129,12 @@ export default function Chat() {
       viewport.scrollTo({ top, behavior: "smooth" });
     } else {
       // Fallback for non-Radix environments
-      lastMessageRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+      lastMessageRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
     }
   }, [messages, status]);
-
 
   const handleSubmit = () => {
     if (input.trim()) {
@@ -140,12 +143,10 @@ export default function Chat() {
     }
   };
 
-
-  if (isChatLoading && messages.length===0) return <ChatSkeletonLoader />;
+  if (isChatLoading && messages.length === 0) return <ChatSkeletonLoader />;
 
   return (
-    <div 
-    className="h-[calc(100vh-76px)] flex flex-col">
+    <div className="h-[calc(100vh-76px)] flex flex-col">
       <div className="flex-1 min-h-0 flex flex-col">
         <ResizablePanelGroup direction="horizontal" className="w-full h-full">
           <ResizablePanel
@@ -163,7 +164,11 @@ export default function Chat() {
                       <div
                         key={message.id}
                         // Attach the ref only on the last (newest) message container
-                        ref={idx === messages.length - 1 ? lastMessageRef : undefined}
+                        ref={
+                          idx === messages.length - 1
+                            ? lastMessageRef
+                            : undefined
+                        }
                       >
                         {message.parts.map((part, i) => {
                           switch (part.type) {
@@ -182,7 +187,7 @@ export default function Chat() {
                                       messages[messages.length - 1].id
                                   }
                                 />
-                              )
+                              );
                             default:
                               return null;
                           }
