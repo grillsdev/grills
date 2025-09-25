@@ -21,7 +21,7 @@ const siteConfig = {
     "Open Source alternative for Lovable Bolt & V0. Just generate, copy and paste into your production codebase — no overhead, works with your favorite LLM (BYOK).",
   url: "https://grills.dev",
   author: "Aditya Pushkar",
-  image: "/site-image2.png",
+  image: "/site-image.png",
 };
 
 export const metadata: Metadata = {
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
 
   icons: {
     icon: "/favicon.svg",
-    apple: "/apple-touch-icon.png",
+    apple: "/apple-icon.png",
   },
 
   openGraph: {
@@ -75,7 +75,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Grills - Your own generative UI platform',
     description: 'Open Source alternative for Lovable Bolt & V0. Just generate, copy and paste into your production codebase — no overhead, works with your favorite LLM (BYOK).',
-    images: ['https://grills.dev/site-image2.png'],
+    images: ['https://grills.dev/site-image.png'],
   },
 
   category: "technology",
