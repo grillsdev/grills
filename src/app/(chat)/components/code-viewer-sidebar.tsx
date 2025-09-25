@@ -25,10 +25,12 @@ export default function CodeViewerSidebar({ children, code, navigateToCode, isSt
     }
   }, [isStreaming, lastKey, activeItem])
 
-  // Default to page.tsx
+  // Default to page.tsx even on code change 
   useEffect(() => {
+    if(isStreaming) return;
     setActiveItem('page.tsx')
-  }, [])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [code])
 
   const toggleSidebar = () => setIsOpen(!isOpen)
 
@@ -129,7 +131,7 @@ export default function CodeViewerSidebar({ children, code, navigateToCode, isSt
       {/* Main content area */}
       <main className="flex-1 min-w-0 h-full overflow-hidden relative z-0 w-full">
         <div className="flex flex-row justify-end px-7 py-3 bg-black  justify-self-end absolute">
-          <CopyToClipboard text={code[activeItem.replace("-",".")]}/>
+          <CopyToClipboard text={code[activeItem]}/>
         </div>
         {children}
       </main>
