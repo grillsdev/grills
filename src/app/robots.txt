@@ -6,6 +6,7 @@ Allow: /home
 User-agent: Twitterbot
 Disallow: /
 Allow: /home
+Allow: /site-image.png
 
 
 User-agent: Bingbot
@@ -76,6 +77,9 @@ Allow: /home
 # Default rule for all other bots - block everything
 User-agent: *
 Disallow: /
+Allow: /home
+Allow: /site-image.png
+
 
 # Sitemap location (optional - replace with your actual sitemap URL)
 Sitemap: https://yourwebsite.com/sitemap.xml

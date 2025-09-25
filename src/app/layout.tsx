@@ -18,7 +18,7 @@ const siteConfig = {
   name: "Grills",
   title: "Grills - Your own generative UI platform",
   description:
-    "Open Source alternative for Lovable Bolt & V0. Just generate, copy and paste into your production codebase — no overhead, works with your favorite LLM (BYOK).",
+    "Your own Gen UI platform. Just generate, copy and paste into your production codebase — no overhead, works with your favorite LLM (BYOK).",
   url: "https://grills.dev",
   author: "Aditya Pushkar",
   image: "/site-image.png",
@@ -74,7 +74,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Grills - Your own generative UI platform',
-    description: 'Open Source alternative for Lovable Bolt & V0. Just generate, copy and paste into your production codebase — no overhead, works with your favorite LLM (BYOK).',
+    description: 'Your own Gen UI platform. Just generate, copy and paste into your production codebase — no overhead, works with your favorite LLM (BYOK).',
     images: ['https://grills.dev/site-image.png'],
   },
 
