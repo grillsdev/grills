@@ -51,7 +51,6 @@ const UserInput = ({
       if (msg.message.trim() === "") return;
       setHomePageInput(msg.message)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const isHomePage = pathname === "/";
