@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import useSWR from "swr";
 
-import { ChevronDown } from "lucide-react";
+import { Brain, ChevronDown } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -96,14 +96,16 @@ export const ModelSelect = ({
                               role="button"
                               onClick={() => {
                                 updateCurrentModel({
+                                  id: model.id,
                                   llm: llm.name,
                                   model: model.name,
                                   modelTitle: model.title,
+                                  isReasoning: model.isReasoning,
                                 });
                                 handleOpenWindow(false);
                               }}
                               className={`relative flex flex-col items-center justify-center gap-2 cursor-pointer text-sm w-24 h-28 sm:w-30  border rounded-4xl p-2 ${
-                                currentModel?.model === model.name
+                                currentModel?.id === model.id
                                   ? "border-primary"
                                   : ""
                               }`}
@@ -116,7 +118,13 @@ export const ModelSelect = ({
                                   height={45}
                                   alt={`${llm.title} icon`}
                                 />
+                                {model.isReasoning && (
+                                  <div className="absolute top-1 -right-5 bg-sky-500/35 text-sky-500 rounded-full p-0.5 shadow-sm transform translate-x-1/2 -translate-y-1/2">
+                                    <Brain width={15} height={15} />
+                                  </div>
+                                )}
                               </div>
+
                               <div className="relative w-full px-1">
                                 <h3 className="text-center text-xs leading-tight line-clamp-2 break-words">
                                   {model.title}
