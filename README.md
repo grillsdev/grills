@@ -163,10 +163,10 @@ pnpm dev
 
 ### Other
 
-- [ ] Multiple file support
+- [x] Multiple file support
 - [ ] Daytona support
 - [x] E2B support
-- [ ] Reasoning Support
+- [x] Reasoning Support
 - [ ] Image Support
 - [ ] Publish UI
 - [ ] Share whole chat
