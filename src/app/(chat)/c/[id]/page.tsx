@@ -18,6 +18,11 @@ import {
   ResizablePanel,
   ResizableHandle,
 } from "@/components/ui/resizable";
+import {
+  Reasoning,
+  ReasoningContent,
+  ReasoningTrigger,
+} from "@/app/(chat)/components/ai-elements/reasoning";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 import Sandbox from "../../components/sandbox";
@@ -61,8 +66,8 @@ export default function Chat() {
           setInput("");
           localStorage.removeItem("llm-query-state");
         }
-      }else{
-      return toast.error("Something went wrong, please try again later.");
+      } else {
+        return toast.error("Something went wrong, please try again later.");
       }
     },
   });
@@ -74,6 +79,7 @@ export default function Chat() {
         includeIds: true,
         model: selectedM?.model,
         llm: selectedM?.llm,
+        isReasoning: selectedM?.isReasoning,
         chatId,
         apiKey,
       },
@@ -161,15 +167,7 @@ export default function Chat() {
                 <ScrollArea className="h-full w-full">
                   <div className="py-2 px-4">
                     {messages.map((message, idx) => (
-                      <div
-                        key={message.id}
-                        // Attach the ref only on the last (newest) message container
-                        ref={
-                          idx === messages.length - 1
-                            ? lastMessageRef
-                            : undefined
-                        }
-                      >
+                      <div key={message.id}>
                         {message.parts.map((part, i) => {
                           switch (part.type) {
                             case "text":
@@ -188,10 +186,44 @@ export default function Chat() {
                                   }
                                 />
                               );
-                            default:
-                              return null;
+                            case "reasoning":
+                              return (
+                                <Reasoning
+                                  key={`${message.id}-${i}`}
+                                  isStreaming={
+                                    status === "streaming" &&
+                                    i === message.parts.length - 1 &&
+                                    message.id === messages.at(-1)?.id
+                                  }
+                                  className="flex flex-col items-center m-3"
+                                >
+                                  <div className="w-full max-w-2xl px-6 md:px-7">
+                                    <ReasoningTrigger />
+                                    <ReasoningContent>
+                                      {part.text}
+                                    </ReasoningContent>
+                                  </div>
+                                </Reasoning>
+                              );
                           }
                         })}
+                        {/* auto scroll to the bottm */}
+                        <div
+                          ref={
+                            idx === messages.length - 1 &&
+                            status !== "streaming" &&
+                            message.role === "user"
+                              ? lastMessageRef
+                              : undefined
+                          }
+                          data-last={
+                            idx === messages.length - 1 &&
+                            status !== "streaming" &&
+                            message.role === "user"
+                              ? true
+                              : undefined
+                          }
+                        />
                       </div>
                     ))}
                     <div className="h-40"></div>
@@ -201,7 +233,7 @@ export default function Chat() {
               <div className="py-2 px-3 absolute bottom-0 w-full flex justify-center">
                 <div className="w-full max-w-xl ">
                   <UserInput
-                    disable={status === "streaming" || status === "submitted"}
+                    disable={status === "submitted" || status === "streaming"}
                     handleChatSubmit={handleSubmit}
                     handleChatInputChange={(
                       e:

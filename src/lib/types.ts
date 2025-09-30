@@ -5,6 +5,7 @@ export interface Model {
   id: string;
   title: string;
   name: string;
+  isReasoning:boolean
 }
 
 export interface LLM {
@@ -22,9 +23,11 @@ export interface AvailableModels {
 
 // {llm: "gemini", model:"flash-2.0", modelTitle: "Flash 2.0"}
 export interface CurrentModel {
+  id: string;
   llm: string;
   model: string;
   modelTitle: string;
+  isReasoning:boolean
 }
 
 export interface MessageProps {
@@ -70,6 +73,7 @@ export interface CompletionRequest {
   llm: LLMProvider;
   apiKey: string;
   model: string;
+  isReasoning:boolean
 }
 
 export interface CreateChatRequest {

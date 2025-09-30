@@ -42,7 +42,7 @@ export async function POST(request: Request) {
   try {
     // 2. Parse and validate request body
     const body: CompletionRequest = await request.json();
-    const { chatId, messages, llm, apiKey, model } = body;
+    const { chatId, messages, llm, apiKey, model, isReasoning } = body;
 
     // 3. Input validation with better error messages
     if (!chatId) {
@@ -94,20 +94,32 @@ export async function POST(request: Request) {
         break;
       default:
         operator = createOpenAI({
-          apiKey: apiKey,
+          apiKey: apiKey
         });
     }
 
+    let modelOperator = null;
+    if(isReasoning){
+      modelOperator = operator.chat(model, {
+        reasoning: {
+          enabled:true,
+          effort: "medium"
+        }
+      })
+    }else{
+      modelOperator = operator.chat(model)
+    }
+
     const result = streamText({
-      model: operator.chat(model),
+      model: modelOperator,
       messages: convertToModelMessages(messages),
       system: sysPrompt,
       experimental_output: Output.object({
-        schema: codeGenerationSchema,
+        schema: codeGenerationSchema
       }),
       experimental_transform: smoothStream({
         delayInMs: 17,
-        chunking: "word",
+        chunking: "word"
       }),
       onFinish: async ({ text }) => {
         try {
@@ -182,7 +194,9 @@ export async function POST(request: Request) {
       },
     });
 
-    return result.toUIMessageStreamResponse();
+    return result.toUIMessageStreamResponse({
+      sendReasoning: isReasoning
+    });
   } catch (error) {
     console.error("Completion error:", error);
 
