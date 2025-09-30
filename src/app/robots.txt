@@ -6,7 +6,7 @@ Allow: /home
 User-agent: Twitterbot
 Disallow: /
 Allow: /home
-Allow: /site-image.png
+Allow: /og.png
 
 
 User-agent: Bingbot
@@ -78,7 +78,7 @@ Allow: /home
 User-agent: *
 Disallow: /
 Allow: /home
-Allow: /site-image.png
+Allow: /og.png
 
 
 # Sitemap location (optional - replace with your actual sitemap URL)
