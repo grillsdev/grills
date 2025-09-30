@@ -1,0 +1,1 @@
+ALTER TABLE "model" ALTER COLUMN "is_reasoning" SET NOT NULL;
