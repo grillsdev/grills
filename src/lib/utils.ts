@@ -93,18 +93,6 @@ export async function getPromptTxt(): Promise<string> {
   }
 }
 
-export const getPackageLockFile = (): string | null => {
-  const savedFile = localStorage.getItem("lockFile");
-  if (savedFile) {
-    return savedFile;
-  }
-  return null;
-
-}
-
-export const savePackageLockFile = (file:string) => {
-  localStorage.setItem("lockFile", file)
-}
 
 export function getSandboxURL(): string {
   if (typeof window !== "undefined") {
