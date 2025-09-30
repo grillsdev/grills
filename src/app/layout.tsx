@@ -21,7 +21,7 @@ const siteConfig = {
     "Your own Gen UI platform. Just generate, copy and paste into your production codebase — no overhead, works with your favorite LLM (BYOK).",
   url: "https://grills.dev",
   author: "Aditya Pushkar",
-  image: "/site-image.png",
+  image: "/og.png",
 };
 
 export const metadata: Metadata = {
@@ -75,7 +75,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Grills - Your own generative UI platform',
     description: 'Your own Gen UI platform. Just generate, copy and paste into your production codebase — no overhead, works with your favorite LLM (BYOK).',
-    images: ['https://grills.dev/site-image.png'],
+    images: ['https://grills.dev/og.png'],
   },
 
   category: "technology",
