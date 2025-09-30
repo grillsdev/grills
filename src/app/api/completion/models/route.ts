@@ -1,5 +1,6 @@
 import { auth } from '@/lib/auth';
 import { getDb } from '@/db/index';
+import { asc } from 'drizzle-orm';
 
 import { llm, model } from '@/db/schema/model';
 
@@ -9,6 +10,8 @@ import { generateText } from 'ai';
 import { LLMProvider } from '@/lib/types';
 import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 import { createAnthropic } from '@ai-sdk/anthropic';
+
+
 
 
 // Get the models with llm
@@ -23,7 +26,7 @@ export async function GET(request: Request) {
   const db = await getDb()
   
   const llms = await db.select().from(llm);
-  const models = await db.select().from(model).orderBy(model.name);
+  const models = await db.select().from(model).orderBy(asc(model.title));
   
   const result = llms.map(l => ({
     ...l,
