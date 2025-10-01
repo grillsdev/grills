@@ -2,23 +2,17 @@ import type { UIMessage } from "@ai-sdk/react";
 import { z } from "zod";
 
 export interface Model {
-  id: string;
-  title: string;
-  name: string;
-  isReasoning:boolean
+  id: string; // Unique id
+  title: string; // public facing model name
+  slug: string; // model name for internal use
+  isReasoning:  boolean; // whether model have reasoning 
 }
 
 export interface LLM {
   id: string;
   title: string;
-  name: string;
-}
-
-export interface AvailableModels {
-  id: string;
-  title: string;
-  name: string;
-  models: Model[];
+  slug: "openrouter" | "openai" | "anthropic";
+  models: Model[]
 }
 
 // {llm: "gemini", model:"flash-2.0", modelTitle: "Flash 2.0"}

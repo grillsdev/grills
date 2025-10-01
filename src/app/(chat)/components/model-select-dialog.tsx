@@ -1,6 +1,6 @@
 "use client";
+
 import { useState, useEffect } from "react";
-import useSWR from "swr";
 
 import { Brain, ChevronDown } from "lucide-react";
 import {
@@ -12,9 +12,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import { getModels } from "@/lib/fetchers";
+import { models } from "@/lib/models";
 
-import type { AvailableModels, CurrentModel } from "@/lib/types";
+import type { CurrentModel } from "@/lib/types";
 import { getSelectedModel } from "@/lib/utils";
 import { LLMProviderIcons } from "@/lib/utils";
 import Image from "next/image";
@@ -29,10 +29,7 @@ export const ModelSelect = ({
   setCurrentSelectedModel?: (model: CurrentModel) => void;
 }) => {
   const [currentModel, setCurrentModel] = useState<CurrentModel | null>(null);
-  const { data: models } = useSWR<AvailableModels[]>(
-    `/api/completion/models`,
-    getModels
-  );
+
 
   useEffect(() => {
     const getCurrentModel = localStorage.getItem("selected-model");
@@ -62,12 +59,12 @@ export const ModelSelect = ({
           </DialogTitle>
         </DialogHeader>
         <div className="mt-6">
-          <Tabs defaultValue={models[0]?.name} className="w-full">
+          <Tabs defaultValue={models[0].title} className="w-full">
             <TabsList className="w-full mb-2 overflow-x-auto">
               {models.map((llm) => (
                 <TabsTrigger
                   key={llm.id}
-                  value={llm.name}
+                  value={llm.slug}
                   className="text-xs px-2 py-1 truncate"
                 >
                   {llm.title}
@@ -79,14 +76,14 @@ export const ModelSelect = ({
               {models.map((llm) => (
                 <TabsContent
                   key={llm.id}
-                  value={llm.name}
+                  value={llm.slug}
                   className="h-[21rem] overflow-auto"
                 >
                   <div className="h-[400px] relative">
                     {models.map((llm) => (
                       <TabsContent
                         key={llm.id}
-                        value={llm.name}
+                        value={llm.slug}
                         className="h-[21rem] overflow-auto relative"
                       >
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 space-y-3 pb-8 relative">
@@ -97,8 +94,8 @@ export const ModelSelect = ({
                               onClick={() => {
                                 updateCurrentModel({
                                   id: model.id,
-                                  llm: llm.name,
-                                  model: model.name,
+                                  llm: llm.slug,
+                                  model: model.slug,
                                   modelTitle: model.title,
                                   isReasoning: model.isReasoning,
                                 });
@@ -112,7 +109,7 @@ export const ModelSelect = ({
                             >
                               <div className="relative">
                                 <Image
-                                  src={LLMProviderIcons[llm.name] as ""}
+                                  src={LLMProviderIcons[llm.slug] as ""}
                                   className="rounded-[18px] flex-shrink-0"
                                   width={45}
                                   height={45}

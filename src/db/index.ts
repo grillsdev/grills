@@ -4,7 +4,6 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 
-import * as modelSchema from "./schema/model";
 import * as aiChatSchema from "./schema/ai-chat";
 
 export const getDb = cache(async () => {
@@ -17,5 +16,5 @@ export const getDb = cache(async () => {
     maxUses: 1,
   });
 
-  return drizzle({ client: pool, schema: { ...modelSchema, ...aiChatSchema } });
+  return drizzle({ client: pool, schema: { ...aiChatSchema } });
 });

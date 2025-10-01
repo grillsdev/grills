@@ -7,7 +7,7 @@ import {
 } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
-import { Send } from "lucide-react";
+import { Loader2, Send } from "lucide-react";
 
 import { Textarea } from "@/components/ui/textarea";
 
@@ -146,9 +146,10 @@ const UserInput = ({
           </div>
           <button
             type="submit"
-            className="absolute right-3 bottom-3 bg-accent-foreground text-accent p-1.5 rounded-full cursor-pointer"
+            disabled={disable}
+            className="absolute right-3 bottom-3 bg-accent-foreground text-accent p-1.5 rounded-full cursor-pointer disabled:bg-muted disabled:text-foreground"
           >
-            <Send width={18.5} height={18.5} />
+            {disable?(<Loader2 width={18.5} height={18.5} className="animate-spin"/>):(<Send width={18.5} height={18.5} />)}
           </button>
         </div>
       </form>

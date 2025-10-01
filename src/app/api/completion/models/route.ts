@@ -1,8 +1,4 @@
 import { auth } from '@/lib/auth';
-import { getDb } from '@/db/index';
-import { asc } from 'drizzle-orm';
-
-import { llm, model } from '@/db/schema/model';
 
 import { createOpenAI } from '@ai-sdk/openai';
 import { generateText } from 'ai';
@@ -11,33 +7,6 @@ import { LLMProvider } from '@/lib/types';
 import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 import { createAnthropic } from '@ai-sdk/anthropic';
 
-
-
-
-// Get the models with llm
-export async function GET(request: Request) {
-  try{
-     const session = await auth.api.getSession({
-          headers: request.headers,
-    });
-    if (!session) {
-      return Response.json({ error: "Unauthorized" }, { status: 401 });
-    }
-  const db = await getDb()
-  
-  const llms = await db.select().from(llm);
-  const models = await db.select().from(model).orderBy(asc(model.title));
-  
-  const result = llms.map(l => ({
-    ...l,
-    models: models.filter(m => m.llmId === l.id)
-  }));
-  
-  return Response.json(result, {status:200});
-  }catch(err){
-    return Response.json(`${err}`, {status:500})
-  }
-};
 
 // verify the api token before sacing that 
 export async function POST(request: Request) {

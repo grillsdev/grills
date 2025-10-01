@@ -14,6 +14,7 @@ import { Loader } from "lucide-react";
 
 import { parse } from "best-effort-json-parser";
 import { $sanboxObj } from "@/store/sandbox";
+import { stripJsonFence } from "@/lib/utils";
 
 const UserCollapsedInput = ({ content }: { content: string }) => {
   const shouldCollapse = content.length > 110;
@@ -62,7 +63,9 @@ const AssistantMessage = memo(
     windowState: boolean;
   }) => {
     const sb = $sanboxObj.get();
-    const parsedContent: GeneratedCodeContent = parse(content);
+    // serialization only ```json ``` , most of the time commin g from the claude models
+    const sanitized = stripJsonFence(content);
+    const parsedContent: GeneratedCodeContent = parse(sanitized);
 
     useEffect(() => {
       if (isStreaming) {
@@ -184,6 +187,7 @@ export const ChatMessage = memo(
     changeWindowStateTo,
     windowState,
   }: MessageProps) => {
+    console.log(messageContent)
     return (
       <div className="px-2 sm:px-4" key={id}>
         <div className="max-w-2xl mx-auto">

@@ -1,13 +1,8 @@
 import axios from "axios"
 
-import { AvailableModels, ProjectAccessRequest, ProjectDetailRequest, SavedTheme, UserProjectOverview } from "./types";
+import { ProjectAccessRequest, ProjectDetailRequest, SavedTheme, UserProjectOverview } from "./types";
 import type { UIMessage } from "ai";
 
-
-export const getModels = async (url: string): Promise<AvailableModels[]> => {
-  const response = await axios.get<AvailableModels[]>(url);
-  return response.data;
-};
 
 
 export const getUserProjects = async (url: string): Promise<UserProjectOverview[]> => {

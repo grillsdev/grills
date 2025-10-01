@@ -1,6 +1,5 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { useCompletion } from "@ai-sdk/react";
-import useSWR from "swr";
 
 import {
   Dialog,
@@ -13,9 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader as Loader } from "lucide-react";
 
-import { getModels } from "@/lib/fetchers";
-import type { AvailableModels } from "@/lib/types";
-
+import { models } from "@/lib/models";
 import { saveKeys, getApiKey } from "@/lib/utils";
 
 import { LLMProviderIcons } from "@/lib/utils";
@@ -153,7 +150,7 @@ export const APIKeysDialog = ({
   windowState: (state: boolean) => void;
   defaultTab?: "api" | "sandbox";
 }) => {
-  const { data: llms} = useSWR<AvailableModels[]>("/api/completion/models", getModels)
+  const llms = models
 
   if(!llms) return null;
 
@@ -192,7 +189,7 @@ export const APIKeysDialog = ({
                 </div> */}
                 <div className="space-y-5">
                   {llms.map((model) => (
-                    <ApiInput llmTitle={model.title} llmName={model.name} key={model.id} />
+                    <ApiInput llmTitle={model.title} llmName={model.slug} key={model.id} />
                   ))}
                 </div>
               </TabsContent>

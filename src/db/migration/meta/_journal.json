@@ -57,6 +57,13 @@
       "when": 1758901108992,
       "tag": "0007_lively_kree",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1759285916372,
+      "tag": "0008_new_spirit",
+      "breakpoints": true
     }
   ]
 }
