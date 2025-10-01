@@ -93,7 +93,6 @@ export async function getPromptTxt(): Promise<string> {
   }
 }
 
-
 export function getSandboxURL(): string {
   if (typeof window !== "undefined") {
     const isLocalhost =
@@ -106,4 +105,14 @@ export function getSandboxURL(): string {
   }
 
   return "https://grills-sandbox-28op1.sevalla.app/api/v1/sandbox/create";
+}
+
+export function stripJsonFence(raw: string): string {
+  // Remove only the opening fence if it exists
+  let content = raw.replace(/^```json\s*/i, "").replace(/^```\s*/i, "");
+
+  // Remove a closing ``` only if it's already present
+  content = content.replace(/```$/, "");
+
+  return content.trimStart();
 }
