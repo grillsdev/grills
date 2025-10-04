@@ -4,13 +4,13 @@ import {
   convertToModelMessages,
   createIdGenerator,
   smoothStream,
-  generateText,
+  generateText
 } from "ai";
 import { Redis } from "@upstash/redis";
 
-import { createOpenAI } from "@ai-sdk/openai";
-import { createOpenRouter } from "@openrouter/ai-sdk-provider";
-import { createAnthropic } from "@ai-sdk/anthropic";
+import { createOpenAI, OpenAIProvider } from "@ai-sdk/openai";
+import { createOpenRouter, type OpenRouterProvider } from "@openrouter/ai-sdk-provider";
+import { createAnthropic, AnthropicProvider } from "@ai-sdk/anthropic";
 import { auth } from "@/lib/auth";
 
 import { getDb } from "@/db";
@@ -28,7 +28,6 @@ const redis = new Redis({
   keepAlive: true,
 });
 
-//iz the chat id doesnot exist create one with title obv fro the user first input 
 
 export async function POST(request: Request) {
   // 1. Early authentication check
@@ -42,7 +41,7 @@ export async function POST(request: Request) {
   try {
     // 2. Parse and validate request body
     const body: CompletionRequest = await request.json();
-    const { chatId, messages, llm, apiKey, model, isReasoning } = body;
+    const { chatId, messages, llm, apiKey, model, isReasoning} = body;
 
     // 3. Input validation with better error messages
     if (!chatId) {
@@ -80,47 +79,74 @@ export async function POST(request: Request) {
     // })();
 
 
-    let operator = null;
-    switch (llm) {
-      case "openrouter":
-        operator = createOpenRouter({
-          apiKey: apiKey,
-        });
-        break;
-      case "anthropic":
-        operator = createAnthropic({
-          apiKey: apiKey,
-        });
-        break;
-      default:
-        operator = createOpenAI({
-          apiKey: apiKey
-        });
-    }
+    let llmStreamContext
+    let titleGenerator: OpenAIProvider | OpenRouterProvider | AnthropicProvider
 
-    let modelOperator = null;
-    if(isReasoning){
-      modelOperator = operator.chat(model, {
-        reasoning: {
-          enabled:true,
-          effort: "medium"
-        }
-      })
-    }else{
-      modelOperator = operator.chat(model)
+    switch (llm) {
+      case "openrouter": {
+        // console.log("running the openrouter")
+        const openrouter = createOpenRouter({ apiKey });
+        titleGenerator = openrouter;
+        const modelOperator = isReasoning
+          ? openrouter.chat(model, { reasoning: { enabled: true, effort: "medium" } })
+          : openrouter.chat(model);
+
+        llmStreamContext = {
+          model: modelOperator,
+          messages: convertToModelMessages(messages),
+          system: sysPrompt,
+          experimental_output: Output.object({ schema: codeGenerationSchema }),
+          experimental_transform: smoothStream({ delayInMs: 17, chunking: "word" }),
+        };
+        break;
+      }
+      case "anthropic": {
+        // console.log("running the anthropic")
+        const anthropic = createAnthropic({ apiKey });
+        titleGenerator = anthropic;
+        const modelOperator = anthropic.chat(model);
+        const includeOutputObject = !isReasoning;
+
+        llmStreamContext = {
+          model: modelOperator,
+          messages: convertToModelMessages(messages),
+          system: sysPrompt,
+          providerOptions: {
+            anthropic: {
+              thinking: isReasoning
+                ? { type: "enabled", budgetTokens: 12000 }
+                : { type: "disabled", budgetTokens: 0 },
+            },
+          },
+          ...(includeOutputObject && { experimental_output: Output.object({ schema: codeGenerationSchema }) }),
+          experimental_transform: smoothStream({ delayInMs: 17, chunking: "word" }),
+        };
+        break;
+      }
+      default: {
+        // console.log("running the openai")
+        const openai = createOpenAI({ apiKey });
+        titleGenerator = openai;
+        const modelOperator = openai.responses(model);
+
+        llmStreamContext = {
+          model: modelOperator,
+          messages: convertToModelMessages(messages),
+          system: sysPrompt,
+          providerOptions: {
+            openai: isReasoning
+              ? { reasoningSummary: "detailed", reasoningEffort: "high" }
+              : { reasoningEffort: "minimal" },
+          },
+          experimental_output: Output.object({ schema: codeGenerationSchema }),
+          experimental_transform: smoothStream({ delayInMs: 17, chunking: "word" }),
+        };
+        break;
+      }
     }
 
     const result = streamText({
-      model: modelOperator,
-      messages: convertToModelMessages(messages),
-      system: sysPrompt,
-      experimental_output: Output.object({
-        schema: codeGenerationSchema
-      }),
-      experimental_transform: smoothStream({
-        delayInMs: 17,
-        chunking: "word"
-      }),
+      ...llmStreamContext,
       onFinish: async ({ text }) => {
         try {
           const generateUserMessageId = createIdGenerator({
@@ -163,7 +189,7 @@ export async function POST(request: Request) {
             if (firstUserMsg.parts[0].type === "text") {
               const userInput = firstUserMsg.parts[0].text || "Generate the component"
               const { text } = await generateText({
-                model: operator.chat(model),
+                model: titleGenerator.chat(model),
                 prompt: `You just need to create a title based on the user’s input—essentially what they want us to create, generate, or improve in the component. The title should be small. *USER INPUT*: ${userInput}`
               })
               await db
