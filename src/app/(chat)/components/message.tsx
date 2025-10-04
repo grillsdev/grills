@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Loader } from "lucide-react";
 
 import { parse } from "best-effort-json-parser";
-import { $sanboxObj } from "@/store/sandbox";
+import { $sanboxObj } from "@/store/store";
 import { stripJsonFence } from "@/lib/utils";
 
 const UserCollapsedInput = ({ content }: { content: string }) => {
@@ -187,7 +187,6 @@ export const ChatMessage = memo(
     changeWindowStateTo,
     windowState,
   }: MessageProps) => {
-    console.log(messageContent)
     return (
       <div className="px-2 sm:px-4" key={id}>
         <div className="max-w-2xl mx-auto">
