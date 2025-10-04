@@ -103,6 +103,10 @@ export interface SandboxStoreInterface {
   type?: "btn";
 }
 
+export interface SelectedModel {
+  model: null | CurrentModel
+}
+
 export interface GeneratedCodeContent {
   pre_code: string;
   code: Record<string, string>; //always constain `page.tsx` Key
