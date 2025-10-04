@@ -4,7 +4,7 @@ import { useStore } from "@nanostores/react";
 
 import { Loader2 } from "lucide-react";
 import { executeSandboxCode } from "@/lib/fetchers";
-import { $sanboxObj } from "@/store/sandbox";
+import { $sanboxObj } from "@/store/store";
 import { toast } from "sonner";
 import { indexCSS } from "@/lib/shadcn-components";
 import { getSandboxURL } from "@/lib/utils";

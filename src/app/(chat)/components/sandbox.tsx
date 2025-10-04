@@ -6,7 +6,7 @@ import { FileCode2, X, AppWindowMac, Loader2, Maximize } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 import dynamic from "next/dynamic";
-import { $sanboxObj } from "@/store/sandbox";
+import { $sanboxObj } from "@/store/store";
 import { useStore } from "@nanostores/react";
 
 const CodeRunner = dynamic(() => import("./code-renderer"), {

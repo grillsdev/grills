@@ -1,4 +1,4 @@
-import { $sanboxObj } from "@/store/sandbox";
+import { $sanboxObj } from "@/store/store";
 import { useEffect, useState } from "react";
 
 import { createHighlighter, type Highlighter } from "shiki/bundle/web";
