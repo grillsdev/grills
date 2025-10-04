@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState} from "react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { useParams } from "next/navigation";
@@ -9,7 +9,8 @@ import { toast } from "sonner";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { UserInput } from "../../components/user-input";
 import { ChatMessage } from "../../components/message";
-import { getSelectedModel, getApiKey } from "@/lib/utils";
+import { getApiKey } from "@/lib/utils";
+import { $modelObj } from "@/store/store";
 
 import { useSidebar } from "@/components/ui/sidebar";
 
@@ -30,7 +31,7 @@ import useSWR, { useSWRConfig } from "swr";
 import { getChats } from "@/lib/fetchers";
 import { ChatSkeletonLoader } from "../../components/chat-loader-skeleton";
 import { useStore } from "@nanostores/react";
-import { $sanboxObj } from "@/store/sandbox";
+import { $sanboxObj } from "@/store/store";
 
 export default function Chat() {
   const { id: chatId } = useParams<{ id: string }>();
@@ -44,9 +45,6 @@ export default function Chat() {
   const { mutate } = useSWRConfig();
   const isMobile = useIsMobile();
   const sb = useStore($sanboxObj);
-
-  const selectedM = getSelectedModel();
-  const apiKey = getApiKey(selectedM?.llm || "");
 
   const {
     data: messageHistory,
@@ -72,16 +70,26 @@ export default function Chat() {
     },
   });
 
-  const { messages, setMessages, sendMessage, status } = useChat({
+
+  const { messages, setMessages, sendMessage, status} = useChat({
     transport: new DefaultChatTransport({
-      api: "/api/completion",
-      body: {
-        includeIds: true,
-        model: selectedM?.model,
-        llm: selectedM?.llm,
-        isReasoning: selectedM?.isReasoning,
-        chatId,
-        apiKey,
+      api: `/api/completion`,
+      prepareSendMessagesRequest: ({ id, messages }) => {
+        const latestModel = $modelObj.get();
+        const selectedModel = latestModel.model;
+        const apiKey = getApiKey(selectedModel?.llm || "");
+
+        return {
+          body: {
+            id,
+            chatId,
+            messages, 
+            llm: selectedModel?.llm,
+            model: selectedModel?.model,
+            apiKey,
+            isReasoning: selectedModel?.isReasoning,
+          },
+        };
       },
     }),
     messages: messageHistory ? messageHistory : [],

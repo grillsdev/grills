@@ -13,6 +13,8 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { models } from "@/lib/models";
+import { $modelObj } from "@/store/store";
+import { useStore } from "@nanostores/react";
 
 import type { CurrentModel } from "@/lib/types";
 import { getSelectedModel } from "@/lib/utils";
@@ -22,29 +24,28 @@ import Image from "next/image";
 export const ModelSelect = ({
   openWindow,
   handleOpenWindow,
-  setCurrentSelectedModel, //psss the state to the btn for live btn, bcs btn is independent
 }: {
   openWindow: boolean;
   handleOpenWindow: (state: boolean) => void;
   setCurrentSelectedModel?: (model: CurrentModel) => void;
 }) => {
-  const [currentModel, setCurrentModel] = useState<CurrentModel | null>(null);
+  const currentModel = useStore($modelObj)
 
 
   useEffect(() => {
     const getCurrentModel = localStorage.getItem("selected-model");
     if (getCurrentModel) {
       const selectedModel = JSON.parse(getCurrentModel) as CurrentModel;
-      setCurrentModel(selectedModel);
+      currentModel.model = selectedModel
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const updateCurrentModel = (model: CurrentModel) => {
     const selectedModel = JSON.stringify(model);
     localStorage.setItem("selected-model", selectedModel);
-    setCurrentModel(model);
-    if (setCurrentSelectedModel) {
-      setCurrentSelectedModel(model);
+    if (selectedModel) {
+      currentModel.model = JSON.parse(selectedModel)
     }
   };
 
@@ -102,7 +103,7 @@ export const ModelSelect = ({
                                 handleOpenWindow(false);
                               }}
                               className={`relative flex flex-col items-center justify-center gap-2 cursor-pointer text-sm w-24 h-28 sm:w-30  border rounded-4xl p-2 ${
-                                currentModel?.id === model.id
+                                currentModel?.model?.id === model.id
                                   ? "border-primary"
                                   : ""
                               }`}
@@ -149,11 +150,13 @@ export const ModelSelectBtn = ({
   children?: React.ReactNode;
 }) => {
   const [openWindow, setOpenWindow] = useState(false);
-  const [currentSelectedModel, setCurrentSelectedModel] =
-    useState<CurrentModel | null>(null);
+  const currentModel = useStore($modelObj)
 
   useEffect(() => {
-    setCurrentSelectedModel(getSelectedModel());
+    const isModel = getSelectedModel()
+    if(isModel){
+      $modelObj.set({model: isModel})
+    }
   }, []);
 
   const handleOpenWindow = (state: boolean) => {
@@ -170,8 +173,8 @@ export const ModelSelectBtn = ({
             size="sm"
             className="text-xs font-light"
           >
-            {currentSelectedModel
-              ? currentSelectedModel.modelTitle
+            {currentModel
+              ? currentModel.model?.modelTitle
               : "Select model"}
             <ChevronDown />
           </Button>
@@ -182,7 +185,6 @@ export const ModelSelectBtn = ({
       <ModelSelect
         openWindow={openWindow}
         handleOpenWindow={handleOpenWindow}
-        setCurrentSelectedModel={setCurrentSelectedModel}
       />
     </>
   );

@@ -14,11 +14,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 
 import { ModelSelectBtn } from "./model-select-dialog";
-import { getSelectedModel, getApiKey } from "@/lib/utils";
+import { getApiKey } from "@/lib/utils";
 
 import { ModelSelect } from "./model-select-dialog";
 import { APIKeysDialog } from "./api-keys-dialog";
 // import UserTheme from "./theme";
+import { useStore } from "@nanostores/react";
+import { $modelObj } from "@/store/store";
 
 import { v4 as uuid } from "uuid";
 
@@ -41,6 +43,8 @@ const UserInput = ({
   const [apiDShouldOpen, setApiDShouldOpen] = useState<boolean>(false)
   const [e2bDShouldOpen, setE2bDShouldOpen] = useState(false)
 
+  const currentModel = useStore($modelObj)
+
   const pathname = usePathname();
   const route = useRouter()
 
@@ -61,8 +65,8 @@ const UserInput = ({
 
     if(disable) return
 
-    const isModelSelected = getSelectedModel()
-    if(!isModelSelected){
+    const isModelSelected = currentModel.model
+    if(!isModelSelected?.model){
       toast.warning("Please Select your model.",{
         position:"top-center"
       })
@@ -71,8 +75,8 @@ const UserInput = ({
     }
 
     //Api key added of there model Provider
-    const isApiKey = getApiKey(isModelSelected.llm)
-    if(!isApiKey){
+    const isAPIKey = getApiKey(isModelSelected.llm)
+    if(!isAPIKey){
       toast.warning(`Please add your ${isModelSelected.llm} API key`,{
         position:"top-center"
       })
