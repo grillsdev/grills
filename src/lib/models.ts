@@ -15,15 +15,19 @@ const openRouter: Model[] = [
     {id: "3787a35e-c045-4328-8290-088180785769", title: "Grok Code Fast 1", slug: "x-ai/grok-code-fast-1", isReasoning:true},
 ]
 
-// const openAI: Model[] = [
-//     {id: "931f52c9-9da4-4cd4-a448-39fc006a6a3b", title: "GPT 5 Mini", slug: "gpt-5-mini", isReasoning:false},
-//     {id: "9deb64e1-c46e-448a-88aa-20c808aafde1", title: "GPT 5 Mini", slug: "gpt-5-mini", isReasoning:true},
-//     {id: "5zb64e1-c46e-448a-88aa-20c8009pafde1", title: "GPT 5", slug: "gpt-5", isReasoning:false},
-//     {id: "6b64e1-c36e-443a-77aa-20c8009pafde03", title: "GPT 5", slug: "gpt-5", isReasoning:true},
-//     {id: "78f23g-c36e-443a-77aa-20c8009pafde02", title: "GPT 5 Nano", slug: "gpt-5-nano", isReasoning:false},
-//     {id: "ut64e1-c36e-443a-65bb-10c8009pafdeo9", title: "GPT 5 Nano", slug: "gpt-5-nano", isReasoning:true},
-// ]
+const openAI: Model[] = [
+    {id: "931f52c9-9da4-4cd4-a448-39fc006a6a3b", title: "GPT 5 Mini", slug: "gpt-5-mini", isReasoning:false},
+    {id: "9deb64e1-c46e-448a-88aa-20c808aafde1", title: "GPT 5 Mini", slug: "gpt-5-mini", isReasoning:true},
+    {id: "5zb64e1-c46e-448a-88aa-20c8009pafde1", title: "GPT 5", slug: "gpt-5", isReasoning:false},
+    {id: "6b64e1-c36e-443a-77aa-20c8009pafde03", title: "GPT 5", slug: "gpt-5", isReasoning:true},
+    {id: "78f23g-c36e-443a-77aa-20c8009pafde02", title: "GPT 5 Nano", slug: "gpt-5-nano", isReasoning:false},
+    {id: "ut64e1-c36e-443a-65bb-10c8009pafdeo9", title: "GPT 5 Nano", slug: "gpt-5-nano", isReasoning:true},
+]
 
+const anthropic: Model[] = [
+    {id: "42916ff9-08a3-4219-9c49-9f3d2a999e03", title: "Claude Sonnet 4.5", slug: "claude-sonnet-4-5-20250929", isReasoning:false},
+    {id: "7e1fc859-c221-4adc-8397-7306c78b79b5", title: "Claude Sonnet 4.5", slug: "claude-sonnet-4-5-20250929", isReasoning:true},
+]
 
 export const models: LLM[] = [
     {
@@ -32,5 +36,6 @@ export const models: LLM[] = [
         slug: "openrouter",
         models: [...openRouter].sort((a, b) => a.title.localeCompare(b.title)),
     },
-    // {id: "7479202c-9e67-11f0-bd96-325096b39f47", title: "Open AI", slug: "openai", models: openAI},
+    {id: "ed525e23-0a27-4582-84d7-b94ea4be9c9c", title: "Open AI", slug: "openai", models: [...openAI].sort((a, b) => a.title.localeCompare(b.title))},
+    {id: "0eff7084-7d2c-4576-9273-06e657ea46ed", title: "Anthropic", slug: "anthropic", models: [...anthropic].sort((a, b) => a.title.localeCompare(b.title))}
 ]
