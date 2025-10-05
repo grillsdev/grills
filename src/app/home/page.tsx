@@ -26,12 +26,12 @@ export default function Home() {
 
       {/* Fixed Navbar */}
       <nav
-        className="z-[51] bg-black/35 backdrop-blur-lg fixed top-6 md:top-8 left-1/2 transform -translate-x-1/2 border shadow shadow-base-900  rounded-[1rem]"
+        className="z-[51] bg-black/35 backdrop-blur-lg fixed top-6 md:top-8 left-1/2 transform -translate-x-1/2 border shadow shadow-base-900  rounded-[1.3rem]"
         style={{ width: "calc(100% - 2rem)", maxWidth: "calc(64rem - 15rem)" }}
       >
         <div className="px-4 sm:px-6">
           <div className="flex items-center justify-between h-[3.2rem]">
-            <span className="text-xl text-white font-semibold font-serif">
+            <span className="text-xl text-white font-semibold tracking-wide">
               grills{" "}
               <span className="text-xs text-primary tracking-tighter font-mono">
                 beta
