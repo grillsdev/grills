@@ -3,6 +3,7 @@ import { Model, LLM } from "./types"
 
 const openRouter: Model[] = [
     {id: "515b3938-ba23-4054-8a7d-b1814193e6fd", title: "Kimi K2", slug: "moonshotai/kimi-k2", isReasoning: false},
+    {id: "9c2104gh-66a2-4226-801d-a9b308ea0397", title: "Gemini 2.5 Pro", slug: "google/gemini-2.5-pro", isReasoning: true},
     {id: "9c2d220d-66a2-4226-801d-a9b308ea0397", title: "Gemini 2.5 Flash", slug: "google/gemini-2.5-flash", isReasoning: true},
     {id: "9c2d220d-66a2-4226-801d-a9bg4-2851d0", title: "Gemini 2.5 Flash", slug: "google/gemini-2.5-flash", isReasoning: false},
     {id: "c5f0b9b4-0aa4-4c5a-8763-23fce8cff4fe", title: "Gemini 2.5 Flash Lite", slug: "google/gemini-2.5-flash-lite", isReasoning: true},
