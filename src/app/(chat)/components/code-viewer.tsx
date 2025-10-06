@@ -89,6 +89,7 @@ export default function CodeViewer() {
   }
 
   return (
+    // all the code handeling rendering files is happening in here 
     <CodeViewerSidebar code={sandbox.code} navigateToCode={navigateToCode} isStreaming={sandbox.isStreaming}>
       <div
         className="text-[13px] p-2 bg-black h-full overflow-x-auto max-w-full pb-28"
