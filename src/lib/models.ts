@@ -14,15 +14,15 @@ const openRouter: Model[] = [
     {id: "3a15ca32-9ec8-11f0-8c38-325096b39f47", title: "Deepseek Chat v3.1", slug: "deepseek/deepseek-chat-v3.1", isReasoning:true},
     {id: "3a15ca30-9ec8-11f0-8c38-325196b39f40", title: "Deepseek Chat v3.1", slug: "deepseek/deepseek-chat-v3.1", isReasoning:false},
     {id: "3787a35e-c045-4328-8290-088180785769", title: "Grok Code Fast 1", slug: "x-ai/grok-code-fast-1", isReasoning:true},
+    {id: "4d8c8160-cceb-4368-95df-5e26e12cd3b6", title: "Z.AI: GLM 4.5", slug: "z-ai/glm-4.5v", isReasoning:false},
+    {id: "4e8c8061-cceb-4368-95df-5e26e12cd3b5", title: "Z.AI: GLM 4.5", slug: "z-ai/glm-4.5v", isReasoning:true},
 ]
 
 const openAI: Model[] = [
     {id: "931f52c9-9da4-4cd4-a448-39fc006a6a3b", title: "GPT 5 Mini", slug: "gpt-5-mini", isReasoning:false},
     {id: "9deb64e1-c46e-448a-88aa-20c808aafde1", title: "GPT 5 Mini", slug: "gpt-5-mini", isReasoning:true},
     {id: "5zb64e1-c46e-448a-88aa-20c8009pafde1", title: "GPT 5", slug: "gpt-5", isReasoning:false},
-    {id: "6b64e1-c36e-443a-77aa-20c8009pafde03", title: "GPT 5", slug: "gpt-5", isReasoning:true},
-    {id: "78f23g-c36e-443a-77aa-20c8009pafde02", title: "GPT 5 Nano", slug: "gpt-5-nano", isReasoning:false},
-    {id: "ut64e1-c36e-443a-65bb-10c8009pafdeo9", title: "GPT 5 Nano", slug: "gpt-5-nano", isReasoning:true},
+    {id: "6b64e1-c36e-443a-77aa-20c8009pafde03", title: "GPT 5", slug: "gpt-5", isReasoning:true}
 ]
 
 const anthropic: Model[] = [
