@@ -1439,8 +1439,8 @@ export const codeGenerationSchema = z.object({
 {
   "pre_code": "Brief explanation of component approach and architecture decisions (2-3 sentences)",
   "code": {
-    "page.tsx": "<TS/TSX code>",
-    "widget.tsx": "<TS/TSX code>"
+    "page.tsx": "\"use client\"\nimport { Button } from \"@/components/ui/button\"\n\nexport default function Page() {\n  return <Button>Click me</Button>\n}",
+    "button.tsx": "import { Button } from "@/components/ui/button\"\n\nexport function CustomButton() {\n  return <Button variant=\"outline\">Custom</Button>\n}"
   },
   "post_code": "Detailed explanation of key features, accessibility considerations, and usage notes (3-5 sentences)",
   "pkgs": ["button"]
@@ -1451,7 +1451,7 @@ export const codeGenerationSchema = z.object({
 {
   "pre_code": "...",
   "code": {
-    "app/page.tsx": "<TS/TSX code>"
+    "page.tsx": "\"\"use client\"\nimport { Button } from \"@/components/ui/button\"\n\nexport default function Page() {\n  return <Button>Click me</Button>\n\"\""
   },
   "post_code": "...",
   "pkgs": []
@@ -1467,12 +1467,14 @@ export const codeGenerationSchema = z.object({
 </code_formatting>
 
 <string_escaping>
+- Code content in the "code" object values should be the actual file content as a string, NOT wrapped in quotes
 - Newlines: Use actual line breaks in the code strings, not \n escape sequences
-- Double quotes: \"
+- Double quotes inside code: \"
 - Single quotes: ' (no escaping needed)
 - Backslashes: \\
 - Backticks: \`
 - Template literals: \${}
+- CRITICAL: The value for each code key should be the raw code content, not a quoted string
 </string_escaping>
 </response_format>
 
@@ -1491,6 +1493,7 @@ export const codeGenerationSchema = z.object({
  - Forgetting mobile-first responsive design
  - Overusing useMemo/useCallback without clear necessity or measured performance benefit
  - Using ShadCN components not selected from the <components_list>
+ - WRAPPING CODE CONTENT IN QUOTES: The code values should be raw file content, not quoted strings. Example: "page.tsx": "use client\n..." not "page.tsx": "\"use client\n...\""
 </avoid>
 </common_mistakes>
 
