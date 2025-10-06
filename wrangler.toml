@@ -1,6 +1,6 @@
 name = "grills"
 main = "src/worker.ts"
-compatibility_date = "2024-07-24"
+compatibility_date = "2025-09-15"
 
 # For local development
 [dev]
