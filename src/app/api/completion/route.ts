@@ -18,8 +18,10 @@ import { eq, and } from "drizzle-orm";
 
 import { aiChat } from "@/db/schema/ai-chat";
 import { CompletionRequest } from "@/lib/types";
-import { getPromptTxt } from "@/lib/utils";
+// import { getPromptTxt } from "@/lib/utils";
 import { codeGenerationSchema } from "@/lib/types";
+
+import fs from 'node:fs';
 
 // Initialize Redis
 const redis = new Redis({
@@ -59,26 +61,11 @@ export async function POST(request: Request) {
     }
 
     const db = await getDb();
-    const sysPrompt = await getPromptTxt();
+    // const sysPrompt = await getPromptTxt();
 
-    // const sysPrompt: string = (() => {
-    //   let fs: typeof import('fs'), path: typeof import('path');
+    const sysPrompt = await fs.promises.readFile(new URL('../../../lib/prompt.txt', import.meta.url), 'utf-8');
 
-    //   try {
-    //     // Fallback to require for synchronous operation
-    //     fs = eval('require')('fs');
-    //     path = eval('require')('path');
-
-    //     const promptPath = path.resolve(__dirname, '/Users/aditya/Desktop/utils/grills/development/grills/src/lib/prompt.txt');
-    //     const promptText = fs.readFileSync(promptPath, 'utf-8');
-    //     return promptText.trim();
-    //   } catch (error) {
-    //     console.error('Error reading prompt file:', error);
-    //     return ''; // Return empty string as fallback
-    //   }
-    // })();
-
-
+  
     let llmStreamContext
     let titleGenerator: OpenAIProvider | OpenRouterProvider | AnthropicProvider
 
@@ -135,8 +122,8 @@ export async function POST(request: Request) {
           system: sysPrompt,
           providerOptions: {
             openai: isReasoning
-              ? { reasoningSummary: "detailed", reasoningEffort: "high" }
-              : { reasoningEffort: "minimal" },
+              ? { reasoningSummary: "detailed", reasoningEffort: "medium"}
+              : { reasoningEffort: "minimal"}
           },
           experimental_output: Output.object({ schema: codeGenerationSchema }),
           experimental_transform: smoothStream({ delayInMs: 17, chunking: "word" }),
