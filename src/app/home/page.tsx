@@ -1,11 +1,12 @@
 import LoginBtn from "../(chat)/components/login-btn";
 import BentoSection from "./components/bento-section";
-import GoToTwitter from "./components/go-to-twitter";
+import Image from "next/image";
 import ExampleComponent from "./components/demo-window-component";
 import Hero from "./components/hero";
 import { Github } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SupportedPlatform from "./components/supported-platforms";
+import PricingCard from "./components/pricing-card";
 
 export default function Home() {
   return (
@@ -87,11 +88,31 @@ export default function Home() {
             <SupportedPlatform />
           </div>
         </div>
+
+        <div className="flex flex-col w-full items-center mt-28 md:mt-32 px-1 sm:px-0"> 
+        <PricingCard
+            features={[
+              'Lifetime access',
+              'Free updates forever',
+            ]}
+          />
+      </div>
       </section>
 
+
+      <div className="w-full flex items-center justify-center absolute -bottom-16">
+        <Image
+          src="/merabharat.png"
+          alt="Mera Bharat"
+          width={1150}
+          height={500}
+          className="rounded-lg shadow-lg opacity-25 md:opacity-4"
+          priority
+        />
+      </div>
       <div className="flex flex-col items-center justify-center w-screen pt-20 md:pt-36">
-        <footer className="w-full max-w-4xl p-4 text-center rounded-2xl shadow border-t py-8 lg:py-6 ">
-          <p>
+        <footer className="w-full max-w-4xl p-4 text-center rounded-t-2xl shadow border-t py-8 lg:py-6 bg-transparent relative overflow-hidden">
+          <p className="relative z-10">
             Need help? Contact us at{" "}
             <a
               href="mailto:support@grills.dev"
@@ -102,9 +123,17 @@ export default function Home() {
           </p>
         </footer>
       </div>
-        <GoToTwitter />
 
     </div>
   );
 }
 
+
+/**
+ * <Image 
+            src="/merabharat.png"
+            alt="Footer background"
+            fill
+            className="z-0 opacity-30 object-cover scale-90"
+          />
+ */
