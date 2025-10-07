@@ -177,7 +177,7 @@ export async function POST(request: Request) {
               const userInput = firstUserMsg.parts[0].text || "Generate the component"
               const { text } = await generateText({
                 model: titleGenerator.chat(model),
-                prompt: `You just need to create a title based on the user’s input—essentially what they want us to create, generate, or improve in the component. The title should be small. *USER INPUT*: ${userInput}`
+                prompt: `You just need to create a title based on the user’s input—essentially what they want us to create, generate, or improve in the component. The title should be small, this is the user input: ${userInput}`
               })
               await db
                 .update(aiChat)
