@@ -7,7 +7,6 @@ import { executeSandboxCode } from "@/lib/fetchers";
 import { $sanboxObj } from "@/store/store";
 import { toast } from "sonner";
 import { indexCSS } from "@/lib/shadcn-components";
-import { getSandboxURL } from "@/lib/utils";
 
 
 const CodeRenderer = () => {
@@ -24,7 +23,7 @@ const CodeRenderer = () => {
     isMutating: isExecuting,
     error,
   } = useSWRMutation(
-    getSandboxURL(),
+    "/api/sandbox",
     executeSandboxCode,
     {
       onSuccess(data) {
