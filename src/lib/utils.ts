@@ -100,11 +100,11 @@ export function getSandboxURL(): string {
       window.location.hostname === "127.0.0.1";
 
     if (isLocalhost) {
-      return "http://localhost:8080/api/v1/sandbox/create";
+      return "http://localhost:8787/create";
     }
   }
 
-  return "https://grills-sandbox-28op1.sevalla.app/api/v1/sandbox/create";
+  return "https://sandbox.grills.dev/create";
 }
 
 // Remove ```json and ``` fences
