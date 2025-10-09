@@ -14,8 +14,7 @@ const openRouter: Model[] = [
     {id: "3a15ca32-9ec8-11f0-8c38-325096b39f47", title: "Deepseek Chat v3.1", slug: "deepseek/deepseek-chat-v3.1", isReasoning:true},
     {id: "3a15ca30-9ec8-11f0-8c38-325196b39f40", title: "Deepseek Chat v3.1", slug: "deepseek/deepseek-chat-v3.1", isReasoning:false},
     {id: "3787a35e-c045-4328-8290-088180785769", title: "Grok Code Fast 1", slug: "x-ai/grok-code-fast-1", isReasoning:true},
-    // {id: "4d8c8160-cceb-4368-95df-5e26e12cd3b6", title: "Z.AI: GLM 4.5", slug: "z-ai/glm-4.5v", isReasoning:false},
-    // {id: "4e8c8061-cceb-4368-95df-5e26e12cd3b5", title: "Z.AI: GLM 4.5", slug: "z-ai/glm-4.5v", isReasoning:true},
+    {id: "4d8c8160-cceb-4368-95df-5e26e12cd3b6", title: "Z.AI: GLM 4.6", slug: "z-ai/glm-4.6", isReasoning:true},
 ]
 
 const openAI: Model[] = [
