@@ -93,20 +93,6 @@ export async function getPromptTxt(): Promise<string> {
   }
 }
 
-export function getSandboxURL(): string {
-  if (typeof window !== "undefined") {
-    const isLocalhost =
-      window.location.hostname === "localhost" ||
-      window.location.hostname === "127.0.0.1";
-
-    if (isLocalhost) {
-      return "http://localhost:8787/create";
-    }
-  }
-
-  return "https://sandbox.grills.dev/create";
-}
-
 // Remove ```json and ``` fences
 export function stripJsonFence(raw:string):string {
   return raw
