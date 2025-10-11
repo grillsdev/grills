@@ -173,7 +173,7 @@ export const ModelSelectBtn = ({
             size="sm"
             className="text-xs font-light"
           >
-            {currentModel
+            {currentModel.model
               ? currentModel.model?.modelTitle
               : "Select model"}
             <ChevronDown />

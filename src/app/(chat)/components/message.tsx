@@ -98,7 +98,7 @@ const AssistantMessage = memo(
         </span>
         <div className="selection:bg-base-900 selection:text-secondary">
           <div className="text-sm flex flex-col gap-1">
-            <p>{parsedContent.pre_code}</p>
+            <p className="">{parsedContent.pre_code}</p>
             {parsedContent.code && (
               <Button
                 size="sm"
@@ -152,24 +152,7 @@ const AssistantMessage = memo(
               </Button>
             )}
 
-            {/* {isStreaming && parsedContent.code && (
-              <div className="mt-0.5 mb-1.5">
-                {Object.entries(parsedContent.code).map(
-                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                  ([key, value], index, arr) => (
-                    <div key={key}>
-                        {index === arr.length - 1 ? (
-                          <div className="flex flex-row gap-1.5 items-center">
-                      <Loader className="animate-spin text-green-500" width={18}/> <p className="font-medium">Generating {key}</p>
-                          </div>
-                        ) : null}
-                    </div>
-                  )
-                )}
-              </div>
-            )} */}
-
-            <div className="prose">{parsedContent.post_code}</div>
+            <div className="">{parsedContent.post_code}</div>
           </div>
           {isStreaming && <TerminalLoader size="sm" className="mt-3" />}
         </div>
