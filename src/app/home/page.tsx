@@ -6,7 +6,7 @@ import Hero from "./components/hero";
 import { Github } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SupportedPlatform from "./components/supported-platforms";
-import PricingCard from "./components/pricing-card";
+import WhyGrills from "./components/why-grills";
 
 export default function Home() {
   return (
@@ -86,17 +86,10 @@ export default function Home() {
           <div className="space-y-24 sm:space-y-32">
             <BentoSection />
             <SupportedPlatform />
+            <WhyGrills/>
           </div>
         </div>
 
-        <div className="flex flex-col w-full items-center mt-28 md:mt-32 px-1 sm:px-0"> 
-        <PricingCard
-            features={[
-              'Lifetime access',
-              'Free updates forever',
-            ]}
-          />
-      </div>
       </section>
 
 
@@ -116,7 +109,7 @@ export default function Home() {
             Need help? Contact us at{" "}
             <a
               href="mailto:support@grills.dev"
-              className="text-primary hover:underline"
+              className="text-primary hover:underline font-medium"
             >
               support@grills.dev
             </a>
@@ -127,13 +120,3 @@ export default function Home() {
     </div>
   );
 }
-
-
-/**
- * <Image 
-            src="/merabharat.png"
-            alt="Footer background"
-            fill
-            className="z-0 opacity-30 object-cover scale-90"
-          />
- */
