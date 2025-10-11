@@ -74,6 +74,7 @@
 	"devDependencies": {
 		"@eslint/eslintrc": "^3",
 		"@tailwindcss/postcss": "^4",
+		"@tailwindcss/typography": "^0.5.19",
 		"@types/node": "^20.19.1",
 		"@types/pg": "^8.15.4",
 		"@types/react": "^19",
