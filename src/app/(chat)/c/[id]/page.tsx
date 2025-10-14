@@ -9,8 +9,8 @@ import { toast } from "sonner";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { UserInput } from "../../components/user-input";
 import { ChatMessage } from "../../components/message";
-import { getApiKey } from "@/lib/utils";
-import { $modelObj } from "@/store/store";
+import { getApiKey, convertFilesToDataURLs } from "@/lib/utils";
+import { $modelObj, $userImage } from "@/store/store";
 
 import { useSidebar } from "@/components/ui/sidebar";
 
@@ -54,13 +54,16 @@ export default function Chat() {
     errorRetryCount: 0,
     onError(err) {
       if (err.status === 404) {
-        // on error mean there is not hostory so most probaly the chat is new and user added gthat chat in homepage and came here after redirecting so automatically send the chat t abckend
+        // on error mean there is not hostory so most probaly the chat is new and user added gthat chat from homepage and came here after redirecting so automatically send the chat to backend after exracting the the data from localhost
         const isMsgStored = localStorage.getItem("llm-query-state");
         if (isMsgStored) {
-          const msg = JSON.parse(isMsgStored) as { message: string };
-          // add a timeout before sending the message// bcs it is itersepting the message array bcs MessageHistory is empty some time but message not
+          const msg = JSON.parse(isMsgStored) as { chatId: string, message: string, fileParts: [] };
+          if(msg.chatId!==chatId) return;
           setInput(msg.message);
-          sendMessage({ text: msg.message });
+          sendMessage({
+            role: 'user',
+            parts: [{ type: 'text', text: msg.message }, ...msg.fileParts],
+          });
           setInput("");
           localStorage.removeItem("llm-query-state");
         }
@@ -150,9 +153,21 @@ export default function Chat() {
     }
   }, [messages, status]);
 
-  const handleSubmit = () => {
+  const handleSubmit = async() => {
     if (input.trim()) {
-      sendMessage({ text: input });
+      const userImgObj = $userImage.get()
+      const files = userImgObj.images
+      const fileParts = files && files.length > 0 ? await convertFilesToDataURLs(files) : [];
+      
+      if(userImgObj.chatId===chatId && fileParts.length>0){
+        console.log("~~~~~sending with image~~~~~")
+        sendMessage({
+        role: 'user',
+        parts: [{ type: 'text', text: input }, ...fileParts],
+      })}else{
+        console.log("~~~~~sending without image~~`")
+        sendMessage({text:input})
+      }
       setInput("");
     }
   };
@@ -239,7 +254,7 @@ export default function Chat() {
                 </ScrollArea>
               </div>
               <div className="py-2 px-3 absolute bottom-0 w-full flex justify-center">
-                <div className="w-full max-w-xl ">
+                <div className="w-full max-w-xl z-0">
                   <UserInput
                     disable={status === "submitted" || status === "streaming"}
                     handleChatSubmit={handleSubmit}

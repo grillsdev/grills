@@ -17,7 +17,6 @@ import { $modelObj } from "@/store/store";
 import { useStore } from "@nanostores/react";
 
 import type { CurrentModel } from "@/lib/types";
-import { getSelectedModel } from "@/lib/utils";
 import { LLMProviderIcons } from "@/lib/utils";
 import Image from "next/image";
 
@@ -36,16 +35,15 @@ export const ModelSelect = ({
     const getCurrentModel = localStorage.getItem("selected-model");
     if (getCurrentModel) {
       const selectedModel = JSON.parse(getCurrentModel) as CurrentModel;
-      currentModel.model = selectedModel
+      $modelObj.set({model: selectedModel})
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const updateCurrentModel = (model: CurrentModel) => {
     const selectedModel = JSON.stringify(model);
     localStorage.setItem("selected-model", selectedModel);
     if (selectedModel) {
-      currentModel.model = JSON.parse(selectedModel)
+      $modelObj.set({model: model})
     }
   };
 
@@ -99,6 +97,7 @@ export const ModelSelect = ({
                                   model: model.slug,
                                   modelTitle: model.title,
                                   isReasoning: model.isReasoning,
+                                  isMultiModel:model.isMultiModel
                                 });
                                 handleOpenWindow(false);
                               }}
@@ -152,13 +151,6 @@ export const ModelSelectBtn = ({
   const [openWindow, setOpenWindow] = useState(false);
   const currentModel = useStore($modelObj)
 
-  useEffect(() => {
-    const isModel = getSelectedModel()
-    if(isModel){
-      $modelObj.set({model: isModel})
-    }
-  }, []);
-
   const handleOpenWindow = (state: boolean) => {
     setOpenWindow(state);
   };
@@ -171,7 +163,7 @@ export const ModelSelectBtn = ({
             type="button"
             variant="ghost"
             size="sm"
-            className="text-xs font-light"
+            className="text-xs font-light bg-accent scroll:border"
           >
             {currentModel.model
               ? currentModel.model?.modelTitle

@@ -6,6 +6,7 @@ export interface Model {
   title: string; // public facing model name
   slug: string; // model name for internal use
   isReasoning:  boolean; // whether model have reasoning 
+  isMultiModel: boolean
 }
 
 export interface LLM {
@@ -21,7 +22,8 @@ export interface CurrentModel {
   llm: string;
   model: string;
   modelTitle: string;
-  isReasoning:boolean
+  isReasoning:boolean;
+  isMultiModel:boolean;
 }
 
 export interface MessageProps {
@@ -105,6 +107,11 @@ export interface SandboxStoreInterface {
 
 export interface SelectedModel {
   model: null | CurrentModel
+}
+
+export interface AddedImage {
+  chatId:string;
+  images:File[] //list of image
 }
 
 export interface GeneratedCodeContent {
