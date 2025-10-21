@@ -1,10 +1,13 @@
+import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import {
   streamText,
   Output,
   convertToModelMessages,
   createIdGenerator,
   smoothStream,
-  generateText
+  generateText,
+  stepCountIs,
+  experimental_createMCPClient
 } from "ai";
 import { Redis } from "@upstash/redis";
 
@@ -21,7 +24,7 @@ import { CompletionRequest } from "@/lib/types";
 import { getPromptTxt } from "@/lib/utils";
 import { codeGenerationSchema } from "@/lib/types";
 
-// import fs from 'node:fs';
+import fs from 'node:fs';
 
 // Initialize Redis
 const redis = new Redis({
@@ -43,7 +46,7 @@ export async function POST(request: Request) {
   try {
     // 2. Parse and validate request body
     const body: CompletionRequest = await request.json();
-    const { chatId, messages, llm, apiKey, model, isReasoning} = body;
+    const { chatId, messages, llm, apiKey, model, isReasoning } = body;
 
     // 3. Input validation with better error messages
     if (!chatId) {
@@ -61,12 +64,12 @@ export async function POST(request: Request) {
     }
 
     const db = await getDb();
-    const sysPrompt = await getPromptTxt();
+    // const sysPrompt = await getPromptTxt();
 
-    // const sysPrompt = await fs.promises.readFile(new URL('../../../lib/prompt.txt', import.meta.url), 'utf-8');
+    const sysPrompt = await fs.promises.readFile(new URL('../../../lib/prompt.txt', import.meta.url), 'utf-8');
 
-  
-    let llmStreamContext
+
+    let llmContext
     let titleGenerator: OpenAIProvider | OpenRouterProvider | AnthropicProvider
 
     switch (llm) {
@@ -78,7 +81,7 @@ export async function POST(request: Request) {
           ? openrouter.chat(model, { reasoning: { enabled: true, effort: "medium" } })
           : openrouter.chat(model);
 
-        llmStreamContext = {
+        llmContext = {
           model: modelOperator,
           messages: convertToModelMessages(messages),
           system: sysPrompt,
@@ -94,7 +97,7 @@ export async function POST(request: Request) {
         const modelOperator = anthropic.chat(model);
         const includeOutputObject = !isReasoning;
 
-        llmStreamContext = {
+        llmContext = {
           model: modelOperator,
           messages: convertToModelMessages(messages),
           system: sysPrompt,
@@ -116,14 +119,14 @@ export async function POST(request: Request) {
         titleGenerator = openai;
         const modelOperator = openai.responses(model);
 
-        llmStreamContext = {
+        llmContext = {
           model: modelOperator,
           messages: convertToModelMessages(messages),
           system: sysPrompt,
           providerOptions: {
             openai: isReasoning
-              ? { reasoningSummary: "detailed", reasoningEffort: "medium"}
-              : { reasoningEffort: "minimal"}
+              ? { reasoningSummary: "detailed", reasoningEffort: "medium" }
+              : { reasoningEffort: "minimal" }
           },
           experimental_output: Output.object({ schema: codeGenerationSchema }),
           experimental_transform: smoothStream({ delayInMs: 17, chunking: "word" }),
@@ -132,9 +135,30 @@ export async function POST(request: Request) {
       }
     }
 
+    // Context7 MCP
+    const httpTransport = new StreamableHTTPClientTransport(
+      new URL("https://mcp.context7.com/mcp"),
+      {
+        requestInit: {
+          headers: { Authorization: "Bearer ctx7sk-834a84fe-12f2-4898-899b-b3b1a64be7d2" },
+        },
+      },
+    );
+
+    const mcpClient = await experimental_createMCPClient({
+      transport: httpTransport,
+    });
+    const mcpTools = await mcpClient.tools();
+
+
     const result = streamText({
-      ...llmStreamContext,
-      onFinish: async ({ text }) => {
+      ...llmContext,
+      stopWhen: stepCountIs(3),
+      tools: {...mcpTools},
+      // onChunk: async({chunk}) => {
+      //   console.log(chunk)
+      // },
+      onFinish: async ({ text, content, reasoningText }) => {
         try {
           const generateUserMessageId = createIdGenerator({
             prefix: "usr",
@@ -146,6 +170,7 @@ export async function POST(request: Request) {
           });
 
           const lastUserInput = messages[messages.length - 1];
+          console.log("use input image", lastUserInput)
           if (lastUserInput.role !== "user")
             throw new Error("Something went wrong!");
 
@@ -158,7 +183,7 @@ export async function POST(request: Request) {
           const assistantMessage = {
             id: generateMessageId(),
             role: "assistant" as const,
-            parts: [{ type: "text", text: text }],
+            parts: reasoningText ? content : [{ type: "text", text: text }],
             createdAt: new Date(),
           };
 
@@ -195,14 +220,16 @@ export async function POST(request: Request) {
               );
           }
 
-
+          await mcpClient.close()
           // update the title
         } catch (saveError) {
           console.error("Error saving messages:", saveError);
           // Consider how you want to handle save errors
         }
       },
-      onError: (err) => {
+      onError: async(err) => {
+        await mcpClient.close();
+
         console.error("Stream generation error:", err);
       },
     });

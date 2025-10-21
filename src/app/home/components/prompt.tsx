@@ -2,7 +2,7 @@ import { TypingAnimation } from "@/components/magicui/typing-animation";
 
 const Prompt = () => {
   return (
-    <TypingAnimation duration={33} className="text-base md:text-lg md:leading-7" >
+    <TypingAnimation duration={15} className="text-base md:text-lg md:leading-7" >
       Create a user interface with a two-column layout. The layout
       should consist of a fixed-width left sidebar for navigation and a main
       content area on the right. The main content should dynamically update

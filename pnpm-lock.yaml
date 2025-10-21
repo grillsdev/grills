@@ -18,8 +18,11 @@ importers:
         specifier: ^2.0.10
         version: 2.0.10(react@19.1.0)(zod@3.25.67)
       '@e2b/code-interpreter':
-        specifier: ^2.0.0
-        version: 2.0.0
+        specifier: ^2.0.1
+        version: 2.0.1
+      '@modelcontextprotocol/sdk':
+        specifier: ^1.20.1
+        version: 1.20.1
       '@nanostores/react':
         specifier: ^1.0.0
         version: 1.0.0(nanostores@1.0.1)(react@19.1.0)
@@ -799,9 +802,9 @@ packages:
   '@drizzle-team/brocli@0.10.2':
     resolution: {integrity: sha512-z33Il7l5dKjUgGULTqBsQBQwckHh5AbIuxhdsIxDDiZAzBOrZO6q9ogcWC65kU382AfynTfgNumVcNIjuIua6w==}
 
-  '@e2b/code-interpreter@2.0.0':
-    resolution: {integrity: sha512-rCIW4dV544sUx2YQB/hhwDrK6sQzIb5lr5h/1CIVoOIRgU9q3NUxsFj+2OsgWd4rMG8l6b/oA7FVZJwP4sGX/A==}
-    engines: {node: '>=18'}
+  '@e2b/code-interpreter@2.0.1':
+    resolution: {integrity: sha512-CbH5tU5lI0QyO+vTOdW9mZGpuVImmH96SsRqEduplrv7hplINMsvoQESvcDavdJWjurK3Oe/Ho8QtpDb1bBKag==}
+    engines: {node: '>=20'}
 
   '@ecies/ciphers@0.2.4':
     resolution: {integrity: sha512-t+iX+Wf5nRKyNzk8dviW3Ikb/280+aEJAnw9YXvCp2tYGPSkMki+NRY+8aNLmVFv3eNtMdvViPNOPxS8SZNP+w==}
@@ -1521,6 +1524,10 @@ packages:
 
   '@mermaid-js/parser@0.6.2':
     resolution: {integrity: sha512-+PO02uGF6L6Cs0Bw8RpGhikVvMWEysfAyl27qTlroUB8jSWr1lL0Sf6zi78ZxlSnmgSY2AMMKVgghnN9jTtwkQ==}
+
+  '@modelcontextprotocol/sdk@1.20.1':
+    resolution: {integrity: sha512-j/P+yuxXfgxb+mW7OEoRCM3G47zCTDqUPivJo/VzpjbG8I9csTXtOprCf5FfOfHK4whOJny0aHuBEON+kS7CCA==}
+    engines: {node: '>=18'}
 
   '@nanostores/react@1.0.0':
     resolution: {integrity: sha512-eDduyNy+lbQJMg6XxZ/YssQqF6b4OXMFEZMYKPJCCmBevp1lg0g+4ZRi94qGHirMtsNfAWKNwsjOhC+q1gvC+A==}
@@ -3485,6 +3492,10 @@ packages:
     resolution: {integrity: sha512-9Kr/j4O16ISv8zBBhJoi4bXOYNTkFLOqSL3UDB0njXxCXNezjeyVrJyGOWtgfs/q2km1gwBcfH8q1yEGoMYunA==}
     engines: {node: '>=18'}
 
+  cors@2.8.5:
+    resolution: {integrity: sha512-KIHbLJqu73RGr/hnbrO9uBeixNGuvSQjul/jdFvS/KFSIH1hWVd1ng7zOHx+YrEfInLG7q4n6GHQ9cDtxv/P6g==}
+    engines: {node: '>= 0.10'}
+
   cose-base@1.0.3:
     resolution: {integrity: sha512-s9whTXInMSgAp/NVXVNuVxVKzGH2qck3aQlVHxDCdAEPgtMKwc4Wq6/QKhgdEdgbLSi9rBTAcPoRa6JpiG4ksg==}
 
@@ -4106,6 +4117,10 @@ packages:
     resolution: {integrity: sha512-Vo1ab+QXPzZ4tCa8SwIHJFaSzy4R6SHf7BY79rFBDf0idraZWAkYrDjDj8uWaSm3S2TK+hJ7/t1CEmZ7jXw+pg==}
     engines: {node: '>=18.0.0'}
 
+  eventsource@3.0.7:
+    resolution: {integrity: sha512-CRT1WTyuQoD771GW56XEZFQ/ZoSfWid1alKGDYMmkt2yl8UXrVR4pspqWNEcqKvVIzg6PAltWjxcSSPrboA4iA==}
+    engines: {node: '>=18.0.0'}
+
   execa@5.1.1:
     resolution: {integrity: sha512-8uSpZZocAZRBAPIEINJj3Lo9HyGitllczc27Eh5YYojjMFMn8yHMDMaUHE2Jqfq05D/wucwI4JGURyXt1vchyg==}
     engines: {node: '>=10'}
@@ -4113,6 +4128,12 @@ packages:
   exit-hook@2.2.1:
     resolution: {integrity: sha512-eNTPlAD67BmP31LDINZ3U7HSF8l57TxOY2PmBJ1shpCvpnxBF93mWCE8YHBnXs8qiUZJc9WDcWIeC3a2HIAMfw==}
     engines: {node: '>=6'}
+
+  express-rate-limit@7.5.1:
+    resolution: {integrity: sha512-7iN8iPMDzOMHPUYllBEsQdWVB6fPDMPqwjBaFrgr4Jgr/+okjvzAy+UHlYYL/Vs0OsOrMkwS6PJDkFlJwoxUnw==}
+    engines: {node: '>= 16'}
+    peerDependencies:
+      express: '>= 4.11'
 
   express@5.0.1:
     resolution: {integrity: sha512-ORF7g6qGnD+YtUG9yx4DFoqCShNMmUKiXuT5oWMHiOvt/4WFbHC6yCwQMTSBMno7AqntNCAzzcnnjowRkTL9eQ==}
@@ -5314,6 +5335,10 @@ packages:
   picomatch@4.0.2:
     resolution: {integrity: sha512-M7BAV6Rlcy5u+m6oPhAPFgJTzAioX/6B0DxyvDlo9l8+T3nLKbrczg2WLUyzd45L8RqfUMyGPzekbMvX2Ldkwg==}
     engines: {node: '>=12'}
+
+  pkce-challenge@5.0.0:
+    resolution: {integrity: sha512-ueGLflrrnvwB3xuo/uGob5pd5FN7l0MsLf0Z87o/UQmRtwjvfylfc9MurIxRAWywCYTgrvpXBcqjV4OfCYGCIQ==}
+    engines: {node: '>=16.20.0'}
 
   pkg-types@1.3.1:
     resolution: {integrity: sha512-/Jm5M4RvtBFVkKWRu2BLUTNP8/M2a+UwuAX+ae4770q1qVGtfjG+WTCupoZixokjmHiry8uI+dlY8KXYV5HVVQ==}
@@ -7614,7 +7639,7 @@ snapshots:
 
   '@drizzle-team/brocli@0.10.2': {}
 
-  '@e2b/code-interpreter@2.0.0':
+  '@e2b/code-interpreter@2.0.1':
     dependencies:
       e2b: 2.2.1
 
@@ -8158,6 +8183,23 @@ snapshots:
   '@mermaid-js/parser@0.6.2':
     dependencies:
       langium: 3.3.1
+
+  '@modelcontextprotocol/sdk@1.20.1':
+    dependencies:
+      ajv: 6.12.6
+      content-type: 1.0.5
+      cors: 2.8.5
+      cross-spawn: 7.0.6
+      eventsource: 3.0.7
+      eventsource-parser: 3.0.6
+      express: 5.0.1
+      express-rate-limit: 7.5.1(express@5.0.1)
+      pkce-challenge: 5.0.0
+      raw-body: 3.0.0
+      zod: 3.25.67
+      zod-to-json-schema: 3.24.5(zod@3.25.67)
+    transitivePeerDependencies:
+      - supports-color
 
   '@nanostores/react@1.0.0(nanostores@1.0.1)(react@19.1.0)':
     dependencies:
@@ -10523,6 +10565,11 @@ snapshots:
 
   cookie@1.0.2: {}
 
+  cors@2.8.5:
+    dependencies:
+      object-assign: 4.1.1
+      vary: 1.1.2
+
   cose-base@1.0.3:
     dependencies:
       layout-base: 1.0.2
@@ -11261,6 +11308,10 @@ snapshots:
 
   eventsource-parser@3.0.6: {}
 
+  eventsource@3.0.7:
+    dependencies:
+      eventsource-parser: 3.0.6
+
   execa@5.1.1:
     dependencies:
       cross-spawn: 7.0.6
@@ -11274,6 +11325,10 @@ snapshots:
       strip-final-newline: 2.0.0
 
   exit-hook@2.2.1: {}
+
+  express-rate-limit@7.5.1(express@5.0.1):
+    dependencies:
+      express: 5.0.1
 
   express@5.0.1:
     dependencies:
@@ -12788,6 +12843,8 @@ snapshots:
   picomatch@2.3.1: {}
 
   picomatch@4.0.2: {}
+
+  pkce-challenge@5.0.0: {}
 
   pkg-types@1.3.1:
     dependencies:
