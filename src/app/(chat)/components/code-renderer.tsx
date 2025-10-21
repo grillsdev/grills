@@ -6,7 +6,6 @@ import { Loader2 } from "lucide-react";
 import { executeSandboxCode } from "@/lib/fetchers";
 import { $sanboxObj } from "@/store/store";
 import { toast } from "sonner";
-import { indexCSS } from "@/lib/shadcn-components";
 
 
 const CodeRenderer = () => {
@@ -15,6 +14,7 @@ const CodeRenderer = () => {
   //always get the last code/selected
   const sb = useStore($sanboxObj)
   const code = sb.code!;
+  const pkgs = sb.pkg
   if(!code) toast.warning("No code for exicution, may throw an error.")
   const isStreaming = sb.isStreaming;
 
@@ -41,7 +41,7 @@ const CodeRenderer = () => {
         msgId: sb.id,
         code: code,
         sandboxAPI: e2b,
-        css: indexCSS
+        pkgs: pkgs || [],
     })
     .then(()=>{
       // console.log(data)
