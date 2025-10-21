@@ -6,16 +6,17 @@ import Sandbox from "@e2b/code-interpreter";
 export async function POST(req: Request) {
     const session = await auth.api.getSession({
         headers: req.headers,
-      });
-      if (!session) {
+    });
+    if (!session) {
         return Response.json({ error: "Unauthorized" }, { status: 401 });
-      }
+    }
     try {
-        const { sandboxAPI, msgId, code, css } = await req.json() as {
+        const { sandboxAPI, msgId, code, pkgs } = await req.json() as {
             sandboxAPI: string;
             msgId: string;
             code: Record<string, string>;
             css: string;
+            pkgs: string[]
         };
 
 
@@ -38,7 +39,7 @@ export async function POST(req: Request) {
         });
 
         const sandboxList = await sandboxes.nextItems();
-        
+
         if (sandboxList.length > 0) {
             const newSandbox = sandboxList[0];
             return Response.json({
@@ -59,19 +60,25 @@ export async function POST(req: Request) {
             }
         });
 
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        for (const [key, value] of Object.entries(code)) {
-            if (key === "page.tsx") { 
-                await sandbox.files.write("/home/user/src/app/page.tsx", code[key]);
-            } else {
-                await sandbox.files.write(`/home/user/src/components/${key}`, code[key]);
-            }
+        //downlodes the pakages 
+        if(pkgs && pkgs.length>0){
+            await sandbox.commands.run(`npm install ${pkgs.join(' ')}`);
         }
-        
-        await sandbox.files.write("/home/user/src/app/global.css", css);
+
+        const sandboxFiles: { path: string; data: string }[] = [];
+
+        // converting the code obj into e2b sandbox files format
+        for (const [key, value] of Object.entries(code)) {
+            sandboxFiles.push({
+                path:key,
+                data: value,
+            });
+        }
+
+        await sandbox.files.write(sandboxFiles);
 
         const previewUrl = `https://${sandbox.getHost(3000)}`;
-        
+
         return Response.json({
             e2bSandboxAPI: sandboxAPI,
             e2bSandboxId: `grills:${msgId}`,
