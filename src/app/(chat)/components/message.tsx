@@ -142,7 +142,7 @@ const AssistantMessage = memo(
                               className="animate-spin text-green-500"
                               width={18}
                             />
-                            <p className="font-medium">Generating {key}</p>
+                            <p className="font-medium">Generating {key.split('/').pop()}</p>
                           </div>
                         ) : null}
                       </div>
