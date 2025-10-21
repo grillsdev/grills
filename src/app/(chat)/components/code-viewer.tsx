@@ -64,7 +64,7 @@ export default function CodeViewer() {
   useEffect(() => {
     if (!highlighter) return;
     const codeValues = Object.values(sandbox.code);
-    const lastCode = sandbox.isStreaming ? (codeValues[codeValues.length - 1] || "Generating components...") : sandbox.code['page.tsx']
+    const lastCode = sandbox.isStreaming ? (codeValues[codeValues.length - 1] || "Generating components...") : sandbox.code['src/app/page.tsx']
     debouncedCode(lastCode)
   }, [sandbox, highlighter, debouncedCode]);
 

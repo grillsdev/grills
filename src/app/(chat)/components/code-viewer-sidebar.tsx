@@ -12,7 +12,7 @@ interface CodeViewerSidebarProps {
 
 export default function CodeViewerSidebar({ children, code, navigateToCode, isStreaming }: CodeViewerSidebarProps) {
   const [isOpen, setIsOpen] = useState(false)
-  const [activeItem, setActiveItem] = useState<string>("page.tsx")
+  const [activeItem, setActiveItem] = useState<string>("")
 
   const keyValues = Object.keys(code)
   const lastKey = keyValues[keyValues.length - 1]
@@ -25,10 +25,11 @@ export default function CodeViewerSidebar({ children, code, navigateToCode, isSt
     }
   }, [isStreaming, lastKey, activeItem])
 
-  // Default to page.tsx even on code change 
+  // Default to the first page.tsx found when code changes
   useEffect(() => {
     if(isStreaming) return;
-    setActiveItem('page.tsx')
+    const firstPage = Object.keys(code).find(f => f.includes('page.tsx')) || Object.keys(code)[0] || "";
+    setActiveItem(firstPage);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [code])
 
@@ -39,9 +40,14 @@ export default function CodeViewerSidebar({ children, code, navigateToCode, isSt
     navigateToCode(code[filename])
   }
 
-  // Separate files into app and components
-  const appFiles = Object.keys(code).filter(filename => filename === 'page.tsx')
-  const componentFiles = Object.keys(code).filter(filename => filename !== 'page.tsx')
+  const getFileName = (path: string) => path.split('/').pop() || path;
+
+  // Separate files into categories
+  const appFiles = Object.keys(code).filter(filename => filename.includes('page.tsx'));
+  const componentFiles = Object.keys(code).filter(filename => filename.includes('/components/'));
+  const cssFile = Object.keys(code).filter(filename => filename.includes('globals.css'));
+  const hookFiles = Object.keys(code).filter(filename => filename.includes('/hooks/'));
+  const libFiles = Object.keys(code).filter(filename => filename.includes('/lib/'));
 
   return (
     <div className="relative h-full w-full flex">
@@ -74,7 +80,7 @@ export default function CodeViewerSidebar({ children, code, navigateToCode, isSt
                       >
                         <FileJson2 className="h-4 w-4 flex-shrink-0" />
                         <span className="truncate max-w-[120px]" title={filename}>
-                          {filename}
+                          {getFileName(filename)}
                         </span>
                       </button>
                     ))}
@@ -101,7 +107,78 @@ export default function CodeViewerSidebar({ children, code, navigateToCode, isSt
                       >
                         <FileJson2 className="h-4 w-4 flex-shrink-0" />
                         <span className="truncate max-w-[120px]" title={filename}>
-                          {filename}
+                          {getFileName(filename)}
+                        </span>
+                      </button>
+                    ))}
+                    {cssFile.map((filename) => (
+                      <button
+                        key={filename}
+                        onClick={() => handleFileClick(filename)}
+                        className={`flex items-center gap-2 w-full px-2 py-1.5 text-sm rounded-md transition-colors ${
+                          activeItem === filename
+                            ? "bg-accent text-accent-foreground"
+                            : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                        }`}
+                      >
+                        <FileJson2 className="h-4 w-4 flex-shrink-0" />
+                        <span className="truncate max-w-[120px]" title={filename}>
+                          {getFileName(filename)}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+
+              {/* Hooks section */}
+              {hookFiles.length > 0 && (
+                <div className="space-y-2">
+                  <div className="px-2 py-1 text-sm font-medium text-muted-foreground">
+                    hooks
+                  </div>
+                  <div className="ml-4 space-y-1">
+                    {hookFiles.map((filename) => (
+                      <button
+                        key={filename}
+                        onClick={() => handleFileClick(filename)}
+                        className={`flex items-center gap-2 w-full px-2 py-1.5 text-sm rounded-md transition-colors ${
+                          activeItem === filename
+                            ? "bg-accent text-accent-foreground"
+                            : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                        }`}
+                      >
+                        <FileJson2 className="h-4 w-4 flex-shrink-0" />
+                        <span className="truncate max-w-[120px]" title={filename}>
+                          {getFileName(filename)}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Lib section */}
+              {libFiles.length > 0 && (
+                <div className="space-y-2">
+                  <div className="px-2 py-1 text-sm font-medium text-muted-foreground">
+                    lib
+                  </div>
+                  <div className="ml-4 space-y-1">
+                    {libFiles.map((filename) => (
+                      <button
+                        key={filename}
+                        onClick={() => handleFileClick(filename)}
+                        className={`flex items-center gap-2 w-full px-2 py-1.5 text-sm rounded-md transition-colors ${
+                          activeItem === filename
+                            ? "bg-accent text-accent-foreground"
+                            : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                        }`}
+                      >
+                        <FileJson2 className="h-4 w-4 flex-shrink-0" />
+                        <span className="truncate max-w-[120px]" title={filename}>
+                          {getFileName(filename)}
                         </span>
                       </button>
                     ))}
@@ -130,8 +207,8 @@ export default function CodeViewerSidebar({ children, code, navigateToCode, isSt
 
       {/* Main content area */}
       <main className="flex-1 min-w-0 h-full overflow-hidden relative z-0 w-full">
-        <div className="flex flex-row justify-end px-7 py-3 bg-black  justify-self-end absolute">
-          <CopyToClipboard text={code[activeItem]}/>
+        <div className="flex flex-row justify-end top-2.5 right-6 justify-self-end absolute">
+          <CopyToClipboard text={activeItem && code[activeItem] ? code[activeItem] : ""}/>
         </div>
         {children}
       </main>
