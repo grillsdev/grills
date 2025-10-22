@@ -42,7 +42,7 @@ function useLocalStorageBoolean(key: string, initialValue: boolean) {
 }
 
 export function OnboardingDialog(props: OnboardingDialogProps) {
-  const { storageKey = 'grills-onboarding-dialog', defaultOpen = true } = props
+  const { storageKey = 'grills-onboarding-dialog-2', defaultOpen = true } = props
 
   const [dismissed, setDismissed] = useLocalStorageBoolean(storageKey, false)
   const [open, setOpen] = useState<boolean>(false)
@@ -63,11 +63,10 @@ export function OnboardingDialog(props: OnboardingDialogProps) {
     setOpen(false)
   }
 
-  const descriptionId = 'onboarding-desc'
+  const descriptionId = 'onboarding-desc-2'
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      {/* Hidden trigger for accessibility if needed by screen readers */}
       <DialogTrigger asChild>
         <button className="hidden" aria-hidden="true" />
       </DialogTrigger>
@@ -81,11 +80,12 @@ export function OnboardingDialog(props: OnboardingDialogProps) {
         <div className="grid gap-4 text-sm">
           <section className="space-y-2">
             <h3 className="font-medium">Requirements</h3>
-            <ul className="list-disc pl-5 space-y-1">
-              <li>You have to (BYOAK).</li>
-              <li>Supported platforms: OpenAI, OpenRouter and Anthropic </li>
-              <li>Supported Sandbox: E2B</li>
-              <li>If you encounter issues, reach out on Twitter.</li>
+            <ul className="list-disc pl-5 space-y-1 font-semibold text-muted-foreground">
+              <li>You have to Bring your own API keys.</li>
+              <li>Supported platforms: OpenAI, OpenRouter and Anthropic.</li>
+              <li>Supported Sandbox: E2B.</li>
+              <li className='font-medium'>You need Context7 API.</li>
+              <li>If you encounter issues, reach out on support@grill.dev.</li>
             </ul>
           </section>
           <div className="flex items-start gap-2">
@@ -102,6 +102,7 @@ export function OnboardingDialog(props: OnboardingDialogProps) {
               </p>
             </div>
           </div>
+          <p className='font-medium text-green-400 font-serif'>Every API key will be stored locally on your device.</p>
         </div>
         <div className="mt-4">
           <Button type="button" className="w-full" onClick={handleClose} aria-label="Close onboarding dialog">
