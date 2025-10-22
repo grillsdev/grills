@@ -1,8 +1,8 @@
 "use client";
-
+// add image icon
 import { useState, useEffect } from "react";
 
-import { Brain, ChevronDown } from "lucide-react";
+import { Brain, ChevronDown, Image as ImageIcon } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -11,6 +11,12 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 import { models } from "@/lib/models";
 import { $modelObj } from "@/store/store";
@@ -110,22 +116,47 @@ export const ModelSelect = ({
                               <div className="relative">
                                 <Image
                                   src={LLMProviderIcons[llm.slug] as ""}
-                                  className="rounded-[18px] flex-shrink-0"
-                                  width={45}
-                                  height={45}
+                                  className="rounded-[17px] flex-shrink-0"
+                                  width={40}
+                                  height={40}
                                   alt={`${llm.title} icon`}
                                 />
-                                {model.isReasoning && (
-                                  <div className="absolute top-1 -right-5 bg-sky-500/35 text-sky-500 rounded-full p-0.5 shadow-sm transform translate-x-1/2 -translate-y-1/2">
-                                    <Brain width={15} height={15} />
-                                  </div>
-                                )}
                               </div>
 
                               <div className="relative w-full px-1">
-                                <h3 className="text-center text-xs leading-tight line-clamp-2 break-words">
+                                <h3 className="text-center text-xs font-medium leading-tight line-clamp-2 break-words">
                                   {model.title}
                                 </h3>
+                                <div className="flex flex-row items-center justify-center gap-1 pt-1.5">
+                                  {model.isReasoning && (
+                                    <TooltipProvider>
+                                      <Tooltip >
+                                        <TooltipTrigger asChild>
+                                          <div className="w-fit bg-sky-500/35 text-sky-500 rounded-full p-0.5 shadow-sm">
+                                            <Brain width={15} height={15} />
+                                          </div>
+                                        </TooltipTrigger>
+                                        <TooltipContent >
+                                          <p>Reasoning is supported</p>
+                                        </TooltipContent>
+                                      </Tooltip>
+                                    </TooltipProvider>
+                                  )}
+                                {model.isMultiModel && (
+                                  <TooltipProvider>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <div className="w-fit text-rose-400 rounded shadow-sm">
+                                          <ImageIcon width={15} height={15} className=""/>
+                                        </div>
+                                      </TooltipTrigger>
+                                      <TooltipContent>
+                                        <p>Image input is supported</p>
+                                      </TooltipContent>
+                                    </Tooltip>
+                                  </TooltipProvider>
+                                )}
+                                </div>
                               </div>
                             </div>
                           ))}
