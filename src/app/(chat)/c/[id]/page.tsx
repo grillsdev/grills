@@ -81,6 +81,7 @@ export default function Chat() {
         const latestModel = $modelObj.get();
         const selectedModel = latestModel.model;
         const apiKey = getApiKey(selectedModel?.llm || "");
+        const context7 = localStorage.getItem("grills:context7")
 
         return {
           body: {
@@ -90,6 +91,7 @@ export default function Chat() {
             llm: selectedModel?.llm,
             model: selectedModel?.model,
             apiKey,
+            context7,
             isReasoning: selectedModel?.isReasoning,
           },
         };
@@ -103,10 +105,8 @@ export default function Chat() {
         localStorage.removeItem("llm-query-state");
       }
     },
-    onError: (err: Error) => {
-      toast.error(err.message, {
-        position: "bottom-right",
-      });
+    onError: (err) => {
+      toast.error(err.message);
     },
   });
 

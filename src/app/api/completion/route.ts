@@ -40,13 +40,13 @@ export async function POST(request: Request) {
     headers: request.headers,
   });
   if (!session) {
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
+    return Response.json({ message: "Unauthorized" }, { status: 401 });
   }
 
   try {
     // 2. Parse and validate request body
     const body: CompletionRequest = await request.json();
-    const { chatId, messages, llm, apiKey, model, isReasoning } = body;
+    const { chatId, messages, llm, apiKey, context7, model, isReasoning } = body;
 
     // 3. Input validation with better error messages
     if (!chatId) {
@@ -58,11 +58,17 @@ export async function POST(request: Request) {
 
     if (!llm || !apiKey || !model) {
       return Response.json(
-        { error: "Please provide API key and model configuration" },
+        { message: "Please provide API key and model configuration" },
         { status: 400 }
       );
     }
 
+   if (!context7) {
+      return Response.json(
+        { error: "Context7 API key is required" },
+        { status: 400 }
+      );
+    }
     const db = await getDb();
     // const sysPrompt = await getPromptTxt();
 
@@ -140,7 +146,7 @@ export async function POST(request: Request) {
       new URL("https://mcp.context7.com/mcp"),
       {
         requestInit: {
-          headers: { Authorization: "Bearer ctx7sk-834a84fe-12f2-4898-899b-b3b1a64be7d2" },
+          headers: { Authorization: `Bearer ${context7}` },
         },
       },
     );
