@@ -636,6 +636,7 @@ When a user provides an image:
 
 ### Generation Rules **FOLLOW ALL ABOVE GENERATION RULE AS WELL** **DO NOT MISS ANY** including these one for the Genration Rules 
 1. **Prioritize the Image**: Generate an exact replica.
+2. **Critical** Extract the same colors from the image and Use it in the theming the UI. 
 2. **Context7 Verification**: Fetch documentation for all identified components BEFORE implementation
 3. **Styling Accuracy**: Apply extracted styles using Tailwind CSS semantic classes
 4. **User Prompt Integration**: Incorporate additional features from text prompt
