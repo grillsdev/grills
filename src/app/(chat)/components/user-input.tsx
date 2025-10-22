@@ -88,6 +88,7 @@ const UserInput = ({
   const [modelDShouldOpen, setModelDShouldOpen] = useState<boolean>(false);
   const [apiDShouldOpen, setApiDShouldOpen] = useState<boolean>(false);
   const [e2bDShouldOpen, setE2bDShouldOpen] = useState(false);
+  const [context7DShouldOpen, setContext7ShouldOpen] = useState(false)
 
   const pathname = usePathname();
   const route = useRouter();
@@ -147,6 +148,13 @@ const UserInput = ({
         position: "top-center",
       });
       setE2bDShouldOpen(true);
+      return;
+    }
+
+    const isContext7 = localStorage.getItem("grills:context7");
+    if(!isContext7){
+      toast.warning("Please add your Context7 API key")
+      setContext7ShouldOpen(true)
       return;
     }
 
@@ -295,6 +303,11 @@ const UserInput = ({
         openWindow={e2bDShouldOpen}
         windowState={setE2bDShouldOpen}
         defaultTab="sandbox"
+      />
+      <APIKeysDialog
+        openWindow={context7DShouldOpen}
+        windowState={setContext7ShouldOpen}
+        defaultTab="context7"
       />
     </FileUpload>
   );

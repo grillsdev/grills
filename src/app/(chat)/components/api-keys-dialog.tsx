@@ -20,6 +20,72 @@ import { LLMProviderIcons } from "@/lib/utils";
 import Image from 'next/image'
 
 
+const Context7 = () => {
+  const [context7Value, setContext7Value] = useState("");
+  const [isSaved, setIsSaved] = useState(false);
+
+  // Load saved value on component mount
+  useEffect(() => {
+    const savedValue = localStorage.getItem("grills:context7");
+    if (savedValue) {
+      setContext7Value(savedValue);
+    }
+  }, []);
+
+  // Save on button click with confirmation
+  const handleSave = () => {
+    try {
+      localStorage.setItem("grills:context7", context7Value);
+      setIsSaved(true);
+      setTimeout(() => setIsSaved(false), 1500);
+    } catch (err) {
+      console.error("Failed to save key", err);
+    }
+  };
+
+  return (
+    <div className="px-1">
+      <div className="flex items-center py-2">
+        <div className="h-7 w-7 flex items-center justify-center mr-3">
+          <Image 
+            src="/context7.ico" 
+            alt="Context7 logo" 
+            width={40} 
+            height={40} 
+            className="rounded-[16px]" 
+          />
+        </div>
+        <div className="flex gap-3 items-center">
+          <span className="text-sm">Context7</span>
+        </div>
+      </div>
+      
+      <div className="flex gap-3">
+        <Input
+          onChange={(e) => setContext7Value(e.target.value)}
+          value={context7Value}
+          autoComplete="off"
+          placeholder="Enter your Context7 API key."
+        />
+        <Button type="button" onClick={handleSave}>
+          {isSaved ? "Saved!" : "Save"}
+        </Button>
+      </div>
+
+      <div className="py-12 flex">
+        {/* Yellow vertical line */}
+        <div className="w-1 bg-green-400 mr-6 flex-shrink-0"></div>
+        
+        {/* Content */}
+        <div className="flex-1">
+          <h2 className="text-lg font-semibold mb-2">IMPORTANT</h2>
+          <p className="text-sm md:text-base mb-1.5 font-medium">Make sure the API key is correct and working.</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Sandbox = () => {
   const [e2bValue, setE2bValue] = useState("");
   const [isSaved, setIsSaved] = useState(false);
@@ -144,11 +210,11 @@ const ApiInput = ({ llmTitle, llmName}: { llmTitle:string, llmName: string }) =>
 export const APIKeysDialog = ({
   openWindow,
   windowState,
-  defaultTab = "api"
+  defaultTab = "api-keys"
 }: {
   openWindow: boolean;
   windowState: (state: boolean) => void;
-  defaultTab?: "api" | "sandbox";
+  defaultTab?: "api-keys" | "sandbox" | "context7";
 }) => {
   const llms = models
 
@@ -163,7 +229,7 @@ export const APIKeysDialog = ({
           </DialogTitle>
         </DialogHeader>
         <div className="mt-6">
-          <Tabs defaultValue={defaultTab === "sandbox" ? "sandbox" : "api-keys"} className="w-full">
+          <Tabs defaultValue={defaultTab} className="w-full">
             <TabsList className="w-full mb-2 overflow-x-auto">
               <TabsTrigger
                 value="api-keys"
@@ -177,6 +243,13 @@ export const APIKeysDialog = ({
                 autoFocus={false}
               >
                 Sandbox
+              </TabsTrigger>
+              <TabsTrigger
+                value="context7"
+                className="text-xs px-2 py-1 truncate"
+                autoFocus={false}
+              >
+                Context7
               </TabsTrigger>
             </TabsList>
 
@@ -197,6 +270,9 @@ export const APIKeysDialog = ({
               <TabsContent value="sandbox" className="h-[21rem] overflow-auto">
                 <Sandbox/>
               </TabsContent>
+              <TabsContent value="context7" className="h-[21rem] overflow-auto">
+                <Context7/>
+              </TabsContent>
             </div>
           </Tabs>
         </div>
@@ -205,14 +281,12 @@ export const APIKeysDialog = ({
   );
 };
 
-export const ApiKeysDialogBtn = ({ children, defaultTab }: { children: ReactNode; defaultTab?: "api" | "sandbox" }) => {
+export const ApiKeysDialogBtn = ({ children, defaultTab }: { children: ReactNode; defaultTab?: "api-keys" | "sandbox" | "context7"}) => {
   const [openDialogWondow, setOpenDialogWindow] = useState(false);
 
   const handleDialogWindowState = (state: boolean) => {
     setOpenDialogWindow(state);
   };
-
-  console.log(defaultTab)
 
   return (
     <>

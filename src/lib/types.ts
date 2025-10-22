@@ -68,6 +68,7 @@ export interface CompletionRequest {
   messages: UIMessage[];
   llm: LLMProvider;
   apiKey: string;
+  context7: string;
   model: string;
   isReasoning:boolean
 }
