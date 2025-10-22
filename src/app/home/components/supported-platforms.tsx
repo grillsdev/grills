@@ -28,9 +28,9 @@ const features = [
     description: "Provides AI for on of the fastest code completion.",
   },
   {
-    img: "/grok.svg",
-    title: "x AI",
-    description: "Provides with speedy and economical reas. models.",
+    img: "/context7.png",
+    title: "Context7",
+    description: "Provides up to date documentation for LLMs.",
   },
   {
     img: "/e2b.png",
