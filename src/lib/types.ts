@@ -27,11 +27,11 @@ export interface CurrentModel {
 }
 
 export interface MessageProps {
-  role: "system" | "user" | "assistant";
-  messageContent: string;
+  role?: "system" | "user" | "assistant";
+  content: UIMessage;
   isStreaming: boolean;
   id: string;
-  changeWindowStateTo: (state: boolean) => void;
+  changeWindowState: (state: boolean) => void;
   windowState: boolean;
 }
 

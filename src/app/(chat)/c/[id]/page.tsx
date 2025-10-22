@@ -19,11 +19,7 @@ import {
   ResizablePanel,
   ResizableHandle,
 } from "@/components/ui/resizable";
-import {
-  Reasoning,
-  ReasoningContent,
-  ReasoningTrigger,
-} from "@/app/(chat)/components/ai-elements/reasoning";
+
 import { useIsMobile } from "@/hooks/use-mobile";
 
 import Sandbox from "../../components/sandbox";
@@ -160,12 +156,10 @@ export default function Chat() {
       const fileParts = files && files.length > 0 ? await convertFilesToDataURLs(files) : [];
       
       if(userImgObj.chatId===chatId && fileParts.length>0){
-        console.log("~~~~~sending with image~~~~~")
         sendMessage({
         role: 'user',
         parts: [{ type: 'text', text: input }, ...fileParts],
       })}else{
-        console.log("~~~~~sending without image~~`")
         sendMessage({text:input})
       }
       setInput("");
@@ -191,45 +185,18 @@ export default function Chat() {
                   <div className="py-2 px-4">
                     {messages.map((message, idx) => (
                       <div key={message.id}>
-                        {message.parts.map((part, i) => {
-                          switch (part.type) {
-                            case "text":
-                              return (
-                                <ChatMessage
-                                  key={`${message.id}-${i}`}
-                                  id={message.id}
-                                  role={message.role}
-                                  messageContent={part.text}
-                                  windowState={sandboxWindow}
-                                  changeWindowStateTo={setSandboxWindow}
-                                  isStreaming={
-                                    status === "streaming" &&
-                                    message.id ===
-                                      messages[messages.length - 1].id
-                                  }
-                                />
-                              );
-                            case "reasoning":
-                              return (
-                                <Reasoning
-                                  key={`${message.id}-${i}`}
-                                  isStreaming={
-                                    status === "streaming" &&
-                                    i === message.parts.length - 1 &&
-                                    message.id === messages.at(-1)?.id
-                                  }
-                                  className="flex flex-col items-center m-3"
-                                >
-                                  <div className="w-full max-w-2xl px-6 md:px-7">
-                                    <ReasoningTrigger />
-                                    <ReasoningContent>
-                                      {part.text}
-                                    </ReasoningContent>
-                                  </div>
-                                </Reasoning>
-                              );
+                        <ChatMessage
+                          key={message.id}
+                          id={message.id}
+                          role={message.role}
+                          content={message}
+                          windowState={sandboxWindow}
+                          changeWindowState={setSandboxWindow}
+                          isStreaming={
+                            status === "streaming" &&
+                            message.id === messages[messages.length - 1].id
                           }
-                        })}
+                        />
                         {/* auto scroll to the bottm */}
                         <div
                           ref={
