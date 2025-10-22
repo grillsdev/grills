@@ -24,7 +24,7 @@ import { CompletionRequest } from "@/lib/types";
 import { getPromptTxt } from "@/lib/utils";
 import { codeGenerationSchema } from "@/lib/types";
 
-import fs from 'node:fs';
+// import fs from 'node:fs';
 
 // Initialize Redis
 const redis = new Redis({
@@ -70,9 +70,9 @@ export async function POST(request: Request) {
       );
     }
     const db = await getDb();
-    // const sysPrompt = await getPromptTxt();
+    const sysPrompt = await getPromptTxt();
 
-    const sysPrompt = await fs.promises.readFile(new URL('../../../lib/prompt.txt', import.meta.url), 'utf-8');
+    // const sysPrompt = await fs.promises.readFile(new URL('../../../lib/prompt.txt', import.meta.url), 'utf-8');
 
 
     let llmContext
@@ -161,9 +161,6 @@ export async function POST(request: Request) {
       ...llmContext,
       stopWhen: stepCountIs(3),
       tools: {...mcpTools},
-      // onChunk: async({chunk}) => {
-      //   console.log(chunk)
-      // },
       onFinish: async ({ text, content, reasoningText }) => {
         try {
           const generateUserMessageId = createIdGenerator({
@@ -176,7 +173,6 @@ export async function POST(request: Request) {
           });
 
           const lastUserInput = messages[messages.length - 1];
-          console.log("use input image", lastUserInput)
           if (lastUserInput.role !== "user")
             throw new Error("Something went wrong!");
 
