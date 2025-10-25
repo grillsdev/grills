@@ -76,10 +76,20 @@ const AssistantMessage = memo(
     // Find the first text part that is not reasoning
     const textPart = content.parts.find(part => part.type === "text");
     const reasoningPart = content.parts.find(part => part.type === "reasoning");
+    let parsedContent: GeneratedCodeContent = {
+      code: {"src/app/page.tsx": ""},
+      pkgs: [],
+      post_code: "",
+      pre_code: ""
+    };
 
-    // serialization only ```json ``` , most of the time commin g from the claude models
+    // serialization only ```json ``` , most of the time commin g from the claude models // most of te ```json ``` coming from claude models
     const sanitized = textPart ? stripJsonFence(textPart.text) : "";
-    const parsedContent: GeneratedCodeContent = parse(sanitized);
+    try{
+      parsedContent = parse(sanitized)
+    }catch{
+      // do nothing; just a woek around
+    }
 
     useEffect(() => {
       if (isStreaming) {

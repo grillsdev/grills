@@ -93,14 +93,19 @@ export async function getPromptTxt(): Promise<string> {
   }
 }
 
-// Remove ```json and ``` fences
-export function stripJsonFence(raw:string):string {
-  return raw
-    .replace(/^```json\s*/i, '')
-    .replace(/^```\s*/, '')
-    .replace(/```\s*$/g, '')
-    .trim();
+// Remove ```json and ``` fences and also text before fences
+export function stripJsonFence(raw: string): string {
+  let sanitized = raw.replace(/^[\s\S]*?```json\s*/i, '');
+
+  const closingFenceIndex = sanitized.indexOf('```');
+  if (closingFenceIndex !== -1) {
+    sanitized = sanitized.substring(0, closingFenceIndex);
+  }
+  
+  return sanitized.trim();
 }
+
+
 
 export async function convertFilesToDataURLs(files: File[]) {
   return Promise.all(
