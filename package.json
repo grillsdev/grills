@@ -17,7 +17,7 @@
 		"db:push": "drizzle-kit push"
 	},
 	"dependencies": {
-		"@ai-sdk/anthropic": "^2.0.23",
+		"@ai-sdk/anthropic": "^2.0.37",
 		"@ai-sdk/openai": "^2.0.42",
 		"@ai-sdk/react": "^2.0.10",
 		"@e2b/code-interpreter": "^2.0.1",
