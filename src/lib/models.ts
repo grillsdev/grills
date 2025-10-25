@@ -27,6 +27,7 @@ const openAI: Model[] = [
 const anthropic: Model[] = [
     {id: "42916ff9-08a3-4219-9c49-9f3d2a999e03", title: "Claude Sonnet 4.5", slug: "claude-sonnet-4-5-20250929", isReasoning:false, isMultiModel:true},
     {id: "7e1fc859-c221-4adc-8397-7306c78b79b5", title: "Claude Sonnet 4.5", slug: "claude-sonnet-4-5-20250929", isReasoning:true, isMultiModel:true},
+    {id: "7e1fc859-c221-4adc-8397-7306c78b79b9", title: "Claude Haiku 4.5", slug: "claude-haiku-4-5-20251001", isReasoning:true, isMultiModel:true},
 ]
 
 export const models: LLM[] = [
