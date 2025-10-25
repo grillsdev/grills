@@ -7,13 +7,11 @@ import {
 } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
-import { Loader2, Send, Paperclip, X } from "lucide-react";
+import { Loader2, Send} from "lucide-react";
 
 import { Textarea } from "@/components/ui/textarea";
 import {
   FileUpload,
-  FileUploadContent,
-  FileUploadTrigger,
 } from "@/components/ui/file-upload";
 
 import { toast } from "sonner";
@@ -29,45 +27,45 @@ import { $modelObj, $userImage } from "@/store/store";
 
 import { v4 as uuid } from "uuid";
 
-const UploadedFileShowcase = ({
-  files,
-  removeFile,
-}: {
-  files: File[];
-  removeFile: (index: number) => void;
-}) => {
-  return (
-    <>
-      {files.length > 0 && (
-        <div className="flex flex-row w-full rounded-t-full px-2 py-0.5 overflow-x-auto">
-          {files.map((file, index) => (
-            <div
-              key={index}
-              className="bg-base-800 flex w-full items-center gap-2 rounded-[10px] text-sm  max-w-[8rem] px-1 m-0.5"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="flex items-center gap-2">
-                <Paperclip className="size-3" />
-                <span className="max-w-[80px] truncate text-xs">
-                  {file.name}
-                </span>
-              </div>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  removeFile(index);
-                }}
-                className="rounded-full p-1 cursor-pointer"
-              >
-                <X className="size-3" />
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
-    </>
-  );
-};
+// const UploadedFileShowcase = ({
+//   files,
+//   removeFile,
+// }: {
+//   files: File[];
+//   removeFile: (index: number) => void;
+// }) => {
+//   return (
+//     <>
+//       {files.length > 0 && (
+//         <div className="flex flex-row w-full rounded-t-full px-2 py-0.5 overflow-x-auto">
+//           {files.map((file, index) => (
+//             <div
+//               key={index}
+//               className="bg-base-800 flex w-full items-center gap-2 rounded-[10px] text-sm  max-w-[8rem] px-1 m-0.5"
+//               onClick={(e) => e.stopPropagation()}
+//             >
+//               <div className="flex items-center gap-2">
+//                 <Paperclip className="size-3" />
+//                 <span className="max-w-[80px] truncate text-xs">
+//                   {file.name}
+//                 </span>
+//               </div>
+//               <button
+//                 onClick={(e) => {
+//                   e.stopPropagation();
+//                   removeFile(index);
+//                 }}
+//                 className="rounded-full p-1 cursor-pointer"
+//               >
+//                 <X className="size-3" />
+//               </button>
+//             </div>
+//           ))}
+//         </div>
+//       )}
+//     </>
+//   );
+// };
 
 const UserInput = ({
   handleChatSubmit,
@@ -96,7 +94,7 @@ const UserInput = ({
   const isHomePage = pathname === "/";
 
   const currentModel = useStore($modelObj);
-  const isMultiModel = currentModel?.model?.isMultiModel ?? false;
+  // const isMultiModel = currentModel?.model?.isMultiModel ?? false;
 
   useEffect(() => {
     const isMsgStored = localStorage.getItem("llm-query-state");
@@ -113,9 +111,9 @@ const UserInput = ({
     setFiles((prev) => [...prev, ...newFiles]);
   };
 
-  const removeFile = (index: number) => {
-    setFiles((prev) => prev.filter((_, i) => i !== index));
-  };
+  // const removeFile = (index: number) => {
+  //   setFiles((prev) => prev.filter((_, i) => i !== index));
+  // };
 
   const handleSubmit = async (e?: FormEvent<HTMLFormElement>) => {
     e?.preventDefault();
@@ -196,7 +194,7 @@ const UserInput = ({
 
   return (
     <FileUpload
-      disabled={currentModel.model?.isMultiModel ? false : true}
+      disabled={true}
       onFilesAdded={
         currentModel.model?.isMultiModel ? handleFilesAdded : () => null
       }
@@ -208,11 +206,11 @@ const UserInput = ({
         }}
         className="relative flex flex-col items-center"
       >
-        {isMultiModel && (
+        {/* {isMultiModel && (
           <div className="absolute z-50 w-full px-2 mx-2 py-[1px]">
             <UploadedFileShowcase files={files} removeFile={removeFile} />
           </div>
-        )}
+        )} */}
 
         <Textarea
           className={`w-full ${
@@ -238,13 +236,13 @@ const UserInput = ({
             onClick={(e) => e.stopPropagation()}
             className="flex flex-row items-center absolute left-3 bottom-1.5 gap-1"
           >
-            {isMultiModel && (
+            {/* {isMultiModel && (
               <FileUploadTrigger asChild>
                 <div className="bg-accent flex size-7 cursor-pointer items-center justify-center rounded-2xl p-1">
                   <Paperclip className="text-muted-foreground size-4 " />
                 </div>
               </FileUploadTrigger>
-            )}
+            )} */}
             <ModelSelectBtn />
             {/* <UserTheme/> */}
           </div>
@@ -263,7 +261,7 @@ const UserInput = ({
       </form>
 
       {/* File Upload */}
-      <FileUploadContent>
+      {/* <FileUploadContent>
         <div className="flex min-h-[200px] w-full items-center justify-center backdrop-blur-sm">
           <div className="m-4 w-full max-w-md rounded-lg border p-8 shadow-lg">
             <div className="mb-4 flex justify-center">
@@ -289,7 +287,7 @@ const UserInput = ({
             </p>
           </div>
         </div>
-      </FileUploadContent>
+      </FileUploadContent> */}
 
       <ModelSelect
         openWindow={modelDShouldOpen}

@@ -2,7 +2,7 @@
 // add image icon
 import { useState, useEffect } from "react";
 
-import { Brain, ChevronDown, Image as ImageIcon } from "lucide-react";
+import { Brain, ChevronDown } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -142,7 +142,7 @@ export const ModelSelect = ({
                                       </Tooltip>
                                     </TooltipProvider>
                                   )}
-                                {model.isMultiModel && (
+                                {/* {model.isMultiModel && (
                                   <TooltipProvider>
                                     <Tooltip>
                                       <TooltipTrigger asChild>
@@ -155,7 +155,7 @@ export const ModelSelect = ({
                                       </TooltipContent>
                                     </Tooltip>
                                   </TooltipProvider>
-                                )}
+                                )} */}
                                 </div>
                               </div>
                             </div>
