@@ -10,7 +10,7 @@ RUN chmod +x /usr/local/bin/compile_page.sh
 # Install dependencies and customize sandbox
 WORKDIR /home/user/nextjs-app
 
-RUN git clone https://github.com/grillsdev/e2b-nextjs-template.git .
+RUN git clone https://github.com/grillsdev/nextjs-e2b-template .
 
 # Install dependencies from package.json
 RUN npm install

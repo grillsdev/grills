@@ -1,5 +1,5 @@
 # This is a config for E2B sandbox template.
-# You can use template ID (ap3inl9kevgjli1bbsci) or template name (grills) to create a sandbox:
+# You can use template ID (89o8700b7nj0m6neqtye) or template name (grills) to create a sandbox:
 
 # Python SDK
 # from e2b import Sandbox, AsyncSandbox
@@ -14,4 +14,4 @@ team_id = "e4d57c24-f999-47e3-ae67-35736f22e8ba"
 start_cmd = "compile_page.sh"
 dockerfile = "e2b.Dockerfile"
 template_name = "grills"
-template_id = "ap3inl9kevgjli1bbsci"
+template_id = "89o8700b7nj0m6neqtye"
