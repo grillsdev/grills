@@ -258,7 +258,10 @@ export function useIsMobile() {
 ```typescript
 // File: src/lib/validators.ts
 export function validateEmail(email: string): boolean {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+  return /^[^
+@]+@[^
+@]+\.[^
+@]+$/.test(email)
 }
 
 export function validatePassword(password: string): boolean {
@@ -288,6 +291,7 @@ export function formatCurrency(amount: number): string {
 ## Styling Guidelines
 
 ### Default Approach: Swiss Design Methodology
+- **Production-Ready Layout**: All components must be visually complete and production-ready. This includes generating appropriate and aesthetically pleasing padding, margins, and overall layout. The final result should be elegant and require no manual spacing adjustments from the user.
 - **Mobile-first responsive design** is mandatory
 - Use layout utilities only unless user explicitly requests colors
    - Bcs colors are depended on the custom theme already present in the 
@@ -313,7 +317,8 @@ When generating UI components, you MUST:
 4. **Include Radius Variables**: Always include radius variables for rounded corners
 5. **DO NOT Modify Existing Variables**: Only ADD new semantic variables as components are added; NEVER remove existing ones
 
-**Template Structure** - You have to follow this Template in `global.css`
+**`global.css` Base Template**
+Follow this template structure for `global.css`. However, the `:root` and `.dark` blocks must be populated **only** with the semantic variables used by the components you are generating. Do not copy the full list of variables from the example unless they are all required.
 ```
 @import "tailwindcss";
 @import "tw-animate-css";
@@ -342,7 +347,7 @@ When generating UI components, you MUST:
 }
 ```
 
-**Template Structure Example:**
+**`global.css` Full Example (For Structural Reference Only):**
 ```
 @import "tailwindcss";
 @import "tw-animate-css";
@@ -571,6 +576,7 @@ Your response must be valid JSON matching this schema:
 {
   "pre_code": "Generating a responsive dashboard with user statistics and a clear layout. Includes custom hooks for responsive design.",
   "code": {
+    "src/app/globals.css": "@import \"tailwindcss\";\n@import \"tw-animate-css\";\n\n@custom-variant dark (&:is(.dark *));\n\n:root {\n  --background: oklch(1 0 0);\n  --foreground: oklch(0.145 0 0);\n  --card: oklch(1 0 0);\n  --card-foreground: oklch(0.145 0 0);\n  --popover: oklch(1 0 0);\n  --popover-foreground: oklch(0.145 0 0);\n  --primary: oklch(0.145 0 0);\n  --primary-foreground: oklch(0.985 0 0);\n  --secondary: oklch(0.961 0 0);\n  --secondary-foreground: oklch(0.145 0 0);\n  --muted: oklch(0.961 0 0);\n  --muted-foreground: oklch(0.455 0.012 286.375);\n  --accent: oklch(0.961 0 0);\n  --accent-foreground: oklch(0.145 0 0);\n  --destructive: oklch(0.577 0.245 27.325);\n  --destructive-foreground: oklch(0.985 0 0);\n  --border: oklch(0.898 0 0);\n  --input: oklch(0.898 0 0);\n  --ring: oklch(0.145 0 0);\n  --rounded: 0.5rem;\n}\n\n.dark {\n  --background: oklch(0.145 0 0);\n  --foreground: oklch(0.985 0 0);\n  --card: oklch(0.145 0 0);\n  --card-foreground: oklch(0.985 0 0);\n  --popover: oklch(0.145 0 0);\n  --popover-foreground: oklch(0.985 0 0);\n  --primary: oklch(0.985 0 0);\n  --primary-foreground: oklch(0.145 0 0);\n  --secondary: oklch(0.223 0 0);\n  --secondary-foreground: oklch(0.985 0 0);\n  --muted: oklch(0.223 0 0);\n  --muted-foreground: oklch(0.635 0.013 286.375);\n  --accent: oklch(0.223 0 0);\n  --accent-foreground: oklch(0.985 0 0);\n  --destructive: oklch(0.477 0.214 27.994);\n  --destructive-foreground: oklch(0.985 0 0);\n  --border: oklch(0.223 0 0);\n  --input: oklch(0.223 0 0);\n  --ring: oklch(0.832 0 0);\n}\n\n@theme inline {\n  --color-background: var(--background);\n  --color-foreground: var(--foreground);\n  --color-card: var(--card);\n  --color-card-foreground: var(--card-foreground);\n  --color-popover: var(--popover);\n  --color-popover-foreground: var(--popover-foreground);\n  --color-primary: var(--primary);\n  --color-primary-foreground: var(--primary-foreground);\n  --color-secondary: var(--secondary);\n  --color-secondary-foreground: var(--secondary-foreground);\n  --color-muted: var(--muted);\n  --color-muted-foreground: var(--muted-foreground);\n  --color-accent: var(--accent);\n  --color-accent-foreground: var(--accent-foreground);\n  --color-destructive: var(--destructive);\n  --color-destructive-foreground: var(--destructive-foreground);\n  --color-border: var(--border);\n  --color-input: var(--input);\n  --color-ring: var(--ring);\n  --rounded-sm: calc(var(--radius) - 4px);\n  --rounded-md: calc(var(--radius) - 2px);\n  --rounded-lg: var(--radius);\n  --rounded-xl: calc(var(--radius) + 4px);\n}\n\n@layer base {\n  * {\n    @apply border-border outline-ring/50;\n  }\n  body {\n    @apply bg-background text-foreground;\n  }\n}",
     "src/app/page.tsx": "\"use client\"\nimport { DashboardLayout } from \"@/components/dashboard-layout\"\nimport { StatsCards } from \"@/components/stats-cards\"\n\nexport default function Page() {\n  return (\n    <DashboardLayout>\n      <div className=\"container mx-auto p-6 space-y-6\">\n        <StatsCards />\n      </div>\n    </DashboardLayout>\n  )\n}",
     "src/components/dashboard-layout.tsx": "\"use client\"\nimport { ReactNode } from \"react\"\nimport { Button } from \"@/components/ui/button\"\nimport { useIsMobile } from \"@/hooks/use-mobile\"\n\nexport interface DashboardLayoutProps {\n  children: ReactNode\n}\n\nexport function DashboardLayout({ children }: DashboardLayoutProps) {\n  const isMobile = useIsMobile()\n  \n  return (\n    <div className=\"min-h-screen flex flex-col\">\n      <header className=\"border-b p-4\">\n        <nav className=\"container mx-auto flex items-center justify-between\">\n          <h1 className=\"text-xl font-bold\">Dashboard</h1>\n          <Button variant=\"outline\" size={isMobile ? \"sm\" : \"default\"}>\n            Settings\n          </Button>\n        </nav>\n      </header>\n      <main className=\"flex-1\">{children}</main>\n    </div>\n  )\n}",
     "src/components/stats-cards.tsx": "\"use client\"\nimport { Card, CardContent, CardHeader, CardTitle } from \"@/components/ui/card\"\n\nconst stats = [\n  { title: \"Total Users\", value: \"2,543\" },\n  { title: \"Active Sessions\", value: \"1,234\" },\n  { title: \"Revenue\", value: \"$45,678\" }\n]\n\nexport function StatsCards() {\n  return (\n    <div className=\"grid grid-cols-1 md:grid-cols-3 gap-4\">\n      {stats.map((stat) => (\n        <Card key={stat.title}>\n          <CardHeader>\n            <CardTitle className=\"text-sm font-medium\">{stat.title}</CardTitle>\n          </CardHeader>\n          <CardContent>\n            <div className=\"text-2xl font-bold\">{stat.value}</div>\n          </CardContent>\n        </Card>\n      ))}\n    </div>\n  )\n}",
@@ -586,6 +592,7 @@ Your response must be valid JSON matching this schema:
 {
   "pre_code": "Creating an interactive 3D product showcase with rotation controls and lighting adjustments. Uses Three.js for 3D rendering",
   "code": {
+    "src/app/globals.css": "@import \"tailwindcss\";\n@import \"tw-animate-css\";\n\n@custom-variant dark (&:is(.dark *));\n\n:root {\n  --background: oklch(1 0 0);\n  --foreground: oklch(0.145 0 0);\n  --card: oklch(1 0 0);\n  --card-foreground: oklch(0.145 0 0);\n  --popover: oklch(1 0 0);\n  --popover-foreground: oklch(0.145 0 0);\n  --primary: oklch(0.145 0 0);\n  --primary-foreground: oklch(0.985 0 0);\n  --secondary: oklch(0.961 0 0);\n  --secondary-foreground: oklch(0.145 0 0);\n  --muted: oklch(0.961 0 0);\n  --muted-foreground: oklch(0.455 0.012 286.375);\n  --accent: oklch(0.961 0 0);\n  --accent-foreground: oklch(0.145 0 0);\n  --destructive: oklch(0.577 0.245 27.325);\n  --destructive-foreground: oklch(0.985 0 0);\n  --border: oklch(0.898 0 0);\n  --input: oklch(0.898 0 0);\n  --ring: oklch(0.145 0 0);\n  --rounded: 0.5rem;\n}\n\n.dark {\n  --background: oklch(0.145 0 0);\n  --foreground: oklch(0.985 0 0);\n  --card: oklch(0.145 0 0);\n  --card-foreground: oklch(0.985 0 0);\n  --popover: oklch(0.145 0 0);\n  --popover-foreground: oklch(0.985 0 0);\n  --primary: oklch(0.985 0 0);\n  --primary-foreground: oklch(0.145 0 0);\n  --secondary: oklch(0.223 0 0);\n  --secondary-foreground: oklch(0.985 0 0);\n  --muted: oklch(0.223 0 0);\n  --muted-foreground: oklch(0.635 0.013 286.375);\n  --accent: oklch(0.223 0 0);\n  --accent-foreground: oklch(0.985 0 0);\n  --destructive: oklch(0.477 0.214 27.994);\n  --destructive-foreground: oklch(0.985 0 0);\n  --border: oklch(0.223 0 0);\n  --input: oklch(0.223 0 0);\n  --ring: oklch(0.832 0 0);\n}\n\n@theme inline {\n  --color-background: var(--background);\n  --color-foreground: var(--foreground);\n  --color-card: var(--card);\n  --color-card-foreground: var(--card-foreground);\n  --color-popover: var(--popover);\n  --color-popover-foreground: var(--popover-foreground);\n  --color-primary: var(--primary);\n  --color-primary-foreground: var(--primary-foreground);\n  --color-secondary: var(--secondary);\n  --color-secondary-foreground: var(--secondary-foreground);\n  --color-muted: var(--muted);\n  --color-muted-foreground: var(--muted-foreground);\n  --color-accent: var(--accent);\n  --color-accent-foreground: var(--accent-foreground);\n  --color-destructive: var(--destructive);\n  --color-destructive-foreground: var(--destructive-foreground);\n  --color-border: var(--border);\n  --color-input: var(--input);\n  --color-ring: var(--ring);\n  --rounded-sm: calc(var(--radius) - 4px);\n  --rounded-md: calc(var(--radius) - 2px);\n  --rounded-lg: var(--radius);\n  --rounded-xl: calc(var(--radius) + 4px);\n}\n\n@layer base {\n  * {\n    @apply border-border outline-ring/50;\n  }\n  body {\n    @apply bg-background text-foreground;\n  }\n}",
     "src/app/page.tsx": "\"use client\"\nimport { ProductViewer } from \"@/components/product-viewer\"\n\nexport default function Page() {\n  return (\n    <div className=\"min-h-screen flex items-center justify-center bg-background\">\n      <ProductViewer />\n    </div>\n  )\n}",
     "src/components/product-viewer.tsx": "\"use client\"\nimport { useEffect, useRef, useState } from \"react\"\nimport * as THREE from \"three\"\nimport { Button } from \"@/components/ui/button\"\nimport { Slider } from \"@/components/ui/slider\"\nimport { Card } from \"@/components/ui/card\"\n\nexport function ProductViewer() {\n  const canvasRef = useRef<HTMLCanvasElement>(null)\n  const [rotation, setRotation] = useState(0)\n  \n  useEffect(() => {\n    if (!canvasRef.current) return\n    \n    const scene = new THREE.Scene()\n    const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000)\n    const renderer = new THREE.WebGLRenderer({ canvas: canvasRef.current })\n    \n    // Setup 3D scene\n    const geometry = new THREE.BoxGeometry()\n    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 })\n    const cube = new THREE.Mesh(geometry, material)\n    scene.add(cube)\n    camera.position.z = 5\n    \n    function animate() {\n      requestAnimationFrame(animate)\n      cube.rotation.y = rotation\n      renderer.render(scene, camera)\n    }\n    animate()\n    \n    return () => {\n      renderer.dispose()\n    }\n  }, [rotation])\n  \n  return (\n    <Card className=\"p-6 space-y-4\">\n      <canvas ref={canvasRef} className=\"w-full h-96\" />\n      <div className=\"space-y-2\">\n        <label className=\"text-sm font-medium\">Rotation</label>\n        <Slider\n          value={[rotation]}\n          onValueChange={([value]) => setRotation(value)}\n          max={Math.PI * 2}\n          step={0.1}\n        />\n      </div>\n      <Button onClick={() => setRotation(0)}>Reset</Button>\n    </Card>\n  )\n}"
   },
@@ -599,6 +606,7 @@ Your response must be valid JSON matching this schema:
 {
   "pre_code": "Generating a highly interactive and animated landing page using Framer Motion. The page includes a hero section, a feature grid with staggered animations, and a call-to-action.",
   "code": {
+    "src/app/globals.css": "@import \"tailwindcss\";\n@import \"tw-animate-css\";\n\n@custom-variant dark (&:is(.dark *));\n\n:root {\n  --background: oklch(1 0 0);\n  --foreground: oklch(0.145 0 0);\n  --card: oklch(1 0 0);\n  --card-foreground: oklch(0.145 0 0);\n  --popover: oklch(1 0 0);\n  --popover-foreground: oklch(0.145 0 0);\n  --primary: oklch(0.145 0 0);\n  --primary-foreground: oklch(0.985 0 0);\n  --secondary: oklch(0.961 0 0);\n  --secondary-foreground: oklch(0.145 0 0);\n  --muted: oklch(0.961 0 0);\n  --muted-foreground: oklch(0.455 0.012 286.375);\n  --accent: oklch(0.961 0 0);\n  --accent-foreground: oklch(0.145 0 0);\n  --destructive: oklch(0.577 0.245 27.325);\n  --destructive-foreground: oklch(0.985 0 0);\n  --border: oklch(0.898 0 0);\n  --input: oklch(0.898 0 0);\n  --ring: oklch(0.145 0 0);\n  --rounded: 0.5rem;\n}\n\n.dark {\n  --background: oklch(0.145 0 0);\n  --foreground: oklch(0.985 0 0);\n  --card: oklch(0.145 0 0);\n  --card-foreground: oklch(0.985 0 0);\n  --popover: oklch(0.145 0 0);\n  --popover-foreground: oklch(0.985 0 0);\n  --primary: oklch(0.985 0 0);\n  --primary-foreground: oklch(0.145 0 0);\n  --secondary: oklch(0.223 0 0);\n  --secondary-foreground: oklch(0.985 0 0);\n  --muted: oklch(0.223 0 0);\n  --muted-foreground: oklch(0.635 0.013 286.375);\n  --accent: oklch(0.223 0 0);\n  --accent-foreground: oklch(0.985 0 0);\n  --destructive: oklch(0.477 0.214 27.994);\n  --destructive-foreground: oklch(0.985 0 0);\n  --border: oklch(0.223 0 0);\n  --input: oklch(0.223 0 0);\n  --ring: oklch(0.832 0 0);\n}\n\n@theme inline {\n  --color-background: var(--background);\n  --color-foreground: var(--foreground);\n  --color-card: var(--card);\n  --color-card-foreground: var(--card-foreground);\n  --color-popover: var(--popover);\n  --color-popover-foreground: var(--popover-foreground);\n  --color-primary: var(--primary);\n  --color-primary-foreground: var(--primary-foreground);\n  --color-secondary: var(--secondary);\n  --color-secondary-foreground: var(--secondary-foreground);\n  --color-muted: var(--muted);\n  --color-muted-foreground: var(--muted-foreground);\n  --color-accent: var(--accent);\n  --color-accent-foreground: var(--accent-foreground);\n  --color-destructive: var(--destructive);\n  --color-destructive-foreground: var(--destructive-foreground);\n  --color-border: var(--border);\n  --color-input: var(--input);\n  --color-ring: var(--ring);\n  --rounded-sm: calc(var(--radius) - 4px);\n  --rounded-md: calc(var(--radius) - 2px);\n  --rounded-lg: var(--radius);\n  --rounded-xl: calc(var(--radius) + 4px);\n}\n\n@layer base {\n  * {\n    @apply border-border outline-ring/50;\n  }\n  body {\n    @apply bg-background text-foreground;\n  }\n}",
     "src/app/page.tsx": "\"use client\"\nimport { HeroSection } from \"@/components/hero-section\"\nimport { FeaturesGrid } from \"@/components/features-grid\"\nimport { CtaSection } from \"@/components/cta-section\"\n\nexport default function LandingPage() {\n  return (\n    <div className=\"flex flex-col min-h-screen bg-background\">\n      <main className=\"flex-1\">\n        <HeroSection />\n        <FeaturesGrid />\n        <CtaSection />\n      </main>\n    </div>\n  )\n}",
     "src/components/hero-section.tsx": "\"use client\"\nimport { motion } from \"framer-motion\"\nimport { Button } from \"@/components/ui/button\"\n\nexport function HeroSection() {\n  return (\n    <section className=\"w-full py-20 md:py-32 lg:py-40 text-center\">\n      <div className=\"container px-4 md:px-6\">\n        <motion.h1\n          initial={{ opacity: 0, y: 20 }}\n          animate={{ opacity: 1, y: 0 }}\n          transition={{ duration: 0.5 }}\n          className=\"text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl\"\n        >\n          Build Amazing UIs Faster\n        </motion.h1>\n        <motion.p\n          initial={{ opacity: 0, y: 20 }}\n          animate={{ opacity: 1, y: 0 }}\n          transition={{ duration: 0.5, delay: 0.1 }}\n          className=\"mx-auto max-w-[700px] text-muted-foreground md:text-xl mt-4\"\n        >\n          Animate your web apps with ease. Beautiful, performant, and easy to use.\n        </motion.p>\n        <motion.div\n          initial={{ opacity: 0, y: 20 }}\n          animate={{ opacity: 1, y: 0 }}\n          transition={{ duration: 0.5, delay: 0.2 }}\n          className=\"mt-6\"\n        >\n          <Button size=\"lg\">Get Started</Button>\n        </motion.div>\n      </div>\n    </section>\n  )\n}",
     "src/components/features-grid.tsx": "\"use client\"\nimport { motion } from \"framer-motion\"\nimport { FeatureCard } from \"@/components/feature-card\"\n\nconst features = [\n  { title: \"Easy to Use\", description: \"Simple API to get you started in minutes.\" },\n  { title: \"Performant\", description: \"Hardware-accelerated animations for smooth performance.\" },\n  { title: \"Customizable\", description: \"Fully customizable to match your brand's look and feel.\" },\n]\n\nconst containerVariants = {\n  hidden: { opacity: 0 },\n  visible: {\n    opacity: 1,\n    transition: {\n      staggerChildren: 0.2,\n    },\n  },\n}\n\nexport function FeaturesGrid() {\n  return (\n    <section className=\"w-full py-12 md:py-24 lg:py-32\">\n      <div className=\"container px-4 md:px-6\">\n        <motion.div\n          variants={containerVariants}\n          initial=\"hidden\"\n          whileInView=\"visible\"\n          viewport={{ once: true, amount: 0.5 }}\n          className=\"grid grid-cols-1 md:grid-cols-3 gap-8\"\n        >\n          {features.map((feature, i) => (\n            <FeatureCard key={i} title={feature.title} description={feature.description} />\n          ))}\n        </motion.div>\n      </div>\n    </section>\n  )\n}",
@@ -609,39 +617,8 @@ Your response must be valid JSON matching this schema:
   "pkgs": ["framer-motion"]
 }
 ```
-
 ---
 
-## Image Input Guidelines
-
-### Analysis Process
-When a user provides an image:
-
-1. **Layout Analysis**
-   - Deconstruct structure (header, sidebar, main content, footer)
-   - Identify arrangement patterns (grid, flexbox)
-   - Note spacing and alignment
-
-2. **Component Identification**
-   - Map visual elements to ShadCN UI components
-   - List all required components from available list
-
-3. **Styling Extraction**
-   - Analyze colors, typography, borders, shadows
-   - Extract decorative elements
-
-4. **Responsiveness Planning**
-   - Infer responsive behavior across screen sizes
-   - Plan mobile-first breakpoints
-
-### Generation Rules **FOLLOW ALL ABOVE GENERATION RULE AS WELL** **DO NOT MISS ANY** including these one for the Genration Rules 
-1. **Prioritize the Image**: Generate an exact replica.
-2. **Critical** Extract the same colors from the image and Use it in the theming the UI. 
-2. **Context7 Verification**: Fetch documentation for all identified components BEFORE implementation
-3. **Styling Accuracy**: Apply extracted styles using Tailwind CSS semantic classes
-4. **User Prompt Integration**: Incorporate additional features from text prompt
-5. **Placeholder Images**: Use `/placeholder.svg` for any images in the generated code. it is svg so it is resizable.
----
 
 ## Validation Checklist
 

@@ -6,7 +6,10 @@
   
   # Grills
   
-  ### A free, open source alternative to **Lovable, Bolt and v0.**
+  ### Your Own Gen UI Platform*
+  
+  ![](public/grills-demo.gif)
+
   
   <br>
   
@@ -59,14 +62,15 @@ GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
 
 # Database
-# For app/runtime libraries that read DATABASE_URL
-DATABASE_URL=postgresql://grilluser:grills@localhost:5433/grills
 # Drizzle uses this for local migrations (see drizzle.config.ts)
 LOCAL_DB_URL=postgresql://grilluser:grills@localhost:5433/grills
 
 # Redis (optional)
 UPSTASH_REDIS_REST_URL=
 UPSTASH_REDIS_REST_TOKEN=
+
+# E2b Sandbox
+SANDBOX_ID=89o8700b7nj0m6neqtye # Do not change this id
 ```
 
 Notes:
@@ -77,6 +81,7 @@ Notes:
 ### 3) Hyperdrive local connection (Wrangler)
 
 In `wrangler.jsonc`, ensure `hyperdrive[0].localConnectionString` matches your local DB URL:
+- For production setup your database with CF Hyperdrive [docs](https://developers.cloudflare.com/hyperdrive/)
 
 ```jsonc
 "hyperdrive": [
@@ -99,48 +104,17 @@ pnpm db:studio
 
 Then add LLMs and Models:
 
-- Follow the format shown in `example.llms.ts` (Note `title` in LLM Table Field and `name` in Model Table Fields)
-- In the LLM table: use the same `title` as in the example
-- In the Model table: use the same `name` is the model slug (e.g., `openai/gpt-5-mini`), `title` is the public-facing name
+- Follow the format shown in `models.ts` 
+- Id should be unique.
 
-Example reference (from `example.llms.ts`):
+Example reference (from `lib/modles.ts`):
 
 ```ts
-export const llms = [
-  { id: "default", title: "openai", name: "Open AI" },
-  { id: "default", title: "openrouter", name: "Open Router" },
-];
-
-export const models = [
-  {
-    id: "default",
-    title: "Kimi K2",
-    name: "moonshotai/kimi-k2",
-    llm_id: "openrouter-primarykey",
-    created_at: "Select now",
-  },
-  {
-    id: "default",
-    title: "Qwen3 Coder",
-    name: "qwen/qwen3-coder",
-    llm_id: "openrouter-primarykey",
-    created_at: "Select now",
-  },
-  {
-    id: "default",
-    title: "GPT 5 Mini",
-    name: "openai/gpt-5-mini",
-    llm_id: "openrouter-primarykey",
-    created_at: "Select now",
-  },
-  {
-    id: "default",
-    title: "G 2.5 flash lite",
-    name: "google/gemini-2.5-flash-lite",
-    llm_id: "openrouter-primarykey",
-    created_at: "Select now",
-  },
-];
+const anthropic: Model[] = [
+    {id: "42916ff9-08a3-4219-9c49-9f3d2a999e03", title: "Claude Sonnet 4.5", slug: "claude-sonnet-4-5-20250929", isReasoning:false, isMultiModel:true},
+    {id: "7e1fc859-c221-4adc-8397-7306c78b79b5", title: "Claude Sonnet 4.5", slug: "claude-sonnet-4-5-20250929", isReasoning:true, isMultiModel:true},
+    {id: "7e1fc859-c221-4adc-8397-7306c78b79b9", title: "Claude Haiku 4.5", slug: "claude-haiku-4-5-20251001", isReasoning:true, isMultiModel:true},
+]
 ```
 
 ### 5) Start the app
@@ -170,4 +144,4 @@ pnpm dev
 - [ ] Image Support
 - [ ] Publish UI
 - [ ] Share whole chat
-- [ ] Context 7
+- [x] Context 7
