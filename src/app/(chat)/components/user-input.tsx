@@ -84,9 +84,7 @@ const UserInput = ({
   const [files, setFiles] = useState<File[]>([]);
 
   const [modelDShouldOpen, setModelDShouldOpen] = useState<boolean>(false);
-  const [apiDShouldOpen, setApiDShouldOpen] = useState<boolean>(false);
-  const [e2bDShouldOpen, setE2bDShouldOpen] = useState(false);
-  const [context7DShouldOpen, setContext7ShouldOpen] = useState(false)
+  const [activeAPIDialog, setActiveAPIDialog] = useState<'api' | 'sandbox' | 'context7' | null>(null);
 
   const pathname = usePathname();
   const route = useRouter();
@@ -135,7 +133,7 @@ const UserInput = ({
       toast.warning(`Please add your ${isModelSelected.model.llm} API key`, {
         position: "top-center",
       });
-      setApiDShouldOpen(true);
+      setActiveAPIDialog("api");
       return;
     }
 
@@ -145,14 +143,14 @@ const UserInput = ({
       toast.warning(`Please add your E2B API key`, {
         position: "top-center",
       });
-      setE2bDShouldOpen(true);
+      setActiveAPIDialog("sandbox");
       return;
     }
 
     const isContext7 = localStorage.getItem("grills:context7");
     if(!isContext7){
       toast.warning("Please add your Context7 API key")
-      setContext7ShouldOpen(true)
+      setActiveAPIDialog("context7")
       return;
     }
 
@@ -294,17 +292,17 @@ const UserInput = ({
         handleOpenWindow={() => setModelDShouldOpen(false)}
       />
       <APIKeysDialog
-        openWindow={apiDShouldOpen}
-        windowState={setApiDShouldOpen}
+        openWindow={activeAPIDialog === "api"}
+        windowState={(isOpen: boolean) => setActiveAPIDialog(isOpen ? "api" : null)}
       />
       <APIKeysDialog
-        openWindow={e2bDShouldOpen}
-        windowState={setE2bDShouldOpen}
+        openWindow={activeAPIDialog === "sandbox"}
+        windowState={(isOpen: boolean) => setActiveAPIDialog(isOpen ? "sandbox" : null)}
         defaultTab="sandbox"
       />
       <APIKeysDialog
-        openWindow={context7DShouldOpen}
-        windowState={setContext7ShouldOpen}
+        openWindow={activeAPIDialog === "context7"}
+        windowState={(isOpen: boolean) => setActiveAPIDialog(isOpen ? "context7" : null)}
         defaultTab="context7"
       />
     </FileUpload>
