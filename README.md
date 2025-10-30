@@ -6,17 +6,18 @@
   
   # Grills
   
-  ### Your Own Gen UI Platform*
+  ### Your Own Gen UI Platform
   
   ![](public/grills-demo.gif)
 
-  
   <br>
   
 </div>
 
 
 ## Purpose
+
+- **flexibility** - Most AI platforms only generate UI code for Next.js, Tailwind, and ShadCN, which is pretty limiting. If you’re using Angular, Vue, or Svelte, you’re out of luck. We’re here to fix that.
 
 - **Too pricey to use** – Most AI UI builders are super expensive, which makes them tough to afford for indie devs and small teams.
 - **Doesn’t play nice with your code** – The UIs they generate usually don’t fit smoothly into existing projects, so you end up spending extra time fixing things.
@@ -145,3 +146,11 @@ pnpm dev
 - [ ] Publish UI
 - [ ] Share whole chat
 - [x] Context 7
+
+### Framework
+- [x] Next
+- [ ] Veu
+- [ ] Solid
+- [ ] Astro
+- [ ] Angular
+- [ ] Svelte
