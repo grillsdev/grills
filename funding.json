@@ -1,0 +1,72 @@
+{
+  "$schema": "https://floss.fund/schema/v1.0.0/funding.schema.json#",
+  "version": "v1.0.0",
+  "entity": {
+    "type": "individual",
+    "role": "maintainer",
+    "name": "Aditya Pushkar",
+    "email": "adi@grills.dev",
+    "phone": "",
+    "description": "Building something out of nothing, dropout software developer from India and the creator and maintainer of Grills.",
+    "webpageUrl": {
+      "url": "https://github.com/grillsdev",
+      "wellKnown": "https://github.com/grillsdev/grills/blob/main/.well-known/funding-manifest-urls"
+    }
+  },
+  "projects": [{
+    "guid": "grills",
+    "name": "grills",
+    "description": "Your Own GenUI Platform.",
+    "webpageUrl": {
+      "url": "https://grills.dev"
+    },
+    "repositoryUrl": {
+      "url": "https://github.com/grillsdev/grills",
+      "wellKnown": "https://github.com/grillsdev/grills/blob/main/.well-known/funding-manifest-urls"
+    },
+    "licenses": ["Apache-2.0"],
+    "tags": ["v0", "llm", "gen-ui", "ui-generator", "chatbot"]
+  }],
+  "funding": {
+    "channels": [
+      {
+        "guid": "mybank",
+        "type": "bank",
+        "address": "",
+        "description": "Will accept direct bank transfers. Please e-mail me for details."
+      }
+    ],
+    "plans": [
+      {
+        "guid": "developer-time-yearly",
+        "status": "active",
+        "name": "Developer yearly compensation",
+        "description": "This will cover one year of part-time working on Grills.",
+        "amount": 900000,
+        "currency": "INR",
+        "frequency": "yearly",
+        "channels": ["mybank"]
+      },
+      {
+        "guid": "developer-time-monthly",
+        "status": "active",
+        "name": "Developer monthly compensation",
+        "description": "This will cover one month of part-time working on Grills.",
+        "amount": 70000,
+        "currency": "INR",
+        "frequency": "monthly",
+        "channels": ["mybank"]
+      },
+      {
+        "guid": "growth-plan",
+        "status": "active",
+        "name": "Growth plan",
+        "description": "Pay whatever amount you wish to show your goodwill for the project. Most of the money will be used for marketing and the growth of the product.",
+        "amount": 0,
+        "currency": "INR",
+        "frequency": "one-time",
+        "channels": ["mybank"]
+      }
+    ]
+  }
+}
