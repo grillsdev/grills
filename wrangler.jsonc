@@ -7,6 +7,9 @@
 	"name": "grills",
 	"main": ".open-next/worker.js",
 	"compatibility_date": "2025-09-15",
+	"limits": {
+		"cpu_ms": 180000 //3min
+	},
 	"compatibility_flags": [
 		"nodejs_compat",
 		"global_fetch_strictly_public"
