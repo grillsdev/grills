@@ -11,17 +11,15 @@ const openRouter: Model[] = [
     {id: "7479209a-9e67-11f0-a5d3-325096b39f47", title: "Qwen3 Coder", slug: "qwen/qwen3-coder", isReasoning:false, isMultiModel:false},
     {id: "5a15c5f0-9ec7-11f0-8892-925096939f48", title: "Claude Sonnet 4.5", slug: "anthropic/claude-sonnet-4.5", isReasoning:true, isMultiModel:true},
     {id: "5a15d5f0-9ec7-11f0-8892-925096939g9q", title: "Claude Sonnet 4.5", slug: "anthropic/claude-sonnet-4.5", isReasoning:false, isMultiModel:true},
-    {id: "3a15ca32-9ec8-11f0-8c38-325096b39f47", title: "Deepseek Chat v3.1", slug: "deepseek/deepseek-chat-v3.1", isReasoning:true, isMultiModel:false},
-    {id: "3a15ca30-9ec8-11f0-8c38-325196b39f40", title: "Deepseek Chat v3.1", slug: "deepseek/deepseek-chat-v3.1", isReasoning:false, isMultiModel:false},
-    {id: "3787a35e-c045-4328-8290-088180785769", title: "Grok Code Fast 1", slug: "x-ai/grok-code-fast-1", isReasoning:true, isMultiModel: false},
-    {id: "4d8c8160-cceb-4368-95df-5e26e12cd3b6", title: "Z.AI: GLM 4.6", slug: "z-ai/glm-4.6", isReasoning:true, isMultiModel:false},
+    {id: "3787a35e-c045-4328-8290-088180785769", title: "Grok Code Fast 1", slug: "x-ai/grok-code-fast-1", isReasoning:true, isMultiModel: false}
 ]
 
+//add models unique id otherr wise automativalt get results from the latest deployed model
 const openAI: Model[] = [
-    {id: "931f52c9-9da4-4cd4-a448-39fc006a6a3b", title: "GPT 5 Mini", slug: "gpt-5-mini", isReasoning:false, isMultiModel:true},
-    {id: "9deb64e1-c46e-448a-88aa-20c808aafde1", title: "GPT 5 Mini", slug: "gpt-5-mini", isReasoning:true, isMultiModel:true},
-    {id: "5zb64e1-c46e-448a-88aa-20c8009pafde1", title: "GPT 5", slug: "gpt-5", isReasoning:false, isMultiModel:true},
-    {id: "6b64e1-c36e-443a-77aa-20c8009pafde03", title: "GPT 5", slug: "gpt-5", isReasoning:true, isMultiModel:true}
+    {id: "931f52c9-9da4-4cd4-a448-39fc006a6a3b", title: "GPT 5 Mini", slug: "gpt-5-mini-2025-08-07", isReasoning:false, isMultiModel:true},
+    {id: "9deb64e1-c46e-448a-88aa-20c808aafde1", title: "GPT 5 Mini", slug: "gpt-5-mini-2025-08-07", isReasoning:true, isMultiModel:true},
+    {id: "5zb64e1-c46e-448a-88aa-20c8009pafde1", title: "GPT 5", slug: "gpt-5-2025-08-07", isReasoning:false, isMultiModel:true},
+    {id: "6b64e1-c36e-443a-77aa-20c8009pafde03", title: "GPT 5", slug: "gpt-5-2025-08-07", isReasoning:true, isMultiModel:true},
 ]
 
 const anthropic: Model[] = [
