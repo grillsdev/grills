@@ -19,7 +19,6 @@ export async function POST(req: Request) {
             pkgs: string[]
         };
 
-
         if (!sandboxAPI || !msgId) {
             return Response.json(
                 { error: "Missing required parameters: sandboxAPI and msgId" },
@@ -42,6 +41,7 @@ export async function POST(req: Request) {
 
         if (sandboxList.length > 0) {
             const newSandbox = sandboxList[0];
+            console.warn("state of already created sandbox", newSandbox.state)
             return Response.json({
                 e2bSandboxAPI: sandboxAPI,
                 e2bSandboxId: `grills:${msgId}`,
@@ -50,34 +50,29 @@ export async function POST(req: Request) {
         }
 
         // If sandbox is in process of creating it; get the status and if it is started return
-        // Template created for this repo (https://github.com/grillsdev/open-template)
         const sandbox = await Sandbox.create(process.env.SANDBOX_ID!, {
             apiKey: sandboxAPI,
-            timeoutMs: 1000000,
+            timeoutMs: 500000,
             metadata: {
                 sandboxId: `grills:${msgId}`,
                 msgId
             }
         });
 
+
         //downlodes the pakages 
         if(pkgs && pkgs.length>0){
-            await sandbox.commands.run(`npm install ${pkgs.join(' ')}`);
+            await sandbox.commands.run(`bun add ${pkgs.join(' ')}`);
         }
-
-        const sandboxFiles: { path: string; data: string }[] = [];
+    
 
         // converting the code obj into e2b sandbox files format
         for (const [key, value] of Object.entries(code)) {
-            sandboxFiles.push({
-                path:key,
-                data: value,
-            });
+            await sandbox.files.write(key, value)
         }
 
-        await sandbox.files.write(sandboxFiles);
-
         const previewUrl = `https://${sandbox.getHost(3000)}`;
+
 
         return Response.json({
             e2bSandboxAPI: sandboxAPI,
