@@ -116,6 +116,9 @@ importers:
       drizzle-orm:
         specifier: ^0.44.2
         version: 0.44.2(@libsql/client@0.15.10)(@opentelemetry/api@1.9.0)(@types/pg@8.15.4)(@upstash/redis@1.35.0)(kysely@0.28.2)(pg@8.16.3)
+      e2b:
+        specifier: ^2.6.3
+        version: 2.6.3
       lucide-react:
         specifier: ^0.522.0
         version: 0.522.0(react@19.1.0)
@@ -3895,9 +3898,9 @@ packages:
   duplexer@0.1.2:
     resolution: {integrity: sha512-jtD6YG370ZCIi/9GTaJKQxWTZD045+4R4hTk/x1UyoqadyJ9x9CgSi1RlVDQF8U2sxLLSnFkCaMihqljHIWgMg==}
 
-  e2b@2.2.1:
-    resolution: {integrity: sha512-uPpK1mcSY4Bn/CKEs8nMiNMCA8Ay2DmIum7VBdV1QTCY35y3XbyAODr0Pb3yj8cGlhL/TfLlscBZ6vInyhXU+w==}
-    engines: {node: '>=18'}
+  e2b@2.6.3:
+    resolution: {integrity: sha512-/y8+dOmFdSmZLFX/dku+qsNmiK8aNdyKznYvJequWVJo2EVzKfa7TbVGOMIhZmcMTu/B2eELgY1V8/fa3hw+Mw==}
+    engines: {node: '>=20'}
 
   eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
@@ -5220,11 +5223,11 @@ packages:
   oniguruma-to-es@4.3.3:
     resolution: {integrity: sha512-rPiZhzC3wXwE59YQMRDodUwwT9FZ9nNBwQQfsd1wfdtlKEyCdRV0avrTcSZ5xlIvGRVPd/cx6ZN45ECmS39xvg==}
 
-  openapi-fetch@0.9.8:
-    resolution: {integrity: sha512-zM6elH0EZStD/gSiNlcPrzXcVQ/pZo3BDvC6CDwRDUt1dDzxlshpmQnpD6cZaJ39THaSmwVCxxRrPKNM1hHrDg==}
+  openapi-fetch@0.14.1:
+    resolution: {integrity: sha512-l7RarRHxlEZYjMLd/PR0slfMVse2/vvIAGm75/F7J6MlQ8/b9uUQmUF2kCPrQhJqMXSxmYWObVgeYXbFYzZR+A==}
 
-  openapi-typescript-helpers@0.0.8:
-    resolution: {integrity: sha512-1eNjQtbfNi5Z/kFhagDIaIRj6qqDzhjNJKz8cmMW0CVdGwT6e1GLbAfgI0d28VTJa1A8jz82jm/4dG8qNoNS8g==}
+  openapi-typescript-helpers@0.0.15:
+    resolution: {integrity: sha512-opyTPaunsklCBpTK8JGef6mfPhLSnyy5a0IN9vKtx3+4aExf+KxEqYwIy3hqkedXIB97u357uLMJsOnm3GVjsw==}
 
   optionator@0.9.4:
     resolution: {integrity: sha512-6IpQ7mKUxRcZNLIObR0hz7lxsapSSIYNZJwXPGeF0mTVqGKFIXj1DQcMoT22S3ROcLyY/rz0PWaWZ9ayWmad9g==}
@@ -7654,7 +7657,7 @@ snapshots:
 
   '@e2b/code-interpreter@2.0.1':
     dependencies:
-      e2b: 2.2.1
+      e2b: 2.6.3
 
   '@ecies/ciphers@0.2.4(@noble/ciphers@1.3.0)':
     dependencies:
@@ -10906,15 +10909,16 @@ snapshots:
 
   duplexer@0.1.2: {}
 
-  e2b@2.2.1:
+  e2b@2.6.3:
     dependencies:
       '@bufbuild/protobuf': 2.9.0
       '@connectrpc/connect': 2.0.0-rc.3(@bufbuild/protobuf@2.9.0)
       '@connectrpc/connect-web': 2.0.0-rc.3(@bufbuild/protobuf@2.9.0)(@connectrpc/connect@2.0.0-rc.3(@bufbuild/protobuf@2.9.0))
+      chalk: 5.4.1
       compare-versions: 6.1.1
       dockerfile-ast: 0.7.1
       glob: 11.0.3
-      openapi-fetch: 0.9.8
+      openapi-fetch: 0.14.1
       platform: 1.3.6
       tar: 7.4.3
 
@@ -12737,11 +12741,11 @@ snapshots:
       regex: 6.0.1
       regex-recursion: 6.0.2
 
-  openapi-fetch@0.9.8:
+  openapi-fetch@0.14.1:
     dependencies:
-      openapi-typescript-helpers: 0.0.8
+      openapi-typescript-helpers: 0.0.15
 
-  openapi-typescript-helpers@0.0.8: {}
+  openapi-typescript-helpers@0.0.15: {}
 
   optionator@0.9.4:
     dependencies:
