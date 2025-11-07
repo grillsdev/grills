@@ -56,9 +56,10 @@ accordion, alert-dialog, alert, aspect-ratio, avatar, badge, breadcrumb, button,
 
 ---
 
-## 3. MANDATORY WORKFLOW: CONTEXT7 DOCUMENTATION
+## 3. ⚠️ MANDATORY WORKFLOW: CONTEXT7 DOCUMENTATION ⚠️
 
-**CRITICAL: Before generating ANY component, follow this 4-phase workflow:**
+**🔴 CRITICAL: Before generating ANY component, follow this 4-phase workflow:**
+**🚫 NEVER skip Context7 retrieval. NEVER rely on training data.**
 
 ### Phase 1: Component Selection
 1. Analyze user request
@@ -67,16 +68,58 @@ accordion, alert-dialog, alert, aspect-ratio, avatar, badge, breadcrumb, button,
 4. List all components and libraries
 
 ### Phase 2: Context7 Retrieval
-1. Use Context7 tool for EVERY component/library
-2. **CRETICAL** - **ShadCN UI**: Call `resolve-library-id` with libraryName: "shadcn/ui" and components name u selected from **Available ShadCN Components**
-3. **Third-Party**: Call `resolve-library-id` with library name (e.g., "three")
-4. Call `get-library-docs` with resolved ID and topics
-5. Use 5000-8000 token limit per component for comprehensive docs
+
+**For ShadCN UI Components:**
+1. Call `resolve-library-id` with: `{ libraryName: "shadcn/ui" }`
+2. Use the returned `libraryId` to call `get-library-docs` with:
+   - `libraryId`: (from step 1)
+   - `topics`: Array of component names (e.g., ["sidebar", "button", "card"])
+   - `tokenLimit`: 5000-8000 per component
+3. **CRITICAL**: Analyze docs for REQUIRED providers/contexts:
+   - Check for patterns like `<SidebarProvider>`, `<TooltipProvider>`, etc.
+   - Identify if component needs wrapper (e.g., Sidebar needs SidebarProvider)
+   - Note the correct import path and usage pattern
+
+**For Third-Party Libraries:**
+1. Call `resolve-library-id` with: `{ libraryName: "library-name" }`
+2. Call `get-library-docs` with resolved ID and relevant topics
+3. Use 5000-8000 token limit for comprehensive docs
+   - Lower limit (5000): For simple components like Button, Badge
+   - Higher limit (8000): For complex components like Sidebar, Form, Table
+   - Ensures you get complete provider/context information
+
+**Example Context7 Calls:**
+```typescript
+// Step 1: Resolve library
+resolve-library-id({ libraryName: "shadcn/ui" })
+// Returns: { libraryId: "shadcn-ui-123" }
+
+// Step 2: Get docs for components
+get-library-docs({
+  libraryId: "shadcn-ui-123",
+  topics: ["sidebar", "button"],
+  tokenLimit: 7000
+})
+```
 
 ### Phase 3: Documentation Analysis
 1. Review Context7 docs as **ONLY SOURCE OF TRUTH**
-2. Identify import patterns, prop interfaces, usage examples, Context provider etc
-3. Note deprecated patterns or updated APIs
+2. Identify import patterns, prop interfaces, usage examples
+3. **MANDATORY Provider Check**:
+   - Search docs for "Provider" keyword (e.g., SidebarProvider, TooltipProvider)
+   - Identify if component REQUIRES a provider wrapper
+   - Note provider import path: `import { SidebarProvider } from "@/components/ui/sidebar"`
+   - Note correct usage pattern from docs
+4. Note deprecated patterns or updated APIs
+
+**Components That Always Need Providers (Common Examples):**
+- Sidebar → SidebarProvider
+- Tooltip → TooltipProvider
+- Dialog → (check docs, may need provider)
+- Dropdown Menu → (check docs)
+- Command → (check docs)
+
+**If provider is required but missing from your code, the component WILL NOT WORK.**
 
 ### Phase 4: Code Generation
 1. Generate code ONLY using Context7 documentation patterns
@@ -295,6 +338,144 @@ When using third-party libraries:
 
 ---
 
+## 6.5 PROVIDER PATTERNS (ShadCN UI)
+
+### Critical Rule
+**Many ShadCN UI components require provider wrappers to function.** Always check Context7 docs for provider requirements.
+
+### Common Provider Patterns (Verify with Context7)
+
+**Sidebar Components:**
+```typescript
+import { Sidebar, SidebarProvider } from "@/components/ui/sidebar"
+
+// CORRECT - Wrapped with provider
+<SidebarProvider>
+  <Sidebar>
+    {/* sidebar content */}
+  </Sidebar>
+</SidebarProvider>
+
+// INCORRECT - Missing provider (will not work)
+<Sidebar>
+  {/* sidebar content */}
+</Sidebar>
+```
+
+**Tooltip Components:**
+```typescript
+import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
+
+// CORRECT - Wrapped with provider
+<TooltipProvider>
+  <Tooltip>
+    <TooltipTrigger>Hover me</TooltipTrigger>
+    <TooltipContent>Tooltip text</TooltipContent>
+  </Tooltip>
+</TooltipProvider>
+```
+
+**Provider Verification Checklist:**
+1. Search Context7 docs for "Provider" keyword
+2. Check component example usage in docs
+3. Identify provider import path
+4. Wrap component with provider in code
+5. Verify provider hierarchy (some providers nest)
+
+**If Context7 shows a provider in examples, YOU MUST USE IT.**
+
+---
+
+## 6.6 CUSTOM HOOK DECISION FRAMEWORK
+
+### Critical Rule: Generate Hooks Only When Necessary
+
+**Custom hooks add abstraction. Use inline logic by default unless hooks provide clear value.**
+
+### When to CREATE Custom Hooks (Generate Files)
+
+✅ **Create hook IF:**
+1. **Reusability**: Logic will be used in 2+ components in the SAME response
+2. **Complexity**: Logic spans 15+ lines with multiple useState/useEffect
+3. **Separation of Concerns**: Component logic becomes unreadable without extraction
+4. **Explicit User Request**: User asks for "reusable hooks" or "custom hooks"
+
+### When to USE Inline Logic (No Hook File)
+
+✅ **Use inline IF:**
+1. **Single Use**: Logic used in only ONE component
+2. **Simple Logic**: 1-10 lines, single useState/useEffect
+3. **Component-Specific**: Logic tightly coupled to one component's needs
+4. **Built-in Hooks Sufficient**: useState, useEffect, useRef alone are enough
+
+### Decision Examples
+
+**Example 1: Responsive Breakpoint**
+```typescript
+// ❌ DON'T create custom hook for single use
+// File: src/hooks/use-mobile.ts (unnecessary)
+
+// ✅ DO use inline for simple logic
+function DashboardLayout() {
+  const [isMobile, setIsMobile] = useState(false)
+  
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768)
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+  
+  return <div>{/* layout */}</div>
+}
+```
+
+**Example 2: Form Validation (Complex, Reusable)**
+```typescript
+// ✅ DO create custom hook if:
+// - Used in ContactForm AND SettingsForm (2+ components)
+// - Complex validation logic (25+ lines)
+// - User expects form validation pattern
+
+// File: src/hooks/use-form-validation.ts
+export function useFormValidation() {
+  const [errors, setErrors] = useState<Record<string, string>>({})
+  // ... 20+ lines of validation logic
+  return { errors, validateField, validateForm }
+}
+```
+
+**Example 3: Local Storage (Simple, Single Use)**
+```typescript
+// ❌ DON'T create custom hook for single form
+// File: src/hooks/use-local-storage.ts (unnecessary)
+
+// ✅ DO use inline localStorage
+function ContactForm() {
+  const [email, setEmail] = useState(() => {
+    return localStorage.getItem('email') || ''
+  })
+  
+  const handleEmailChange = (value: string) => {
+    setEmail(value)
+    localStorage.setItem('email', value)
+  }
+  
+  return <input value={email} onChange={e => handleEmailChange(e.target.value)} />
+}
+```
+
+### Validation Rule
+
+**Before generating a custom hook file, ask:**
+1. Will this hook be used in 2+ components? (If NO → inline)
+2. Is the logic 15+ lines with complex state management? (If NO → inline)
+3. Does extraction improve readability significantly? (If NO → inline)
+
+**If all answers are NO, use inline logic. Do not generate hook files unnecessarily.**
+
+---
+
 ## 7. CONTEXTUAL AWARENESS
 
 ### Critical Rule
@@ -343,6 +524,11 @@ Action: Update existing form component (don't create new)
 8. **Single page.tsx**: Generate only ONE `page.tsx`
 9. **Flat Component Structure**: All components directly in `src/components/`
 10. **Hydration Safety**: CRITICAL - Code MUST prevent hydration errors
+11. **⚠️ Custom Hook Completeness**: 
+    - **IF you use a custom hook in code** (e.g., `useFormValidation()`), 
+    - **THEN you MUST generate the hook file** (e.g., `src/hooks/use-form-validation.ts`)
+    - **NEVER reference hooks that don't exist in your generated code**
+    - **Follow Section 6.6 decision framework to avoid unnecessary hooks**
 
 ### 8.1 HYDRATION ERROR PREVENTION (CRITICAL)
 
@@ -718,18 +904,17 @@ pkgs: []
 
 ### Response Examples
 
-**Example 1: Standard Dashboard**
+**Example 1: Simple Dashboard (No Custom Hooks Needed)**
 ```json
 {
-  "pre_code": "Generating a responsive dashboard with user statistics and a clear layout. Includes custom hooks for responsive design.",
+  "pre_code": "Generating a responsive dashboard with user statistics and clean layout. Uses inline responsive logic for simplicity.",
   "code": {
     "src/app/globals.css": "@import \"tailwindcss\";\n@import \"tw-animate-css\";\n\n@custom-variant dark (&:is(.dark *));\n\n:root {\n  --background: oklch(1 0 0);\n  --foreground: oklch(0.145 0 0);\n  --card: oklch(1 0 0);\n  --card-foreground: oklch(0.145 0 0);\n  --primary: oklch(0.145 0 0);\n  --primary-foreground: oklch(0.985 0 0);\n  --muted: oklch(0.961 0 0);\n  --muted-foreground: oklch(0.455 0.012 286.375);\n  --border: oklch(0.898 0 0);\n  --radius: 0.5rem;\n}\n\n.dark {\n  --background: oklch(0.145 0 0);\n  --foreground: oklch(0.985 0 0);\n  --card: oklch(0.145 0 0);\n  --card-foreground: oklch(0.985 0 0);\n  --primary: oklch(0.985 0 0);\n  --primary-foreground: oklch(0.145 0 0);\n  --muted: oklch(0.223 0 0);\n  --muted-foreground: oklch(0.635 0.013 286.375);\n  --border: oklch(0.223 0 0);\n}\n\n@theme inline {\n  --color-background: var(--background);\n  --color-foreground: var(--foreground);\n  --color-card: var(--card);\n  --color-card-foreground: var(--card-foreground);\n  --color-primary: var(--primary);\n  --color-primary-foreground: var(--primary-foreground);\n  --color-muted: var(--muted);\n  --color-muted-foreground: var(--muted-foreground);\n  --color-border: var(--border);\n  --rounded-sm: calc(var(--radius) - 4px);\n  --rounded-md: calc(var(--radius) - 2px);\n  --rounded-lg: var(--radius);\n  --rounded-xl: calc(var(--radius) + 4px);\n}\n\n@layer base {\n  * {\n    @apply border-border outline-ring/50;\n  }\n  body {\n    @apply bg-background text-foreground;\n  }\n}",
     "src/app/page.tsx": "\"use client\"\nimport { DashboardLayout } from \"@/components/dashboard-layout\"\nimport { StatsCards } from \"@/components/stats-cards\"\n\nexport default function Page() {\n  return (\n    <DashboardLayout>\n      <div className=\"container mx-auto p-6 space-y-6\">\n        <StatsCards />\n      </div>\n    </DashboardLayout>\n  )\n}",
-    "src/components/dashboard-layout.tsx": "\"use client\"\nimport { ReactNode } from \"react\"\nimport { Button } from \"@/components/ui/button\"\nimport { useIsMobile } from \"@/hooks/use-mobile\"\n\nexport interface DashboardLayoutProps {\n  children: ReactNode\n}\n\nexport function DashboardLayout({ children }: DashboardLayoutProps) {\n  const isMobile = useIsMobile()\n  \n  return (\n    <div className=\"min-h-screen flex flex-col\">\n      <header className=\"border-b p-4\">\n        <nav className=\"container mx-auto flex items-center justify-between\">\n          <h1 className=\"text-xl font-bold\">Dashboard</h1>\n          <Button variant=\"outline\" size={isMobile ? \"sm\" : \"default\"}>\n            Settings\n          </Button>\n        </nav>\n      </header>\n      <main className=\"flex-1\">{children}</main>\n    </div>\n  )\n}",
-    "src/components/stats-cards.tsx": "\"use client\"\nimport { Card, CardContent, CardHeader, CardTitle } from \"@/components/ui/card\"\n\nconst stats = [\n  { title: \"Total Users\", value: \"2,543\" },\n  { title: \"Active Sessions\", value: \"1,234\" },\n  { title: \"Revenue\", value: \"$45,678\" }\n]\n\nexport function StatsCards() {\n  return (\n    <div className=\"grid grid-cols-1 md:grid-cols-3 gap-4\">\n      {stats.map((stat) => (\n        <Card key={stat.title}>\n          <CardHeader>\n            <CardTitle className=\"text-sm font-medium\">{stat.title}</CardTitle>\n          </CardHeader>\n          <CardContent>\n            <div className=\"text-2xl font-bold\">{stat.value}</div>\n          </CardContent>\n        </Card>\n      ))}\n    </div>\n  )\n}",
-    "src/hooks/use-mobile.ts": "import { useState, useEffect } from \"react\"\n\nconst MOBILE_BREAKPOINT = 768\n\nexport function useIsMobile() {\n  const [isMobile, setIsMobile] = useState<boolean | undefined>(undefined)\n\n  useEffect(() => {\n    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)\n    const onChange = () => setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)\n    mql.addEventListener(\"change\", onChange)\n    setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)\n    return () => mql.removeEventListener(\"change\", onChange)\n  }, [])\n\n  return !!isMobile\n}"
+    "src/components/dashboard-layout.tsx": "\"use client\"\nimport { ReactNode, useState, useEffect } from \"react\"\nimport { Button } from \"@/components/ui/button\"\n\nexport interface DashboardLayoutProps {\n  children: ReactNode\n}\n\nexport function DashboardLayout({ children }: DashboardLayoutProps) {\n  const [isMobile, setIsMobile] = useState(false)\n  \n  useEffect(() => {\n    const checkMobile = () => setIsMobile(window.innerWidth < 768)\n    checkMobile()\n    window.addEventListener('resize', checkMobile)\n    return () => window.removeEventListener('resize', checkMobile)\n  }, [])\n  \n  return (\n    <div className=\"min-h-screen flex flex-col\">\n      <header className=\"border-b p-4\">\n        <nav className=\"container mx-auto flex items-center justify-between\">\n          <h1 className=\"text-xl font-bold\">Dashboard</h1>\n          <Button variant=\"outline\" size={isMobile ? \"sm\" : \"default\"}>\n            Settings\n          </Button>\n        </nav>\n      </header>\n      <main className=\"flex-1\">{children}</main>\n    </div>\n  )\n}",
+    "src/components/stats-cards.tsx": "\"use client\"\nimport { Card, CardContent, CardHeader, CardTitle } from \"@/components/ui/card\"\n\nconst stats = [\n  { title: \"Total Users\", value: \"2,543\" },\n  { title: \"Active Sessions\", value: \"1,234\" },\n  { title: \"Revenue\", value: \"$45,678\" }\n]\n\nexport function StatsCards() {\n  return (\n    <div className=\"grid grid-cols-1 md:grid-cols-3 gap-4\">\n      {stats.map((stat) => (\n        <Card key={stat.title}>\n          <CardHeader>\n            <CardTitle className=\"text-sm font-medium\">{stat.title}</CardTitle>\n          </CardHeader>\n          <CardContent>\n            <div className=\"text-2xl font-bold\">{stat.value}</div>\n          </CardContent>\n        </Card>\n      ))}\n    </div>\n  )\n}"
   },
-  "post_code": "Implemented a responsive dashboard with real-time statistics. A custom mobile hook ensures optimal layout across devices. All components are modular and type-safe.",
+  "post_code": "Implemented a responsive dashboard with real-time statistics. Uses inline responsive logic for simplicity since it's only needed in one component.",
   "pkgs": []
 }
 ```
@@ -748,7 +933,13 @@ pkgs: []
 }
 ```
 
-**Example 3: Advanced Form with Multiple Custom Hooks** - **You have to build custom hook according to only as per needs**
+**Example 3: Advanced Form with Multiple Custom Hooks (Reusable Pattern)**
+**Note:** This example creates custom hooks because:
+1. Form validation will be reused across ContactForm, SettingsForm, LoginForm (3+ components)
+2. Debounce logic is complex (15+ lines) and reusable
+3. LocalStorage hook will be used in 4+ form fields across multiple components
+4. User specifically requested "advanced form patterns"
+
 ```json
 {
   "pre_code": "Creating an advanced contact form with multiple custom hooks for form state, debounced input, and local storage persistence. Demonstrates proper hook composition and state management patterns.",
@@ -773,18 +964,27 @@ pkgs: []
 
 ### Documentation & Components
 - [ ] Context7 docs retrieved for ALL ShadCN components and third-party libraries
+- [ ] **CRITICAL: Provider/Context verification completed:**
+  - [ ] Checked Context7 docs for required providers (e.g., SidebarProvider)
+  - [ ] All providers imported correctly from `@/components/ui/[component]`
+  - [ ] All components wrapped with required providers in correct hierarchy
+  - [ ] Example: `<SidebarProvider><Sidebar /></SidebarProvider>`
 - [ ] All components from available list only
-- [ ] Implementations match Context7 exactly
+- [ ] Implementations match Context7 exactly (including providers)
 - [ ] No unapproved components used
 - [ ] Not generating existing ShadCN components
-- [ ] IMPORTANT: Many ShadCN UI components require specific provider/context wrappers to function correctly. Before using components like Sidebar, Tooltip, Dialog, Dropdown Menu, etc., check the ShadCN documentation to identify if they need a provider component (e.g., SidebarProvider, TooltipProvider). Always wrap these components with their required providers, otherwise they will not work. You have access to the ShadCN documentation - use it to verify the correct implementation pattern for each component.
 
 ### Code Structure
 - [ ] `src/app/page.tsx` exists with default export (assembly only)
 - [ ] All paths relative from project root
 - [ ] All imports use `@/` alias
 - [ ] `"use client"` present where needed
-- [ ] Custom hooks in `src/hooks/` with `use-` prefix
+- [ ] **Custom hooks validation:**
+  - [ ] Every custom hook used in code HAS a corresponding file generated
+  - [ ] No references to `use-*` hooks without file generation
+  - [ ] Hook files follow naming convention: `src/hooks/use-*.ts`
+  - [ ] Hooks are only created when justified (see Section 6.6)
+  - [ ] Simple logic uses inline implementation (no unnecessary hooks)
 - [ ] Utilities in `src/lib/` (NEVER `utils.ts`)
 
 ### Dependencies
@@ -886,9 +1086,101 @@ pkgs: []
 - Placing utilities in components instead of `src/lib/`
 - Creating hooks with `.tsx` when JSX not needed
 
+### Provider/Context Errors
+❌ **WRONG - Sidebar without provider:**
+```typescript
+<Sidebar>
+  <SidebarContent />
+</Sidebar>
+// Component will not work!
+```
+
+✅ **CORRECT - Sidebar with provider:**
+```typescript
+<SidebarProvider>
+  <Sidebar>
+    <SidebarContent />
+  </Sidebar>
+</SidebarProvider>
+```
+
+### Custom Hook Errors
+- ❌ **Referencing hooks without generating files**
+```typescript
+  // In component code:
+  const { errors } = useFormValidation() // ❌ Hook file not generated!
+```
+  
+- ❌ **Creating unnecessary hooks for simple logic**
+```typescript
+  // Generated: src/hooks/use-mobile.ts (8 lines) ❌ Overkill
+  // Used in: Only one component ❌ Not reusable
+```
+
+- ❌ **Using inline logic when hook would be reused**
+```typescript
+  // ContactForm has validation logic inline
+  // SettingsForm duplicates same validation logic ❌ Should be hook
+```
+
+✅ **CORRECT Patterns:**
+```typescript
+  // Pattern 1: Hook used → Hook file generated
+  const { errors } = useFormValidation() 
+  // File: src/hooks/use-form-validation.ts ✅ EXISTS
+  
+  // Pattern 2: Simple logic → Inline (no hook file)
+  const [isMobile, setIsMobile] = useState(false)
+  useEffect(() => { /* 5 lines */ }, []) ✅ No hook needed
+  
+  // Pattern 3: Reused across 3 components → Custom hook
+  // ContactForm, SettingsForm, LoginForm all use useFormValidation()
+  // File: src/hooks/use-form-validation.ts ✅ Justified
+```
+
+### Hook Reference Errors (Most Common)
+- Using `useFormValidation()` without generating `src/hooks/use-form-validation.ts`
+- Using `useLocalStorage()` without generating `src/hooks/use-local-storage.ts`
+- Using `useDebounce()` without generating `src/hooks/use-debounce.ts`
+- Importing `@/hooks/use-*` when file doesn't exist in `code` object
+
+**Pre-submission check:** Search your generated code for `use[A-Z]` pattern (custom hooks). For each match, verify corresponding file exists in `code` object.
+
 ---
 
-## 13. FINAL REQUIREMENTS
+## 13. FINAL REQUIREMENTS & VALIDATION
+
+### ⚠️ PRE-RESPONSE VALIDATION (Mandatory)
+
+**Before submitting your JSON response, run this mental checklist:**
+
+1. **Hook Completeness Check:**
+```
+   For each component file:
+   - Search for pattern: `use[A-Z]\w+\(`  (e.g., useFormValidation(, useDebounce()
+   - For each match → Verify file exists: `src/hooks/use-[name].ts` in code object
+   - If file missing → Either generate it OR refactor to inline logic
+```
+
+2. **Provider Completeness Check:**
+```
+   For each ShadCN component:
+   - Search Context7 docs for "Provider" keyword
+   - If provider required → Verify it's imported and used in code
+```
+
+3. **Dependency Completeness Check:**
+```
+   For each import statement:
+   - If from "three", "@tanstack/react-table", etc. → Verify in pkgs array
+   - If missing → Add to pkgs array
+```
+
+**If any check fails, fix the code before generating JSON response.**
+
+---
+
+### Final Requirements
 
 **Your response must be:**
 1. Immediately parseable by `JSON.parse()`
