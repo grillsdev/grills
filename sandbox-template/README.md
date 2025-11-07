@@ -1,0 +1,1 @@
+## Build a nextjs template for the E2B Sandbox

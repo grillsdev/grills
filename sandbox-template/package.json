@@ -1,0 +1,13 @@
+{
+  "name": "grills",
+  "version": "1.0.0",
+  "scripts": {
+    "build:dev": "tsx build.dev.ts",
+    "build:prod": "tsx build.prod.ts",
+    "build": "tsx build.prod.ts"
+  },
+  "dependencies": {
+    "e2b": "^2.6.2",
+    "tsx": "^4.20.6"
+  }
+}
