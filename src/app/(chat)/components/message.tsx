@@ -22,7 +22,7 @@ const UserMessage = memo(({ content }: { content: UIMessage }) => {
   return (
     <div className="flex flex-row selection:bg-base-900 selection:text-secondary">
       <div className="block h-5 w-5 rounded-[13px] bg-gradient-to-b from-secondary to-accent-foreground" />
-      <div className="flex flex-col gap-4 flex-1 text-gray-300 min-w-0 max-w-md">
+      <div className="flex flex-col gap-4 flex-1 text-gray-300 min-w-0 max-w-lg">
         {content.parts.map((part, index) => {
           if (part.type === "text") {
             return (
@@ -37,6 +37,7 @@ const UserMessage = memo(({ content }: { content: UIMessage }) => {
           return null;
         })}
         
+        {/* This part is not in use bcs of geting bad result from the image  */}
         {/* Group all file parts together */}
         {content.parts.some(part => part.type === "file") && (
           <div className="flex flex-row flex-wrap gap-2 px-2.5 -mt-3">
@@ -90,6 +91,7 @@ const AssistantMessage = memo(
     }catch{
       // do nothing; just a woek around
     }
+    console.log(parsedContent)
 
     useEffect(() => {
       if (isStreaming) {
@@ -116,7 +118,7 @@ const AssistantMessage = memo(
     ]);
 
     return (
-      <div className="flex flex-row gap-3 my-6">
+      <div className="flex flex-row gap-3 my-6 max-w-2xl">
         <span className="px-0.5 font-semibold text-xl italic text-white -mt-1.5 ">
           g
         </span>
@@ -128,7 +130,7 @@ const AssistantMessage = memo(
                 defaultOpen={isStreaming?true:false}
                 className="flex flex-col items-center mt-1"
               >
-                <div className="w-full max-w-2xl">
+                <div className="w-full">
                   <ReasoningTrigger/>
                   <ReasoningContent>{reasoningPart.text}</ReasoningContent>
                 </div>
