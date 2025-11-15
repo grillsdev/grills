@@ -10,7 +10,7 @@ const WhyGrills = () => {
         </p>
       </div>
 
-      <div className="flex items-center justify-center mt-5 gap-2">
+      {/* <div className="flex items-center justify-center mt-5 gap-2">
         <div>
           <p className="text-sm relative font-semibold tracking-wide">
             Aditya Pushkar
@@ -19,7 +19,7 @@ const WhyGrills = () => {
             @aditya_pushkar
           </p>
         </div>
-      </div>
+      </div> */}
 
       <div className="pt-10 px-3 md:px-0 mx-auto mt-10 border-t prose prose-invert text-muted-foreground prose-a:font-semibold prose-p:font-semibold prose-p:text-sm border-border">
         <h4>Approach</h4>
